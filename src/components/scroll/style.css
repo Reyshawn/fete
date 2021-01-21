@@ -1,0 +1,58 @@
+.app {
+
+  .indicator {
+    top: 10px;
+    right: 10px;
+    z-index: 20;
+    @apply
+      fixed
+      bg-white
+      text-black;
+  }
+  .banner {
+    @apply
+      fixed
+      top-0
+      w-screen
+      h-12
+      bg-blue-800
+      text-white
+      flex
+      items-center
+      justify-center;
+    
+    h1 {
+      @apply
+        text-3xl
+        font-bold;
+
+    }
+  }
+
+  .footer {
+    @apply
+      w-screen
+      fixed
+      bottom-0
+      h-12
+      bg-red-800
+      text-white
+      flex
+      items-center
+      justify-center;
+
+    input {
+      @apply
+        text-black;
+    }
+  }
+
+  .content-wrapper {
+    @apply
+      bg-yellow-300
+      h-full
+      pb-12;
+  }
+}
+
+
