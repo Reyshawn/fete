@@ -1,9 +1,10 @@
 import React from 'react';
 import logo from './logo.svg';
 import './App.css';
-import Welcome from './components/welcome';
+
 import User from './components/user'
 import SvgAni from './components/svgAni/index'
+import Rxjs from './components/rxjs/index'
 
 import {
   BrowserRouter as Router,
@@ -21,15 +22,15 @@ function App(props: any) {
     setShowResults(!showResults)
   }
 
-  const navEm = (<ul>
+  const navEm = (<ul className="navigation">
       <li>
         <Link to="/">Home</Link>
       </li>
       <li>
-        <Link to="/svg-animation">svg animation</Link>
+        <Link to="/svg-animation">SVG</Link>
       </li>
       <li>
-        <Link to="/users">Dashboard</Link>
+        <Link to="/rxjs-demo">RxJs</Link>
       </li>
     </ul>)
 
@@ -38,6 +39,9 @@ function App(props: any) {
     <div className="App">
       <Router>
         <Switch>
+          <Route path="/rxjs-demo">
+            <Rxjs />
+          </Route>
           <Route path="/svg-animation">
             <SvgAni />
           </Route>
@@ -46,13 +50,9 @@ function App(props: any) {
           </Route>
           <Route path="/">
             {navEm}
-            <header className="App-header">
+            <div className="logo">
               <img src={logo} className="App-logo" alt="logo" />
-              <button onClick={onClick}>show results</button>
-              {showResults ? <Welcome name="ppp" /> : null}
-              <Welcome name="ddd" /> 
-              <Welcome name="eee" /> 
-            </header>
+            </div>
           </Route>
         </Switch>
       </Router>

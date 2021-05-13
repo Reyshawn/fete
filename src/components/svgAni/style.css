@@ -1,0 +1,7 @@
+.svg-ani {
+  svg {
+    @apply
+      w-48
+      h-48;
+  }
+}
