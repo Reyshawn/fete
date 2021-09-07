@@ -4,4 +4,49 @@
       w-48
       h-48;
   }
+
+
+  svg.loader-02 {
+    width: 5rem;
+    height: 5rem;
+    /* animation: rotation 2s infinite linear; */
+
+    g {
+      opacity: 0;
+    }
+
+    g:nth-child(1) {
+      opacity: 1;
+    }
+
+    g:nth-child(2) {
+      opacity: 1;
+    }
+
+    g:nth-child(3) {
+      opacity: 1;
+    }
+
+    g:nth-child(4) {
+      opacity: 1;
+    }
+
+    g:nth-child(5) {
+      opacity: 1;
+    }
+
+    g:nth-child(6) {
+      opacity: 1;
+    }
+  }
+}
+
+
+@keyframes rotation {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(359deg);
+  }
 }

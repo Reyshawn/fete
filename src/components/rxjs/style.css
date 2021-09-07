@@ -1,0 +1,42 @@
+.rxjs-demo {
+  h1 {
+    @apply
+      text-center
+      text-3xl;
+  }
+
+  h2 {
+    @apply
+      font-mono
+      text-lg
+      my-2;
+  }
+
+  .description {
+    @apply
+      my-2;
+  }
+
+
+  hr {
+    @apply
+      my-10;
+  }
+
+  button {
+    @apply
+      shadow-md
+      rounded-md
+      px-3
+      py-1
+      bg-pink-800
+      text-white;
+  }
+
+  .button-group {
+    & > *:not(:last-child) {
+      @apply
+        mr-2;
+    }
+  }
+}

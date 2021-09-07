@@ -17,10 +17,6 @@ import {
 export const MyContext = React.createContext("theme");
 
 function App(props: any) {
-  const [showResults, setShowResults] = React.useState(false)
-  const onClick = () => {
-    setShowResults(!showResults)
-  }
 
   const navEm = (<ul className="navigation">
       <li>
