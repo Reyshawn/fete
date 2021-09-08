@@ -5,6 +5,7 @@ import './App.css';
 import User from './components/user'
 import SvgAni from './components/svgAni/index'
 import Rxjs from './components/rxjs/index'
+import Animation from './components/animation/index'
 
 import {
   BrowserRouter as Router,
@@ -28,6 +29,9 @@ function App(props: any) {
       <li>
         <Link to="/rxjs-demo">RxJs</Link>
       </li>
+      <li>
+        <Link to="/animation">Animation</Link>
+      </li>
     </ul>)
 
   return (
@@ -35,21 +39,30 @@ function App(props: any) {
     <div className="App">
       <Router>
         <Switch>
+
           <Route path="/rxjs-demo">
             <Rxjs />
           </Route>
+
           <Route path="/svg-animation">
             <SvgAni />
           </Route>
+
           <Route path="/users">
             <User />
           </Route>
+
+          <Route path="/animation">
+            <Animation />
+          </Route>
+
           <Route path="/">
             {navEm}
             <div className="logo">
               <img src={logo} className="App-logo" alt="logo" />
             </div>
           </Route>
+          
         </Switch>
       </Router>
     </div>

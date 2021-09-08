@@ -1,0 +1,145 @@
+@use 'sass:math';
+
+
+$bubble-d: 4.5rem; // bubble diameter
+$bubble-r: .5 * $bubble-d; // bubble-radius
+
+$particle-d: 0.375rem;
+$particle-r: 0.5 * $particle-d;
+
+
+@mixin bubble($ext) {
+  border-color: #cc8ef5;
+  border-width: $ext;
+  transform: scale(1);
+}
+
+@mixin particles($k) {
+  $shadow-list: (); // init shadow list
+  $n-groups: 7; // number of groups
+  $group-base-angle: 360deg / $n-groups;
+
+  $n-particles: 2;
+  $particle-base-angle: 360deg / $n-particles;
+  $particle-off-angle: 60deg; // offset angle from radius
+
+  $group-distr-r: (1 + $k * 0.25) * $bubble-r;
+  $spread-r: -$k * 1.1 * $particle-r;
+
+
+  @for $i from 0 to $n-groups {
+    // current group angle, starting fron 12 o'clock
+    $group-curr-angle: $i * $group-base-angle - 90deg;
+    // coords of the central point of current group of particles
+    $xg: $group-distr-r * math.cos($group-curr-angle);
+    $yg: $group-distr-r * math.sin($group-curr-angle);
+  
+    @for $j from 0 to $n-particles {
+      $particle-curr-angle: $group-curr-angle + $particle-off-angle + $j * $particle-base-angle;
+  
+      // coordinates of curent particle
+      $xs: $xg + $particle-d * math.cos($particle-curr-angle);
+      $ys: $yg + $particle-d * math.sin($particle-curr-angle);
+  
+      // add to shadow list
+      $shadow-list: $shadow-list, $xs $ys 0 $spread-r hsl(($i + $j) * $group-base-angle, 100%, 75%);
+    }
+  }
+  box-shadow: $shadow-list;
+}
+
+
+[id="toggle-heart"] {
+  position: absolute;
+  left: -100vw;
+
+  &:checked + label {
+    color: #e2264d;
+    will-change: font-size;
+    animation: heart 1s cubic-bezier(.17, .89, .32, 1.49);
+
+    &::before, &::after {
+      animation: inherit;
+      animation-timing-function: cubic-bezier(.21, .61, .35, 1);
+    }
+  
+    &::before {
+      will-change: transform, border-color, border-width;
+      animation-name: bubble;
+    }
+  
+    &::after {
+      animation-name: particles;
+    }
+  }
+}
+
+[for='toggle-heart'] {
+  color: #aab8c2;
+
+  font-size: 2em;
+  cursor: pointer;
+  user-select: none;
+
+  align-self: center;
+  position: relative;
+
+  &::before, &::after {
+    position: absolute;
+    z-index: -1;
+    top: 50%; left: 50%;
+    border-radius: 50%;
+    content: '';
+  }
+
+  &::before {
+    margin: -$bubble-r;
+    width: $bubble-d;
+    height: $bubble-d;
+
+    box-sizing: border-box;
+    border: solid $bubble-r #e2264d;
+    transform: scale(0);
+  }
+
+  &::after {
+    margin: -$particle-r;
+    width: $particle-d;
+    height: $particle-d;
+
+    @include particles(1);
+  }
+}
+
+
+@keyframes heart {
+  0%, 17.5% {
+    font-size: 0;
+  } 
+}
+
+
+@keyframes bubble {
+  15% {
+    @include bubble($bubble-r);
+  }
+  30%, 100% {
+    @include bubble(0);
+  }
+}
+
+@keyframes particles {
+  0%, 20% { opacity: 0; }
+  25% {
+    opacity: 1;
+    @include particles(0);
+  }
+}
+
+
+div.like-button {
+  display: flex;
+  justify-content: center; /* horizontal alignment */
+  margin: 0;
+  height: 30vh; /* the viewport height */
+}
