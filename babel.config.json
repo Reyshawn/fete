@@ -1,0 +1,23 @@
+{
+  "presets": [
+      [
+        "@babel/preset-env",
+        {
+          "useBuiltIns": "usage",
+          "corejs": "^3.0.0" 
+        }
+      ],
+      "@babel/preset-typescript",
+      [
+        "@babel/preset-react",
+        {
+          "runtime": "automatic" // defaults to classic
+          // "importSource": "custom-jsx-library" // defaults to react (only in automatic runtime)
+        }
+      ]
+  ],
+  "plugins": [
+      "@babel/proposal-class-properties",
+      "@babel/proposal-object-rest-spread"
+  ]
+}
