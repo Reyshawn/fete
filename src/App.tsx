@@ -27,7 +27,7 @@ function App(props: any) {
           <Route path="/" element={<Layout />}>
             <Route path="svg" element={<SvgAni />} />
             <Route path="rxjs" element={<Rxjs />} />
-            <Route path="svg" element={<Animation />} />
+            <Route path="animation" element={<Animation />} />
           </Route>
         </Routes>
       </BrowserRouter>
