@@ -1,11 +1,13 @@
+import React from 'react'
 import {
   Outlet,
   Link,
 } from "react-router-dom";
 
-import SvgAni from '../components/svgAni/index'
-import Rxjs from '../components/rxjs/index'
-import Animation from '../components/animation/index'
+
+const SvgAni  = React.lazy(() => import('../components/svgAni/index'))
+const Rxjs  = React.lazy(() => import('../components/rxjs/index'))
+const Animation  = React.lazy(() => import('../components/animation/index'))
 
 
 function Layout(props: any) {
@@ -30,6 +32,12 @@ function Layout(props: any) {
   )
 }
 
+function Suspense({ children }: {children: any}) {
+  return (<React.Suspense fallback={<>...</>}>
+    {children}
+  </React.Suspense>)
+}
+
 
 export default [
   {
@@ -38,15 +46,15 @@ export default [
     children: [
       {
         path: 'svg',
-        element: <SvgAni />
+        element: <Suspense><SvgAni /></Suspense>
       },
       {
         path: 'rxjs',
-        element: <Rxjs />
+        element: <Suspense><Rxjs /></Suspense>
       },
       {
         path: 'animation',
-        element: <Animation />
+        element: <Suspense><Animation /></Suspense>
       }
     ]
   }
