@@ -32,7 +32,7 @@ function Layout(props: any) {
   )
 }
 
-function Suspense({ children }: {children: any}) {
+function Suspense({ children }: { children: JSX.Element }) {
   return (<React.Suspense fallback={<>...</>}>
     {children}
   </React.Suspense>)
