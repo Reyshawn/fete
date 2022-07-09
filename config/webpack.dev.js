@@ -22,6 +22,7 @@ module.exports = merge(webpackConfiguration, {
     open: false,
     compress: false,
     hot: true,
+    historyApiFallback: true,
     ...environment.server,
   },
 
