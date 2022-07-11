@@ -1,32 +1,30 @@
-import React from 'react'
+import { useState, useEffect } from 'react'
+
+import { useSelector, useDispatch } from 'react-redux'
+
+import { incremented, decremented, selectCount, selectStatus, fetchPosts } from '../store';
+
 
 function Welcome (props: any) {
 
-  const [count, setCount] = React.useState(0)
-  const [date, setDate] = React.useState(new Date())
-
-  React.useEffect(() => {
-    console.log("Hello");
-
-    const interval = setInterval(() => {
-      setDate(new Date())
-    }, 100)
-
-    return () => {
-      console.log("Bye");
-      clearInterval(interval)
-    };
-  }, [])
+  const count = useSelector(selectCount);
+  const status = useSelector(selectStatus)
+  const dispatch = useDispatch();
 
 
-  React.useEffect(() => {
+  useEffect(() => {
     console.log(`count update ${count}`)
   }, [count])
 
   return <div>
     <h1>Hello, {props.name}, { count }</h1>
-    <button onClick={() => setCount(count + 1)}>click this</button>
-    <div>{date.toLocaleTimeString()}</div>
+    <button onClick={() => dispatch(incremented("123aaa"))}>click this</button>
+
+    <button onClick={() => dispatch(decremented())}>click this</button><br/>
+
+    <h2>{status}</h2>
+
+    <button onClick={() => dispatch(fetchPosts("fetch some payload"))}>fetch</button>
   </div>
 }
 

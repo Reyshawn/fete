@@ -8,6 +8,8 @@ import {
 const SvgAni  = React.lazy(() => import('../components/svgAni/index'))
 const Rxjs  = React.lazy(() => import('../components/rxjs/index'))
 const Animation  = React.lazy(() => import('../components/animation/index'))
+const Welcome = React.lazy(() => import("../components/welcome"))
+const Fetch = React.lazy(() => import('../components/fetch'))
 
 
 function Layout(props: any) {
@@ -18,6 +20,9 @@ function Layout(props: any) {
           <Link to="/">Home</Link>
         </li>
         <li>
+          <Link to="welcome">Welcome</Link>
+        </li>
+        <li>
           <Link to="svg">SVG</Link>
         </li>
         <li>
@@ -25,6 +30,9 @@ function Layout(props: any) {
         </li>
         <li>
           <Link to="animation">Animation</Link>
+        </li>
+        <li>
+          <Link to="fetch">Fetch</Link>
         </li>
       </ul>
       <Outlet />
@@ -39,11 +47,15 @@ function Suspense({ children }: { children: JSX.Element }) {
 }
 
 
-export default [
+const routes = [
   {
     path: '/',
     element: <Layout />,
     children: [
+      {
+        path: 'welcome',
+        element: <Suspense><Welcome /></Suspense>
+      },
       {
         path: 'svg',
         element: <Suspense><SvgAni /></Suspense>
@@ -55,7 +67,13 @@ export default [
       {
         path: 'animation',
         element: <Suspense><Animation /></Suspense>
+      },
+      {
+        path: 'fetch',
+        element: <Suspense><Fetch /></Suspense>
       }
     ]
   }
 ]
+
+export default routes
