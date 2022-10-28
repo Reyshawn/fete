@@ -1,50 +1,40 @@
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 4s linear;
-  }
-}
-
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
 .App {
-  max-width: 800px;
-  margin: 0 auto;
-  @apply
-    py-4
-    h-screen;
+  .header {
+    height: 60px;
+    border-bottom: 1px solid rgba(15,23,42,.1);
+    background-color: hsla(0,0%,100%,.6);
+    position: fixed;
+    width: 100%;
+    top: 0;
 
-  ul.navigation {
     @apply
       flex
-      flex-row;
+      justify-between
+      items-center
+      px-10;
 
-    & > *:not(:last-child) {
+    &-title {
       @apply
-        mr-5;
+        font-medium
+        text-3xl;
+    }
+
+    & > ul.navigation {
+      @apply
+        flex
+        flex-row
+        font-medium;
+
+      & > *:not(:last-child) {
+        @apply
+          mr-7;
+      }
     }
   }
 
-  .logo {
-    @apply
-      w-full;
-      img {
-        @apply
-          mx-auto
-          my-36;
-      }
+  & > *:not(.header) {
+    max-width: 900px;
+    margin: 60px auto 0;
   }
 }

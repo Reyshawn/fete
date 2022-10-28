@@ -14,29 +14,35 @@ const Fetch = React.lazy(() => import('../components/fetch'))
 
 function Layout(props: any) {
   return (
-    <div>
-      <ul className="navigation">
-        <li>
-          <Link to="/">Home</Link>
-        </li>
-        <li>
-          <Link to="welcome">Welcome</Link>
-        </li>
-        <li>
-          <Link to="svg">SVG</Link>
-        </li>
-        <li>
-          <Link to="rxjs">RxJs</Link>
-        </li>
-        <li>
-          <Link to="animation">Animation</Link>
-        </li>
-        <li>
-          <Link to="fetch">Fetch</Link>
-        </li>
-      </ul>
+    <>
+      <div className="header">
+        <span className="header-title">
+          Deemo
+        </span>
+        <ul className='navigation'>
+          <li>
+            <Link to="/">Home</Link>
+          </li>
+          <li>
+            <Link to="welcome">Welcome</Link>
+          </li>
+          <li>
+            <Link to="svg">SVG</Link>
+          </li>
+          <li>
+            <Link to="rxjs">RxJs</Link>
+          </li>
+          <li>
+            <Link to="animation">Animation</Link>
+          </li>
+          <li>
+            <Link to="fetch">Fetch</Link>
+          </li>
+        </ul>
+      </div>
       <Outlet />
-    </div>
+    </>
+    
   )
 }
 
