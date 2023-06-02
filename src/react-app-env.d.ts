@@ -15,3 +15,9 @@ declare module "body-scroll-lock" {
 
   export function clearAllBodyScrollLocks(): void;
 }
+
+
+declare module "*.module.css" {
+  const classes: { [key: string]: string };
+  export default classes;
+}

@@ -17,10 +17,10 @@ $particle-r: 0.5 * $particle-d;
 @mixin particles($k) {
   $shadow-list: (); // init shadow list
   $n-groups: 7; // number of groups
-  $group-base-angle: 360deg / $n-groups;
+  $group-base-angle: calc(360deg / $n-groups);
 
   $n-particles: 2;
-  $particle-base-angle: 360deg / $n-particles;
+  $particle-base-angle: calc(360deg / $n-particles);
   $particle-off-angle: 60deg; // offset angle from radius
 
   $group-distr-r: (1 + $k * 0.25) * $bubble-r;

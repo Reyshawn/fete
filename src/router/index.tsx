@@ -3,6 +3,7 @@ import {
   Outlet,
   Link,
 } from "react-router-dom";
+import styles from '../App.module.css'
 
 
 const SvgAni  = React.lazy(() => import('../components/svgAni/index'))
@@ -15,11 +16,11 @@ const Fetch = React.lazy(() => import('../components/fetch'))
 function Layout(props: any) {
   return (
     <>
-      <div className="header">
+      <div className={styles.header}>
         <span className="header-title">
           Deemo
         </span>
-        <ul className='navigation'>
+        <ul className={styles.navigation}>
           <li>
             <Link to="/">Home</Link>
           </li>

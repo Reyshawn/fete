@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from 'react'
 import { of, interval, fromEvent, throwError, from, timer, Subscription, merge, iif, combineLatest, zip, Subject, ConnectableObservable } from "rxjs"
 import { bufferTime, catchError, combineAll, concatAll, delay, flatMap, map, mapTo, mergeMap, multicast, pluck, scan, share, shareReplay, switchMap, take, tap } from 'rxjs/operators'
 import { ajax } from 'rxjs/ajax'
-import './style.css'
+import styles from './style.module.css'
 
 export default function Rxjs () {
   // const source = ['三宮つばき', '藍芽みずき', '七海ティナ']
@@ -25,7 +25,7 @@ export default function Rxjs () {
 
 
   return (
-    <div className="rxjs-demo">
+    <div className={styles["rxjs-demo"]}>
       <h1>RxJs Demo</h1>
       <hr />
       <FromDemo />
@@ -90,8 +90,8 @@ const FromDemo = () => {
   return (
     <div>
       <h2>from</h2>
-      <p className="description">Turn an array, promise, or iterable into an observable.</p>
-      <div className="button-group">
+      <p className={styles.description}>Turn an array, promise, or iterable into an observable.</p>
+      <div className={styles["button-group"]}>
         <button onClick={onClick}>test array</button>
         <button onClick={onClickPromiseSource}>test promise</button>
         <button onClick={onClickString}>test string</button>
@@ -113,7 +113,7 @@ const OfDemo = () => {
   return (
     <div>
       <h2>of</h2>
-      <p className="description">Emit variable amount of values in a sequence and then emits a complete notification.</p>
+      <p className={styles.description}>Emit variable amount of values in a sequence and then emits a complete notification.</p>
       <button onClick={onClick}>start test</button>
     </div>
   )
@@ -135,7 +135,7 @@ const ScanDemo = () => {
   return (
     <div>
       <h2>scan</h2>
-      <p className="description">Reduce over time.</p>
+      <p className={styles.description}>Reduce over time.</p>
       <button onClick={onClick}>start test</button>
     </div>
   )
@@ -159,7 +159,7 @@ const TapDemo = () => {
   return (
     <div>
       <h2>tap</h2>
-      <p className="description">Transparently perform actions or side-effects, such as logging.</p>
+      <p className={styles.description}>Transparently perform actions or side-effects, such as logging.</p>
       <button onClick={onClick}>start test</button>
     </div>
   )
@@ -191,7 +191,7 @@ const MergeDemo = () => {
   return (
     <div>
       <h2>merge</h2>
-      <p className="description">Turn multiple observables into a single observable.</p>
+      <p className={styles.description}>Turn multiple observables into a single observable.</p>
       <button onClick={onClick}>start test</button>
     </div>
   )
@@ -219,11 +219,11 @@ const SwitchMapDemo = () => {
   return (
     <div>
       <h2>switchMap</h2>
-      <p className="description">Map to observable, complete previous inner observable, emit values.</p>
-      <p className="text-xs my-3">
+      <p className={styles.description}>Map to observable, complete previous inner observable, emit values.</p>
+      <p className="text-xs my-3 aaa">
       The main difference between switchMap and other flattening operators is the cancelling effect. On each emission the previous inner observable (the result of the function you supplied) is cancelled and the new observable is subscribed. You can remember this by the phrase switch to a new observable.
       </p>
-      <div className="button-group">
+      <div className={styles["button-group"]}>
       <button onClick={onClick}>start test</button>
       <button onClick={onClikcUnsubscribe}>stop test</button>
       </div>
@@ -258,7 +258,7 @@ const MergeMapDemo = () => {
   return (
     <div>
       <h2>mergeMap</h2>
-      <p className="description">Map to observable, emit values.</p>
+      <p className={styles.description}>Map to observable, emit values.</p>
       <button onClick={onClick}>start test</button>
     </div>
   )
@@ -278,7 +278,7 @@ const IifDemo = () => {
   return (
     <div>
       <h2>iif</h2>
-      <p className="description">Subscribe to first or second observable based on a condition</p>
+      <p className={styles.description}>Subscribe to first or second observable based on a condition</p>
       <button onClick={onClick}>start test</button>
     </div>
   )
@@ -367,11 +367,11 @@ const CombineDemo = () => {
   return (
     <div>
       <h2>combineAll, combineLatest</h2>
-      <p className="description">
+      <p className={styles.description}>
         combineAll: after outer Observable completes, then subscribe all inner Observavles with combineLatest.<br />
         combineLatest: when one timer emits, emit the latest values from each timer as an array
       </p>
-      <div className="button-group">
+      <div className={styles["button-group"]}>
         <button onClick={onClick}>test combineAll</button>
         <button onClick={onClickCombineLatest}>test combineLatest</button>
         <button onClick={onClickCombineLatest2}>test combineLatest 2</button>
@@ -406,11 +406,11 @@ const ConcatDemo = () => {
   return (
     <div>
       <h2>concat, concatAll</h2>
-      <p className="description">
+      <p className={styles.description}>
         concat: Subscribe to observables in order as previous completes<br />
         concatAll: Collect observables and subscribe to next when previous completes.
       </p>
-      <div className="button-group">
+      <div className={styles["button-group"]}>
         <button onClick={onClickConcatAll}>test concatAll</button>
       </div>
       
@@ -439,10 +439,10 @@ const ZipDemo = () => {
   return (
     <div>
       <h2>zip</h2>
-      <p className="description">
+      <p className={styles.description}>
         After all observables emit, emit values as an array
       </p>
-      <div className="button-group">
+      <div className={styles["button-group"]}>
         <button onClick={onClick}>start test</button>
       </div>
       
@@ -476,10 +476,10 @@ const MulticastDemo = () => {
   return (
     <div>
       <h2>multicast</h2>
-      <p className="description">
+      <p className={styles.description}>
         Share source utilizing the provided Subject
       </p>
-      <div className="button-group">
+      <div className={styles["button-group"]}>
         <button onClick={onClick}>start test</button>
       </div>
       
@@ -521,7 +521,7 @@ const ShareDemo = () => {
   return (
     <div>
       <h2>share</h2>
-      <p className="description">Share source among multiple subscribers</p>
+      <p className={styles.description}>Share source among multiple subscribers</p>
       <button onClick={onClick}>start test</button>
     </div>
   )
@@ -558,8 +558,8 @@ const ShareReplayDemo = () => {
   return (
     <div>
       <h2>shareReplay</h2>
-      <p className="description">Share source and replay specified number of emissions on subscription.</p>
-      <div className="button-group">
+      <p className={styles.description}>Share source and replay specified number of emissions on subscription.</p>
+      <div className={styles["button-group"]}>
         <button onClick={onClick}>start test</button>
         <button onClick={changeUrl}>change url</button>
       </div>
@@ -583,7 +583,7 @@ const AjaxDemo = () => {
   return (
     <div>
       <h2>ajax</h2>
-      <p className="description">Create an observable for an Ajax request with either a request object with url, headers, etc or a string for a URL.</p>
+      <p className={styles.description}>Create an observable for an Ajax request with either a request object with url, headers, etc or a string for a URL.</p>
       <button onClick={onClick}>start test</button>
     </div>
   )
@@ -604,7 +604,7 @@ const BufferTimeDemo = () => {
   return (
     <div>
       <h2>buffertime</h2>
-      <p className="description">Collect emitted values until provided time has passed, emit as array.</p>
+      <p className={styles.description}>Collect emitted values until provided time has passed, emit as array.</p>
       <button onClick={onClick}>start test</button>
     </div>
   )
@@ -626,7 +626,7 @@ const CatchDemo = () => {
   return (
     <div>
       <h2>catch / catchError</h2>
-      <p className="description">Gracefully handle errors in an observable sequence.</p>
+      <p className={styles.description}>Gracefully handle errors in an observable sequence.</p>
       <button onClick={onClick}>start test</button>
     </div>
   )
