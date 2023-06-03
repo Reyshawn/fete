@@ -1,9 +1,8 @@
-
 .App {
   .header {
     height: 60px;
     border-bottom: 1px solid rgba(15,23,42,.1);
-    background-color: hsla(0,0%,100%,.6);
+    background-color: hsla(0,0%,100%,.9);
     position: fixed;
     width: 100%;
     top: 0;
@@ -32,9 +31,39 @@
       }
     }
   }
+}
 
-  & > *:not(.header) {
-    max-width: 900px;
-    margin: 60px auto 0;
+
+.main {
+  padding-top: 60px;
+}
+
+
+.siderbar-container {
+  width: 100%;
+  display: flex;
+
+  .sidebar {
+    flex: 0 0 200px;
+    @apply
+      pl-5;
+
+    & > ul {
+      position: sticky;
+      top: 60px;
+      left: 0;
+
+      @apply
+        pt-3;
+
+      & > li {
+        @apply
+          text-base;
+      }
+    }
+  }
+
+  .sidebar-main {
+    flex-grow: 1
   }
 }

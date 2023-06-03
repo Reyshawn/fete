@@ -20,6 +20,7 @@ module.exports = {
     app: path.resolve(environment.paths.source, 'index.tsx'),
   },
   output: {
+    publicPath: '/',
     filename: 'js/[name].js',
     path: environment.paths.output,
   },
