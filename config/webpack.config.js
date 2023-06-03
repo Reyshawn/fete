@@ -3,8 +3,8 @@
  */
 
 const path = require('path');
-const fs = require('fs');
-const CopyWebpackPlugin = require('copy-webpack-plugin');
+// const fs = require('fs');
+// const CopyWebpackPlugin = require('copy-webpack-plugin');
 const HTMLWebpackPlugin = require('html-webpack-plugin');
 // const ImageMinimizerPlugin = require('image-minimizer-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
@@ -39,7 +39,7 @@ module.exports = {
             options: {
               modules: {
                 auto: true,
-                localIdentName: "[hash:base64:7]"
+                localIdentName: "[local]-[hash:base64:7]"
               }
             }
           }, 
@@ -51,7 +51,6 @@ module.exports = {
         use: [
           "style-loader",
           "css-loader",
-          "postcss-loader",
           "sass-loader"
         ],
       },
@@ -123,7 +122,8 @@ module.exports = {
     }),
 
     new HTMLWebpackPlugin({
-      template: path.resolve('public/index.html')
+      template: path.resolve('public/index.html'),
+      favicon: "./public/favicon.ico"
     })
     // new CopyWebpackPlugin({
     //   patterns: [{

@@ -17,8 +17,8 @@ function Layout(props: any) {
   return (
     <>
       <div className={styles.header}>
-        <span className="header-title">
-          Deemo
+        <span className={styles["header-title"]}>
+          Demoo
         </span>
         <ul className={styles.navigation}>
           <li>
