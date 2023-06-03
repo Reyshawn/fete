@@ -46,7 +46,7 @@
   .sidebar {
     flex: 0 0 200px;
     @apply
-      pl-5;
+      px-5;
 
     & > ul {
       position: sticky;
@@ -54,11 +54,12 @@
       left: 0;
 
       @apply
-        pt-3;
+        mt-3;
 
       & > li {
         @apply
-          text-base;
+          h-7
+          text-sm;
       }
     }
   }

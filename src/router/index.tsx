@@ -6,6 +6,9 @@ import {
 import styles from '../App.module.css'
 
 
+const DSwitch = React.lazy(() => import('../components/DSwitch/index'))
+const DDropdown = React.lazy(() => import('../components/DDropdown/index'))
+const DScrollpicker = React.lazy(() => import('../components/DScrollpicker/index'))
 const SvgAni  = React.lazy(() => import('../components/svgAni/index'))
 const Rxjs  = React.lazy(() => import('../components/rxjs/index'))
 const Animation  = React.lazy(() => import('../components/animation/index'))
@@ -76,20 +79,16 @@ function Suspense({ children }: { children: JSX.Element }) {
 
 const componentsRoutes = [
   {
-    path: 'svg',
-    element: <Suspense><SvgAni /></Suspense>
+    path: 'switch',
+    element: <Suspense><DSwitch /></Suspense>
   },
   {
-    path: 'rxjs',
-    element: <Suspense><Rxjs /></Suspense>
+    path: 'dropdown',
+    element: <Suspense><DDropdown /></Suspense>
   },
   {
-    path: 'animation',
-    element: <Suspense><Animation /></Suspense>
-  },
-  {
-    path: 'fetch',
-    element: <Suspense><Fetch /></Suspense>
+    path: 'scrollpicker',
+    element: <Suspense><DScrollpicker /></Suspense>
   }
 ]
 
