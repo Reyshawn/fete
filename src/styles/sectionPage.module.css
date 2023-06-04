@@ -1,0 +1,12 @@
+.page {
+  @apply
+    py-5
+    px-3;
+
+  h1 {
+    @apply
+      text-2xl
+      font-bold
+      mb-2;
+  }
+}

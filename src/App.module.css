@@ -54,7 +54,7 @@
       left: 0;
 
       @apply
-        mt-3;
+        mt-5;
 
       & > li {
         @apply

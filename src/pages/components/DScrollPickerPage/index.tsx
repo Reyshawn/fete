@@ -1,5 +1,3 @@
-
-
 export default function DScrollpickerPage(props: any) {
   return (
     <>
