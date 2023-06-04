@@ -84,6 +84,9 @@ module.exports = {
 
   resolve: {
     extensions: ['*', '.js', '.jsx', '.tsx', '.ts'],
+    alias: {
+      "@": environment.paths.source
+    }
   },
 
   plugins: [
