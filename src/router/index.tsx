@@ -2,13 +2,23 @@ import React from 'react'
 import {
   Outlet,
   Link,
+  useLocation
 } from "react-router-dom";
+import {
+  ComponentsPage,
+  AnimationsPage,
+  SolutionsPage,
+  TopicsPage
+} from "../pages/index"
+
+import {
+  DSwitchPage,
+  DScrollpickerPage
+} from '../pages/components/index'
+
 import styles from '../App.module.css'
 
 
-const DSwitch = React.lazy(() => import('../components/DSwitch/index'))
-const DDropdown = React.lazy(() => import('../components/DDropdown/index'))
-const DScrollpicker = React.lazy(() => import('../components/DScrollpicker/index'))
 const SvgAni  = React.lazy(() => import('../components/svgAni/index'))
 const Rxjs  = React.lazy(() => import('../components/rxjs/index'))
 const Animation  = React.lazy(() => import('../components/animation/index'))
@@ -49,13 +59,15 @@ function Layout(props: any) {
 
 
 function SidebarLayout(props: any) {
+  const location = useLocation()
+
   return (
     <div className={styles["siderbar-container"]}>
       <nav className={styles.sidebar}>
         <ul>
           {
             props.routes.map((r: any, index: number) => {
-              return <li key={index}>
+              return <li key={index} className={location.pathname.endsWith("/" + r.path) ? styles.selected : undefined}>
                 <Link to={r.path}>{r.path}</Link>
               </li>
             })
@@ -79,16 +91,16 @@ function Suspense({ children }: { children: JSX.Element }) {
 
 const componentsRoutes = [
   {
-    path: 'switch',
-    element: <Suspense><DSwitch /></Suspense>
+    path: '',
+    element: <Suspense><ComponentsPage /></Suspense>
   },
   {
-    path: 'dropdown',
-    element: <Suspense><DDropdown /></Suspense>
+    path: 'switch',
+    element: <Suspense><DSwitchPage /></Suspense>
   },
   {
     path: 'scrollpicker',
-    element: <Suspense><DScrollpicker /></Suspense>
+    element: <Suspense><DScrollpickerPage /></Suspense>
   }
 ]
 
@@ -100,24 +112,20 @@ const routes = [
     children: [
       {
         path: 'components',
-        element: <Suspense><SidebarLayout routes={componentsRoutes} /></Suspense>,
+        element: <Suspense><SidebarLayout routes={componentsRoutes.filter(r => r.path !== '')} /></Suspense>,
         children: componentsRoutes
       },
       {
-        path: 'svg',
-        element: <Suspense><SvgAni /></Suspense>
+        path: 'animations',
+        element: <Suspense><AnimationsPage /></Suspense>
       },
       {
-        path: 'rxjs',
-        element: <Suspense><Rxjs /></Suspense>
+        path: 'solutions',
+        element: <Suspense><SolutionsPage /></Suspense>
       },
       {
-        path: 'animation',
-        element: <Suspense><Animation /></Suspense>
-      },
-      {
-        path: 'fetch',
-        element: <Suspense><Fetch /></Suspense>
+        path: 'topics',
+        element: <Suspense><TopicsPage /></Suspense>
       }
     ]
   }

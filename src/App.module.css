@@ -60,6 +60,11 @@
         @apply
           h-7
           text-sm;
+
+        &.selected {
+          @apply
+            font-medium;
+        }
       }
     }
   }
