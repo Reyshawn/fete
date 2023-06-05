@@ -1,0 +1,65 @@
+.d-picker {
+  overscroll-behavior: contain;
+  @apply
+    cursor-pointer
+    overflow-hidden
+    relative
+    w-full
+    h-full;
+  
+  &-wheel {
+    z-index: 20;
+    height: var(--item-height);
+    top: 50%;
+    margin-top: calc(-1 * var(--item-height) / 2);
+    @apply
+      w-full
+      absolute;
+
+    &-rotate {
+      transform-style: preserve-3d;
+
+      @apply
+        w-full
+        h-full
+        relative;
+    }
+    &-item {
+      height: var(--item-height);
+      line-height: var(--item-height);
+      backface-visibility: hidden;
+      @apply
+        absolute
+        w-full
+        text-center
+        font-mono
+        text-gray-500;
+    }
+  }
+
+  &-board {
+    height: var(--item-height);
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 30;
+    perspective: 1200px;
+    @apply
+      bg-white
+      absolute
+      border-t
+      border-b
+      border-gray-300
+      w-full
+      overflow-hidden;
+
+    &-option {
+      height: var(--item-height);
+      line-height: var(--item-height);
+
+      @apply
+        align-middle
+        text-center
+        font-mono;
+    }
+  }
+}
