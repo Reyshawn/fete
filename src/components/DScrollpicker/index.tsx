@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useState, useCallback } from "react"
+import React, { useMemo, useRef, useState, useCallback, useEffect } from "react"
 import style from "./style.module.css"
 
 import animate from "@/utils/animate"
@@ -6,45 +6,80 @@ import animate from "@/utils/animate"
 interface DScrollpickerProps {
   options: String[]
   value: string
+  config?: {
+    height?: number
+    wheelCount?: number
+  }
 }
 
 
-
 export default function DScrollpicker(props: DScrollpickerProps) {
-
-  // console.log("render count", i++)
-  
-  const itemHeight = 36
-  const wheelCount = 20
+  const itemHeight = props.config?.height || 36
+  const wheelCount = props.config?.wheelCount || 20
   const acceleration = 5
 
   const itemAngle = useMemo(() => 360 / wheelCount, [wheelCount])
   const radius = useMemo(() => itemHeight / (2 * Math.sin(itemAngle * Math.PI / 360)), [itemHeight, itemAngle])
   const halfWheelCount = useMemo(() => wheelCount / 2, [wheelCount])
-  const quarterWheelCount = useMemo(() => wheelCount / 4, [wheelCount])
 
   const [scroll, setScroll] = useState(0)
   
+  const picker = useRef<HTMLDivElement>(null)
+
   const isDragging = useRef(false)
   const draggingStatus = useRef({y: 0})
   const scrollLocations = useRef<[number, number][]>([])
-  
   const startScroll = useRef(0)
   const rafId = useRef<number | null>(null)
   const isAnimationInProgress = useRef(false)
 
+  const scrollStopTimer = useRef<NodeJS.Timeout | null>(null)
+
   const cssVars: React.CSSProperties = {
-    '--item-height': itemHeight + 'px',
-    'height': '400px'
+    ['--item-height' as any]: itemHeight + 'px',
+    'height': `${2 * radius}px`
   }
 
-  const picker = useRef<HTMLDivElement>(null)
+  const handleScroll = (event: WheelEvent) => {
+    event.preventDefault()
+    if (!isDragging.current) {
+      isDragging.current = true
 
-  
+      draggingStatus.current.y = 0
+      startScroll.current = scroll
+    }
 
-  const handleScroll: React.WheelEventHandler<HTMLDivElement> = () => {
+    if (scrollStopTimer.current != null) {
+      clearTimeout(scrollStopTimer.current)
+      scrollStopTimer.current = null
+    }
 
+    draggingStatus.current.y += event.deltaY
+
+    const deltaY = draggingStatus.current.y
+
+    const s = startScroll.current + (deltaY / itemHeight)
+
+    setScroll(s)
+
+    scrollLocations.current.push([s, performance.now()])
+
+    if (scrollLocations.current.length > 4) {
+      scrollLocations.current.splice(0, 2)
+    }
+
+    scrollStopTimer.current = setTimeout(() => {
+      isDragging.current = false
+      handleScrollStop()
+    }, 500)
   }
+
+  useEffect(() => {
+    picker.current?.addEventListener("wheel", handleScroll, {passive: false})
+    return () => {
+      picker.current?.removeEventListener("wheel", handleScroll)
+    }
+  }, [])
 
 
   const onPickerMousedown: React.MouseEventHandler<HTMLDivElement> = (event) => {
@@ -73,9 +108,10 @@ export default function DScrollpicker(props: DScrollpickerProps) {
   }
 
   const onPickerMouseLeave: React.MouseEventHandler<HTMLDivElement> = (event) => {
-
+    if (isDragging.current) {
+      onPickerMouseUp(event)
+    }
   }
-
 
   const onPickerMouseMove = useCallback((event: MouseEvent) => {
     if (!isDragging.current) {
@@ -93,7 +129,6 @@ export default function DScrollpicker(props: DScrollpickerProps) {
     if (scrollLocations.current.length > 4) {
       scrollLocations.current.splice(0, 2)
     }
-
   }, [])
 
 
@@ -134,13 +169,11 @@ export default function DScrollpicker(props: DScrollpickerProps) {
     })
   }
 
-
   return (
     <div
       className={style["d-picker"]}
       style={cssVars}
       ref={picker}
-      onWheel={handleScroll}
       onMouseDown={onPickerMousedown}
       onMouseUp={onPickerMouseUp}
       onMouseLeave={onPickerMouseLeave}>
