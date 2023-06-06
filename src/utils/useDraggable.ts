@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from "react"
-
+import Queue from "./collections/queue"
 
 // make an element draggable
 // add mousedown, mouseup, mousemove event handler, touchstart, touchmove, touchend, touchcancel event handler
@@ -48,7 +48,7 @@ export const useDraggable = (ref: React.RefObject<HTMLDivElement>, options: Drag
   
   // TODO implement queue data structure
   const initDragStatus = useRef<DraggableStatus>(DraggableStatusZero())
-  const dragStatusQueue = useRef<DraggableStatus[]>([])
+  const dragStatusQueue = useRef<Queue<DraggableStatus>>(new Queue(2))
   // const dragStatus = useRef(DraggableStatusZero)
   const isDragging = useRef(false)
 
@@ -73,10 +73,9 @@ export const useDraggable = (ref: React.RefObject<HTMLDivElement>, options: Drag
 
     }
 
-    // console.log("performance.now()::::", performance.now())
     status.t = performance.now()
 
-    const lastStatus = dragStatusQueue.current.at(-1)
+    const lastStatus = dragStatusQueue.current.latest
     
     if (lastStatus != null ) {
       const dt = status.t - lastStatus.t
@@ -87,11 +86,7 @@ export const useDraggable = (ref: React.RefObject<HTMLDivElement>, options: Drag
     }
 
     
-    dragStatusQueue.current.push(status)
-
-    if (dragStatusQueue.current.length > 2) {
-      dragStatusQueue.current.shift()
-    }
+    dragStatusQueue.current.enqueue(status)
 
     setRendering(i => i+1)
 
@@ -123,15 +118,12 @@ export const useDraggable = (ref: React.RefObject<HTMLDivElement>, options: Drag
         
       } 
       
-      // console.log("performance.now()::::123:::", performance.now())
       status.t = performance.now()
       initDragStatus.current = status
-      dragStatusQueue.current.push(status)
+      dragStatusQueue.current.enqueue(status)
 
 
       options.onDragStart?.(status)
-
-
       setRendering(0)
     }
     
@@ -171,5 +163,5 @@ export const useDraggable = (ref: React.RefObject<HTMLDivElement>, options: Drag
     }
   }, [ref.current])
 
-  return dragStatusQueue.current.at(-1) ?? DraggableStatusZero()
+  return dragStatusQueue.current.latest ?? DraggableStatusZero()
 }
