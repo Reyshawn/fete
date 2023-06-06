@@ -54,6 +54,7 @@ export const useDraggable = (ref: React.RefObject<HTMLDivElement>, options: Drag
 
 
   const onDragging = useCallback((event: TouchEvent | MouseEvent) => {
+    event.preventDefault()
     if (!isDragging) {
       return
     }
@@ -96,6 +97,7 @@ export const useDraggable = (ref: React.RefObject<HTMLDivElement>, options: Drag
 
   useEffect(() => {
     const onDragStart = (event: TouchEvent | MouseEvent) => {
+      event.preventDefault()
       if (isDragging.current) {
         return
       }
@@ -129,6 +131,7 @@ export const useDraggable = (ref: React.RefObject<HTMLDivElement>, options: Drag
     
     
     const onDragEnd = (event: TouchEvent | MouseEvent) => {
+      event.preventDefault()
       if (!isDragging.current) {
         return
       }
@@ -138,11 +141,11 @@ export const useDraggable = (ref: React.RefObject<HTMLDivElement>, options: Drag
       ref.current?.removeEventListener("touchmove", onDragging)
 
 
-      // options.onDragEnd?.(dragStatus.current)
+      options.onDragEnd?.(dragStatusQueue.current.latest!)
     }
 
     const onDragCancel = (event: TouchEvent | MouseEvent) => {
-
+      onDragEnd(event)
     }
 
     ref.current?.addEventListener("mousedown", onDragStart)
