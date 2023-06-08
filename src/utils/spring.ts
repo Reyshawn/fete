@@ -1,3 +1,6 @@
+import { FrameGenerator } from "./animation"
+import { calcGeneratorVelocity } from "./calcGeneratorVelocity"
+
 interface SpringOptions {
   from: number
   to: number
@@ -5,10 +8,6 @@ interface SpringOptions {
   damping: number
   mass: number
   velocity: number
-}
-
-interface SpringGenerator {
-  next(t: number): {done: boolean, value: number}
 }
 
 
@@ -23,24 +22,9 @@ function calcAngularFreq(undampedFreq: number, dampingRatio: number) {
 }
 
 
-const velocitySampleDuration = 5 // ms
-
-function velocityPerSecond(velocity: number, frameDuration: number) {
-  return frameDuration ? velocity * (1000 / frameDuration) : 0
-}
-
-function calcGeneratorVelocity(
-  resolveValue: (v: number) => number,
-  t: number,
-  current: number
-) {
-  const prevT = Math.max(t - velocitySampleDuration, 0)
-  return velocityPerSecond(current - resolveValue(prevT), t - prevT)
-}
-
 
 // refers to https://github.com/Popmotion/popmotion
-export function spring(options: SpringOptions): SpringGenerator {
+export function spring(options: SpringOptions): FrameGenerator {
   const origin = options.from
   const target = options.to
 

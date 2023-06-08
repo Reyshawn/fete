@@ -15,7 +15,6 @@ export function useAnimator(config: AnimatorConfiguration): [AnimationFrame, Int
   const [rendering, setRendering] = useState(0)
   const frame = useRef<AnimationFrame>({
     elapsedTime: 0,
-    velocity: new Array(config.from.length).fill(0),
     values: [...config.from]
   })
 
@@ -27,9 +26,9 @@ export function useAnimator(config: AnimatorConfiguration): [AnimationFrame, Int
 
   const tick = useCallback((now: DOMHighResTimeStamp) => {
     const f = frame.current
-    const {startTime, pausedTime: pasuedTime} = status.current
+    const {startTime, pausedTime} = status.current
     
-    const elapsed = Math.max(0, pasuedTime + now - startTime)
+    const elapsed = Math.max(0, pausedTime + now - startTime)
 
     if (elapsed >= duration) {
       ia.status = "finished"

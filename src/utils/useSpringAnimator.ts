@@ -18,7 +18,6 @@ export function useSpringAnimator(config: SpringAnimatorConfiguration): [Animati
 
   const keyframe = useRef<AnimationFrame>({
     elapsedTime: 0,
-    velocity: new Array(config.from.length).fill(0),
     values: [...config.from]
   })
 

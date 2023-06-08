@@ -34,7 +34,6 @@ export interface AnimatorConfiguration {
 
 export interface AnimationFrame {
   elapsedTime: number
-  velocity: number[]
   values: number[]
 }
 
@@ -56,6 +55,11 @@ export interface Animator {
 
 export interface InteractiveAnimator extends Animator {
   set: (progress: number) => void
+}
+
+
+export interface FrameGenerator {
+  next(t: number): {done: boolean, value: number}
 }
 
 
