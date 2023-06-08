@@ -1,16 +1,25 @@
-import { useState, useRef, useMemo, useCallback } from "react"
+import { useState, useRef, useMemo, useCallback, useEffect } from "react"
 import { getCurve, AnimatorConfiguration, AnimationKeyframe, AnimationStatus, Animator, createAnimator } from "./animation"
 
 
 
 interface SpringAnimationKeyframe {
   status: "pasued" | "inactive" | "running" | "finished"
-  currentValue: number
-  current: () => number
+  currentValue: number[]
+  current: () => number[]
 }
 
 
 interface SpringAnimatorConfiguration {
+  from: number[]
+  to: number[]
+  stiffness: number
+  damping: number
+  mass: number
+  velocity: number
+}
+
+interface SpringOptions {
   from: number
   to: number
   stiffness: number
@@ -62,13 +71,13 @@ function calcGeneratorVelocity(
 }
 
 
-function createSpringGenerator(config: SpringAnimatorConfiguration) {
-  const origin = config.from
-  const target = config.to
+function createSpringGenerator(options: SpringOptions) {
+  const origin = options.from
+  const target = options.to
 
   const state = { done: false, value: origin }
 
-  const { stiffness, damping, mass, velocity } = config
+  const { stiffness, damping, mass, velocity } = options
 
   const initialVelocity = velocity ? -millisecondsToSeconds(velocity) : 0.0
   const dampingRatio = damping / (2 * Math.sqrt(stiffness * mass))
@@ -215,8 +224,6 @@ function createSpringAnimator(
 }
 
 
-
-
 export function useSpringAnimator(config: SpringAnimatorConfiguration): [SpringAnimationKeyframe, SpringAnimator] {
   const [rendering, setRendering] = useState(0)
 
@@ -234,18 +241,31 @@ export function useSpringAnimator(config: SpringAnimatorConfiguration): [SpringA
     rafId: null
   })
 
-  const springGenerator = useMemo(() => createSpringGenerator(config), [])
+  const springGenerators = useMemo(() => config.from.map((f, index) => {
+    return createSpringGenerator({
+      from: f,
+      to: config.to[index],
+      stiffness: config.stiffness,
+      damping: config.damping,
+      mass: config.mass,
+      velocity: config.velocity
+    })
+  }), [])
 
   const tick = useCallback((now: DOMHighResTimeStamp) => {
 
     const elapsed = now - status.current.startTime
-    const state = springGenerator.next(elapsed)
+    
+    const states = springGenerators.map(g => g.next(elapsed))
 
-    keyframe.current.currentValue = state.value
-    if (!state.done) {
+    states.forEach((s, index) => keyframe.current.currentValue[index] = s.value)
+    const isDone = states.every(s => s.done)
+
+    if (!isDone) {
       status.current.rafId = requestAnimationFrame(tick)
     }
 
+    keyframe.current.status = isDone ? "finished" : "running"
     setRendering(i => i+1)
   }, [])
 
