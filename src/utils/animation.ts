@@ -31,49 +31,57 @@ export interface AnimatorConfiguration {
   to: number[]
 }
 
-export interface AnimationKeyframe {
-  status: "pasued" | "inactive" | "running" | "finished"
-  progress: number,
-  current: () => number[]
+
+export interface AnimationFrame {
+  elapsedTime: number
+  velocity: number[]
+  values: number[]
 }
+
 
 export interface AnimationStatus {
   startTime: number
-  pausedProgress: number
+  pausedTime: number
   rafId: number | null
 }
 
 
 export interface Animator {
+  status: "pasued" | "inactive" | "running" | "finished"
   start: () => void,
   pause: () => void,
-  set: (progress: number) => void,
   continue: () => void
 }
 
 
+export interface InteractiveAnimator extends Animator {
+  set: (progress: number) => void
+}
+
 
 export function createAnimator(
   setRendering: React.Dispatch<React.SetStateAction<number>>,
-  keyframe: AnimationKeyframe,
+  frame: AnimationFrame,
   status: AnimationStatus,
   tick: (now: number) => void
   ): Animator {
   
 
   const animator = useMemo<Animator>(() => ({
+    status: "inactive",
 
-    start() { 
+    start() {
       if (status.rafId) {
         cancelAnimationFrame(status.rafId)
         status.rafId = null
       }
-
-      keyframe.status = "running"
-      keyframe.progress = 0
-      status.pausedProgress = 0
-
+    
+      this.status = "running"
+      frame.elapsedTime = 0
+      status.pausedTime = 0
+    
       status.startTime = performance.now()
+
       tick(status.startTime)
     },
 
@@ -81,32 +89,28 @@ export function createAnimator(
       if (status.rafId) {
         cancelAnimationFrame(status.rafId)
         status.rafId = null
-        status.pausedProgress = keyframe.progress
-        keyframe.status = "pasued"
+        status.pausedTime = frame.elapsedTime
+        this.status = "pasued"
         setRendering(i => i+1)
       }
     },
 
-    set(progress: number) {
-      if (keyframe.status === "running") {
-        return
-      }
-
-      keyframe.status === "inactive"
-      keyframe.progress = progress
-      status.pausedProgress = progress
-      setRendering(i => i+1)
-    },
-
     continue() {
-      keyframe.status = "running"
+      this.status = "running"
       status.startTime = performance.now()
-      
+
       tick(status.startTime)
     }
 
   }), [])
 
-
   return animator
+}
+
+
+export function convertAnimator(animator: Animator, set: (progress: number) => void): InteractiveAnimator {
+  const ia = animator as InteractiveAnimator
+  ia.set = set
+
+  return ia
 }

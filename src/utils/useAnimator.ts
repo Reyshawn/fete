@@ -1,54 +1,76 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { useCallback, useMemo, useRef, useState } from "react"
 import {
   getCurve,
   AnimatorConfiguration,
-  AnimationKeyframe,
+  AnimationFrame,
   AnimationStatus,
-  Animator,
-  createAnimator
+  createAnimator,
+  InteractiveAnimator,
+  convertAnimator
  } from "./animation"
 
 
-
-export function useAnimator(config: AnimatorConfiguration): [AnimationKeyframe, Animator] {
+export function useAnimator(config: AnimatorConfiguration): [AnimationFrame, InteractiveAnimator] {
   const { duration, easing } = config
   const [rendering, setRendering] = useState(0)
-  const keyframe = useRef<AnimationKeyframe>({
-    status: "inactive",
-    progress: 0,
-    current() {
-      const curve = getCurve(easing)
-      const p = curve(this.progress)
-
-      return config.from.map((fromValue, index) => fromValue + (config.to[index]  - fromValue) * p)
-    }
+  const frame = useRef<AnimationFrame>({
+    elapsedTime: 0,
+    velocity: new Array(config.from.length).fill(0),
+    values: [...config.from]
   })
 
   const status = useRef<AnimationStatus>({
     startTime: 0,
-    pausedProgress: 0,
+    pausedTime: 0,
     rafId: null
   })
-  
 
   const tick = useCallback((now: DOMHighResTimeStamp) => {
-    const kf = keyframe.current
-    const {startTime, pausedProgress} = status.current
-    if (kf.progress >= 1) {
-      kf.status = "finished"
-      kf.progress = 1
+    const f = frame.current
+    const {startTime, pausedTime: pasuedTime} = status.current
+    
+    const elapsed = Math.max(0, pasuedTime + now - startTime)
+
+    if (elapsed >= duration) {
+      ia.status = "finished"
+      f.values = [...config.to]
+      f.elapsedTime = duration
       setRendering(i => i+1)
       return
     }
 
-    const elapsed = now - startTime
+    const progress = elapsed / duration
 
-    kf.progress =  pausedProgress + elapsed / duration
+    const curve = getCurve(easing)
+
+    f.elapsedTime = elapsed
+    f.values = config.from.map((f, index) => f + (config.to[index] - f) * curve(progress))
+    // f.velocity =
+
     setRendering(i => i+1)
     status.current.rafId = requestAnimationFrame(tick)
   }, [])
-  
 
-  const animator = createAnimator(setRendering, keyframe.current, status.current, tick)
-  return [keyframe.current, animator]
+  const a = createAnimator(setRendering, frame.current, status.current, tick)
+  const ia = useMemo(() => {
+    const set = (progress: number) => {
+      if (ia.status === "running") {
+        return
+      }
+
+      ia.status === "inactive"
+      const elasped = progress * duration
+      
+      const curve = getCurve(easing)
+      frame.current.elapsedTime = elasped
+      frame.current.values = config.from.map((f, index) => f + (config.to[index] - f) * curve(progress))
+
+
+      setRendering(i => i+1)
+    }
+
+    return convertAnimator(a, set)
+  }, [])
+
+  return [frame.current, ia]
 }

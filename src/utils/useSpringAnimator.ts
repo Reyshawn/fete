@@ -1,14 +1,6 @@
 import { useState, useRef, useMemo, useCallback, useEffect } from "react"
-import { getCurve, AnimatorConfiguration, AnimationKeyframe, AnimationStatus, Animator, createAnimator } from "./animation"
+import { AnimationFrame, AnimationStatus, Animator, createAnimator } from "./animation"
 import { spring } from "./spring"
-
-
-interface SpringAnimationKeyframe {
-  status: "pasued" | "inactive" | "running" | "finished"
-  currentValue: number[]
-  elapsedTime: number
-  current: () => number[]
-}
 
 
 interface SpringAnimatorConfiguration {
@@ -21,83 +13,16 @@ interface SpringAnimatorConfiguration {
 }
 
 
-
-
-interface SpringAnimator {
-  start: () => void,
-  pause: () => void,
-  // set: (progress: number) => void,
-  continue: () => void
-}
-
-interface SpringAnimationStatus {
-  startTime: number
-  pausedTime: number
-  rafId: number | null
-}
-
-
-
-
-
-
-
-
-function createSpringAnimator(
-  setRendering: React.Dispatch<React.SetStateAction<number>>,
-  keyframe: SpringAnimationKeyframe,
-  status: SpringAnimationStatus,
-  tick: (now: number) => void
-  ): SpringAnimator {
-  
-  const animator = useMemo<SpringAnimator>(() => ({
-    start() {
-      if (status.rafId) {
-        cancelAnimationFrame(status.rafId)
-        status.rafId = null
-      }
-
-      keyframe.status = "running"
-      status.startTime = performance.now()
-      status.pausedTime = 0
-      tick(status.startTime)
-    },
-
-    pause() {
-      if (status.rafId) {
-        cancelAnimationFrame(status.rafId)
-        status.rafId = null
-        status.pausedTime = keyframe.elapsedTime
-        keyframe.status = "pasued"
-        setRendering(i => i+1)
-      }
-    },
-
-    continue() {
-      keyframe.status = "running"
-      status.startTime = performance.now()
-
-      tick(status.startTime)
-    }
-  }), [])
-
-  return animator
-}
-
-
-export function useSpringAnimator(config: SpringAnimatorConfiguration): [SpringAnimationKeyframe, SpringAnimator] {
+export function useSpringAnimator(config: SpringAnimatorConfiguration): [AnimationFrame, Animator] {
   const [rendering, setRendering] = useState(0)
 
-  const keyframe = useRef<SpringAnimationKeyframe>({
-    status: "inactive",
+  const keyframe = useRef<AnimationFrame>({
     elapsedTime: 0,
-    current() {
-      return this.currentValue
-    },
-    currentValue: config.from
+    velocity: new Array(config.from.length).fill(0),
+    values: [...config.from]
   })
 
-  const status = useRef<SpringAnimationStatus>({
+  const status = useRef<AnimationStatus>({
     startTime: 0,
     pausedTime: 0,
     rafId: null
@@ -120,7 +45,7 @@ export function useSpringAnimator(config: SpringAnimatorConfiguration): [SpringA
     
     const states = springGenerators.map(g => g.next(elapsed))
 
-    states.forEach((s, index) => keyframe.current.currentValue[index] = s.value)
+    states.forEach((s, index) => keyframe.current.values[index] = s.value)
     const isDone = states.every(s => s.done)
 
     if (!isDone) {
@@ -128,11 +53,11 @@ export function useSpringAnimator(config: SpringAnimatorConfiguration): [SpringA
     }
 
     keyframe.current.elapsedTime = elapsed
-    keyframe.current.status = isDone ? "finished" : "running"
+    animator.status = isDone ? "finished" : "running"
     setRendering(i => i+1)
   }, [])
 
-  const animator = createSpringAnimator(setRendering, keyframe.current, status.current, tick)
+  const animator = createAnimator(setRendering, keyframe.current, status.current, tick)
 
   return [keyframe.current, animator]
 }
