@@ -72,6 +72,13 @@ export const useDraggable = (ref: React.RefObject<HTMLDivElement>, options: Drag
     } else if (event.type === "touchmove") {
 
 
+      const touchEvent = event as TouchEvent
+      const touch = touchEvent.touches[0]
+      status.x = touch.clientX
+      status.y = touch.clientY
+      
+      status.dx = status.x - initDragStatus.current.x
+      status.dy = status.y - initDragStatus.current.y 
     }
 
     status.t = performance.now()
@@ -117,7 +124,10 @@ export const useDraggable = (ref: React.RefObject<HTMLDivElement>, options: Drag
   
       } else if (event.type === "touchstart") {
   
-        
+        const touchEvent = event as TouchEvent
+        const touch = touchEvent.touches[0]
+        status.x = touch.clientX
+        status.y = touch.clientY      
       } 
       
       status.t = performance.now()
