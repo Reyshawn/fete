@@ -59,7 +59,7 @@ export function inertia(options: InertiaAnimatorConfiguration): FrameGenerator {
     timeReachedBoundary = t
     springGenerator = spring({
       from: state.value,
-      to: nearestBoundary(t)!,
+      to: nearestBoundary(state.value)!,
       stiffness: stiffness ?? 100,
       damping: damping ?? 5,
       mass: mass ?? 1,

@@ -2,7 +2,7 @@ import React, { useMemo, useRef, useState, useCallback, useEffect } from "react"
 import style from "./style.module.css"
 
 import { useDraggable } from "@/utils/useDraggable"
-import animate from "@/utils/animate"
+import { useInertiaAnimator } from "@/utils/useInertiaAnimator"
 
 interface DScrollpickerProps {
   options: String[]
@@ -17,39 +17,51 @@ interface DScrollpickerProps {
 export default function DScrollpicker(props: DScrollpickerProps) {
   const itemHeight = props.config?.height || 36
   const wheelCount = props.config?.wheelCount || 20
-  const acceleration = 5
 
   const itemAngle = useMemo(() => 360 / wheelCount, [wheelCount])
   const radius = useMemo(() => itemHeight / (2 * Math.sin(itemAngle * Math.PI / 360)), [itemHeight, itemAngle])
   const halfWheelCount = useMemo(() => wheelCount / 2, [wheelCount])
 
-  // const [scroll, setScroll] = useState(0)
-  
   const picker = useRef<HTMLDivElement>(null)
 
-  // const isDragging = useRef(false)
-  // const draggingStatus = useRef({y: 0})
-  // const scrollLocations = useRef<[number, number][]>([])
   const startScroll = useRef(0)
-  const rafId = useRef<number | null>(null)
-  // const isAnimationInProgress = useRef(false)
-
-  // const scrollStopTimer = useRef<NodeJS.Timeout | null>(null)
 
   const cssVars: React.CSSProperties = {
     ['--item-height' as any]: itemHeight + 'px',
     'height': `${2 * radius}px`
   }
 
-
+  const [inertiaFrame, inertiaAnimator] = useInertiaAnimator()
   const status = useDraggable(picker, {
-    onDragEnd: (status) => {
+    onDragStart: (status) => {
+      inertiaAnimator.stop()
+    },
 
-      // animate to the final scroll
+    onDragEnd: (status) => {
       startScroll.current = startScroll.current + (-status.dy) / itemHeight
+
+      inertiaAnimator.start({
+        from: startScroll.current,
+        velocity: -(status.vy * 8),
+        power: 0.8,
+        timeConstant: 300,
+        modifiedTarget(ideal: number) {
+          return Math.round(ideal)
+        },
+        min: 0,
+        max: props.options.length - 1,
+        stiffness: 100,
+        damping: 20
+      })
   }})
 
-  const scroll = startScroll.current + (-status.dy) / itemHeight
+  let scroll: number
+  if (inertiaAnimator.status === "inactive") {
+    scroll = startScroll.current + (-status.dy) / itemHeight 
+  } else {
+    scroll = inertiaFrame.values[0]
+    startScroll.current = scroll
+  }
 
   return (
     <div
