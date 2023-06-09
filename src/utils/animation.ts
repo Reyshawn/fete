@@ -45,6 +45,7 @@ export interface AnimationFrame {
 export interface AnimationState<T extends  AnimatorConfiguration> {
   status: AnimatorStatus
   config?: T
+  generators?: () => FrameGenerator[]
   startTime: number
   pausedTime: number
   rafId: number | null

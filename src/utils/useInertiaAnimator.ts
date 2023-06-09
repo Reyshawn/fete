@@ -1,6 +1,7 @@
 import { useCallback, useMemo, useRef, useState } from "react";
 import { AnimationFrame, AnimationState, Animator, AnimatorConfiguration, createAnimator, FrameGenerator } from "./animation";
 import { inertia } from "./inertia";
+import useLazyValue from "./useLazyValue";
 
 
 export interface InertiaAnimatorConfiguration extends AnimatorConfiguration {
@@ -29,21 +30,18 @@ export function useInertiaAnimator(): [AnimationFrame, Animator<InertiaAnimatorC
     status: "inactive",
     startTime: 0,
     pausedTime: 0,
-    rafId: null
+    rafId: null,
   })
 
-  const generator = useRef<FrameGenerator>()
-
+  if (animationState.current.generators == null) {
+    animationState.current.generators = inertiaGeneratorsFactor(animationState.current)
+  }
 
   const tick = useCallback((now: DOMHighResTimeStamp) => {
-
-    if (generator.current == null ) {
-      generator.current = inertia(animationState.current.config!)
-    }
-
+    const generator = animationState.current.generators!()[0]
     const {startTime, pausedTime} = animationState.current
     const elapsed = Math.max(0, pausedTime + now - startTime)
-    const state = generator.current!.next(elapsed)
+    const state = generator.next(elapsed)
 
     if (!state.done) {
       animationState.current.rafId = requestAnimationFrame(tick)
@@ -59,4 +57,18 @@ export function useInertiaAnimator(): [AnimationFrame, Animator<InertiaAnimatorC
 
 
   return [frame.current, animator]
+}
+
+
+function inertiaGeneratorsFactor(state: AnimationState<InertiaAnimatorConfiguration>) {
+  let prevConfig: InertiaAnimatorConfiguration | undefined
+  let generators: FrameGenerator[] = []
+  return () => {
+    if (generators.length === 0 || prevConfig !== state.config) {
+      generators = [inertia(state.config!)]
+      prevConfig = state.config
+    }
+
+    return generators
+  }
 }
