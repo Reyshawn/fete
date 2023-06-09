@@ -1,9 +1,10 @@
 import { useState, useRef, useMemo, useCallback, useEffect } from "react"
-import { AnimationFrame, AnimationStatus, Animator, createAnimator } from "./animation"
+import { AnimationFrame, AnimationState, Animator, AnimatorConfiguration, createAnimator } from "./animation"
 import { spring } from "./spring"
+import useLazyValue from "./useLazyValue"
 
 
-interface SpringAnimatorConfiguration {
+interface SpringAnimatorConfiguration extends AnimatorConfiguration {
   from: number[]
   to: number[]
   stiffness: number
@@ -13,50 +14,52 @@ interface SpringAnimatorConfiguration {
 }
 
 
-export function useSpringAnimator(config: SpringAnimatorConfiguration): [AnimationFrame, Animator] {
+export function useSpringAnimator(): [AnimationFrame, Animator<SpringAnimatorConfiguration>] {
   const [rendering, setRendering] = useState(0)
 
   const keyframe = useRef<AnimationFrame>({
     elapsedTime: 0,
-    values: [...config.from]
+    values: []
   })
 
-  const status = useRef<AnimationStatus>({
+  const animationState = useRef<AnimationState<SpringAnimatorConfiguration>>({
+    status: "inactive",
     startTime: 0,
     pausedTime: 0,
     rafId: null
   })
 
-  const springGenerators = useMemo(() => config.from.map((f, index) => {
-    return spring({
+  const springGenerators = useLazyValue(() => {
+    const config = animationState.current.config!
+    return config.from.map((f, index) => spring({
       from: f,
       to: config.to[index],
       stiffness: config.stiffness,
       damping: config.damping,
       mass: config.mass,
       velocity: config.velocity
-    })
-  }), [])
+    }))
+  })
 
   const tick = useCallback((now: DOMHighResTimeStamp) => {
 
-    const elapsed = status.current.pausedTime + now - status.current.startTime
+    const elapsed = animationState.current.pausedTime + now - animationState.current.startTime
     
-    const states = springGenerators.map(g => g.next(elapsed))
+    const states = springGenerators.current.map(g => g.next(elapsed))
 
     states.forEach((s, index) => keyframe.current.values[index] = s.value)
     const isDone = states.every(s => s.done)
 
     if (!isDone) {
-      status.current.rafId = requestAnimationFrame(tick)
+      animationState.current.rafId = requestAnimationFrame(tick)
     }
 
     keyframe.current.elapsedTime = elapsed
-    animator.status = isDone ? "finished" : "running"
+    animationState.current.status = isDone ? "finished" : "running"
     setRendering(i => i+1)
   }, [])
 
-  const animator = createAnimator(setRendering, keyframe.current, status.current, tick)
+  const animator = createAnimator(setRendering, keyframe.current, animationState.current, tick)
 
   return [keyframe.current, animator]
 }

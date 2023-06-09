@@ -1,9 +1,9 @@
 import { useCallback, useMemo, useRef, useState } from "react";
-import { AnimationFrame, AnimationStatus, Animator, createAnimator } from "./animation";
+import { AnimationFrame, AnimationState, Animator, AnimatorConfiguration, createAnimator, FrameGenerator } from "./animation";
 import { inertia } from "./inertia";
 
 
-export interface InertiaAnimatorConfiguration {
+export interface InertiaAnimatorConfiguration extends AnimatorConfiguration {
   from: number
   velocity: number
   power: number
@@ -17,39 +17,45 @@ export interface InertiaAnimatorConfiguration {
 }
 
 
-export function useInertiaAnimator(config: InertiaAnimatorConfiguration): [AnimationFrame, Animator] {
+export function useInertiaAnimator(): [AnimationFrame, Animator<InertiaAnimatorConfiguration>] {
   const [rendering, setRendering] = useState(0)
   
   const frame = useRef<AnimationFrame>({
     elapsedTime: 0,
-    values: [config.from]
+    values: []
   })
 
-  const status = useRef<AnimationStatus>({
+  const animationState = useRef<AnimationState<InertiaAnimatorConfiguration>>({
+    status: "inactive",
     startTime: 0,
     pausedTime: 0,
     rafId: null
   })
 
-  const generator = useMemo(() => inertia(config), [])
+  const generator = useRef<FrameGenerator>()
 
 
   const tick = useCallback((now: DOMHighResTimeStamp) => {
-    const {startTime, pausedTime} = status.current
+
+    if (generator.current == null ) {
+      generator.current = inertia(animationState.current.config!)
+    }
+
+    const {startTime, pausedTime} = animationState.current
     const elapsed = Math.max(0, pausedTime + now - startTime)
-    const state = generator.next(elapsed)
+    const state = generator.current!.next(elapsed)
 
     if (!state.done) {
-      status.current.rafId = requestAnimationFrame(tick)
+      animationState.current.rafId = requestAnimationFrame(tick)
     }
 
     frame.current.elapsedTime = elapsed
     frame.current.values[0] = state.value
-    animator.status = state.done ? "finished" : "running"
+    animationState.current.status = state.done ? "finished" : "running"
     setRendering(i => i + 1)
   }, [])
 
-  const animator = createAnimator(setRendering, frame.current, status.current, tick)
+  const animator = createAnimator<InertiaAnimatorConfiguration>(setRendering, frame.current, animationState.current, tick)
 
 
   return [frame.current, animator]

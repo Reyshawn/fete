@@ -23,8 +23,12 @@ export const getCurve = (type: AnimationTimingCurve) => {
   }
 }
 
-
 export interface AnimatorConfiguration {
+
+}
+
+
+export interface EasingAnimatorConfiguration extends AnimatorConfiguration {
   duration: number
   easing: AnimationTimingCurve
   from: number[]
@@ -38,22 +42,26 @@ export interface AnimationFrame {
 }
 
 
-export interface AnimationStatus {
+export interface AnimationState<T extends  AnimatorConfiguration> {
+  status: AnimatorStatus
+  config?: T
   startTime: number
   pausedTime: number
   rafId: number | null
 }
 
+type AnimatorStatus = "pasued" | "inactive" | "running" | "finished"
 
-export interface Animator {
-  status: "pasued" | "inactive" | "running" | "finished"
-  start: () => void,
-  pause: () => void,
+export interface Animator<T extends AnimatorConfiguration> {
+  readonly status: AnimatorStatus
+  start: (conf: T) => void
+  pause: () => void
   continue: () => void
+  stop: () => void
 }
 
 
-export interface InteractiveAnimator extends Animator {
+export interface InteractiveAnimator<T> extends Animator<T> {
   set: (progress: number) => void
 }
 
@@ -63,47 +71,59 @@ export interface FrameGenerator {
 }
 
 
-export function createAnimator(
+export function createAnimator<T extends AnimatorConfiguration>(
   setRendering: React.Dispatch<React.SetStateAction<number>>,
   frame: AnimationFrame,
-  status: AnimationStatus,
+  state: AnimationState<T>,
   tick: (now: number) => void
-  ): Animator {
-  
+  ): Animator<T> {
 
-  const animator = useMemo<Animator>(() => ({
-    status: "inactive",
 
-    start() {
-      if (status.rafId) {
-        cancelAnimationFrame(status.rafId)
-        status.rafId = null
+  const animator = useMemo<Animator<T>>(() => ({
+    get status(): AnimatorStatus {
+      return state.status
+    },
+    start(conf: T) {
+      state.config = conf
+      if (state.rafId) {
+        cancelAnimationFrame(state.rafId)
+        state.rafId = null
       }
     
-      this.status = "running"
+      state.status = "running"
       frame.elapsedTime = 0
-      status.pausedTime = 0
+      state.pausedTime = 0
     
-      status.startTime = performance.now()
+      state.startTime = performance.now()
 
-      tick(status.startTime)
+      tick(state.startTime)
     },
 
     pause() {
-      if (status.rafId) {
-        cancelAnimationFrame(status.rafId)
-        status.rafId = null
-        status.pausedTime = frame.elapsedTime
-        this.status = "pasued"
+      if (state.rafId) {
+        cancelAnimationFrame(state.rafId)
+        state.rafId = null
+        state.pausedTime = frame.elapsedTime
+        state.status = "pasued"
         setRendering(i => i+1)
       }
     },
 
     continue() {
-      this.status = "running"
-      status.startTime = performance.now()
+      state.status = "running"
+      state.startTime = performance.now()
 
-      tick(status.startTime)
+      tick(state.startTime)
+    },
+    
+    stop() {
+      if (state.rafId) {
+        cancelAnimationFrame(state.rafId)
+        state.rafId = null
+      }
+
+      state.status = "inactive"
+
     }
 
   }), [])
@@ -112,8 +132,8 @@ export function createAnimator(
 }
 
 
-export function convertAnimator(animator: Animator, set: (progress: number) => void): InteractiveAnimator {
-  const ia = animator as InteractiveAnimator
+export function convertAnimator<T>(animator: Animator<T>, set: (progress: number) => void): InteractiveAnimator<T> {
+  const ia = animator as InteractiveAnimator<T>
   ia.set = set
 
   return ia
