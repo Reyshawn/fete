@@ -1,5 +1,16 @@
 .d-picker {
   overscroll-behavior: contain;
+
+  &:before {
+    content: '';
+		position: absolute;
+		width: 100%;
+		height: 100%;
+		pointer-events: none;
+    background: linear-gradient(white 0%, rgba(255, 255, 255, 0) 30%, rgba(255, 255, 255, 0) 70%, white 100%);
+    z-index: 40;
+  }
+
   @apply
     cursor-pointer
     overflow-hidden
@@ -17,6 +28,7 @@
       absolute;
 
     &-rotate {
+      will-change: transform;
       transform-style: preserve-3d;
 
       @apply
@@ -28,12 +40,13 @@
       height: var(--item-height);
       line-height: var(--item-height);
       backface-visibility: hidden;
+      font-size: var(--item-font-size, 1rem);
+      color: var(--item-background-font-color, #6b7280);
       @apply
         absolute
         w-full
         text-center
-        font-mono
-        text-gray-500;
+        font-mono;
     }
   }
 
@@ -52,10 +65,15 @@
       w-full
       overflow-hidden;
 
+    &-transform {
+      will-change: transform;
+    }
+
     &-option {
       height: var(--item-height);
       line-height: var(--item-height);
 
+      font-size: var(--item-font-size, 1rem);
       @apply
         align-middle
         text-center

@@ -5,17 +5,20 @@ import { useDraggable } from "@/utils/useDraggable"
 import { useInertiaAnimator } from "@/utils/useInertiaAnimator"
 
 interface DScrollpickerProps {
-  options: String[]
+  options: string[]
   value: string
   config?: {
-    height?: number
+    rowHeight?: number
     wheelCount?: number
+    fontSize: string
+    backgroundFontColor: string
   }
+  onChange?: (value: string) => void
 }
 
 
 export default function DScrollpicker(props: DScrollpickerProps) {
-  const itemHeight = props.config?.height || 36
+  const itemHeight = props.config?.rowHeight || 36
   const wheelCount = props.config?.wheelCount || 20
 
   const itemAngle = useMemo(() => 360 / wheelCount, [wheelCount])
@@ -23,13 +26,16 @@ export default function DScrollpicker(props: DScrollpickerProps) {
   const halfWheelCount = useMemo(() => wheelCount / 2, [wheelCount])
 
   const picker = useRef<HTMLDivElement>(null)
+  const prevValue = useRef(props.value)
 
-  const startScroll = useRef(0)
+  const startScroll = useRef(props.options.findIndex(v => v === props.value))
 
-  const cssVars: React.CSSProperties = {
+  const cssVars: React.CSSProperties = useMemo(() => ({
     ['--item-height' as any]: itemHeight + 'px',
+    ['--item-font-size' as any]: props.config?.fontSize,
+    ['--item-background-font-color' as any]: props.config?.backgroundFontColor,
     'height': `${2 * radius}px`
-  }
+  }), [])
 
   const calcScroll = useCallback((dy: number) => {
     const _s = startScroll.current + (-dy) / itemHeight    
@@ -74,6 +80,16 @@ export default function DScrollpicker(props: DScrollpickerProps) {
     startScroll.current = scroll
   }
 
+  useEffect(() => {
+    const pos = Math.min(Math.max(Math.round(scroll), 0), props.options.length - 1)
+    const newValue = props.options[pos]
+
+    if (prevValue.current !== newValue) {
+      props.onChange?.(newValue)
+      prevValue.current = newValue
+    }
+  })
+  
   return (
     <div
       className={style["d-picker"]}
