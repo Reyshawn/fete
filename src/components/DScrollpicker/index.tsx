@@ -31,6 +31,17 @@ export default function DScrollpicker(props: DScrollpickerProps) {
     'height': `${2 * radius}px`
   }
 
+  const calcScroll = useCallback((dy: number) => {
+    const _s = startScroll.current + (-dy) / itemHeight    
+    if (_s < 0) {
+      return _s * 0.3
+    } else if (_s > props.options.length - 1) {
+      return props.options.length - 1 + (_s - (props.options.length - 1)) * 0.3
+    }
+
+    return _s
+  }, [])
+  
   const [inertiaFrame, inertiaAnimator] = useInertiaAnimator()
   const status = useDraggable(picker, {
     onDragStart: (status) => {
@@ -38,12 +49,12 @@ export default function DScrollpicker(props: DScrollpickerProps) {
     },
 
     onDragEnd: (status) => {
-      startScroll.current = startScroll.current + (-status.dy) / itemHeight
+      startScroll.current = calcScroll(status.dy)
 
       inertiaAnimator.start({
         from: startScroll.current,
-        velocity: -(status.vy * 8),
-        power: 0.8,
+        velocity: -(status.vy),
+        power: 10,
         timeConstant: 300,
         modifiedTarget(ideal: number) {
           return Math.round(ideal)
@@ -57,7 +68,7 @@ export default function DScrollpicker(props: DScrollpickerProps) {
 
   let scroll: number
   if (inertiaAnimator.status === "inactive") {
-    scroll = startScroll.current + (-status.dy) / itemHeight 
+    scroll = calcScroll(status.dy)
   } else {
     scroll = inertiaFrame.values[0]
     startScroll.current = scroll
