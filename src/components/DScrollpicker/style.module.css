@@ -79,7 +79,8 @@
       @apply
         align-middle
         text-center
-        font-mono;
+        font-mono
+        select-none;
     }
   }
 }
