@@ -6,10 +6,10 @@ import {
   shift,
 } from '@floating-ui/react-dom';
 
-
 import { useState } from "react";
 import { createPortal } from "react-dom"
 import DScrollpicker from "../DScrollpicker"
+import useClickAway from "@/utils/useClickAway";
 
 
 const HOURS = Array.from(Array<never>(24).keys()).map(i => String(i).padStart(2, '0'))
@@ -40,6 +40,10 @@ export default function DTimepicker(props: DTimepickerProps) {
     placement: "bottom-start",
     middleware: [offset(10), shift(), flip()]
   })
+
+  useClickAway(refs.floating, (_) => {
+    setIsTimepickerShown(false)
+  })
   
   const displayValue = displayTimeFrom(hour, minute, second)
   props.onChange?.(displayValue)
@@ -62,19 +66,19 @@ export default function DTimepicker(props: DTimepickerProps) {
           <div className={style["d-timepicker-panel-picker-label"]}>
             HOUR
           </div>
-          <DScrollpicker options={HOURS} value={props.hour ?? HOURS[0]} onChange={setHour} />
+          <DScrollpicker options={HOURS} value={hour ?? HOURS[0]} onChange={setHour} />
         </div>
         <div className={style["d-timepicker-panel-picker"]}>
           <div className={style["d-timepicker-panel-picker-label"]}>
             MINUTE
           </div>
-          <DScrollpicker options={MINUTES} value={props.minute ?? MINUTES[0]} onChange={setMinute} />
+          <DScrollpicker options={MINUTES} value={minute ?? MINUTES[0]} onChange={setMinute} />
         </div>
         <div className={style["d-timepicker-panel-picker"]}>
           <div className={style["d-timepicker-panel-picker-label"]}>
             SECOND
           </div>
-          <DScrollpicker options={SECONDS} value={props.second ?? SECONDS[0]} onChange={setSecond} />
+          <DScrollpicker options={SECONDS} value={second ?? SECONDS[0]} onChange={setSecond} />
         </div>
       </div> : null, document.body)}
     </div>
