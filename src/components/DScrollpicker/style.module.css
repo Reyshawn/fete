@@ -1,5 +1,7 @@
 .d-picker {
   overscroll-behavior: contain;
+  width: 100%;
+  width: var(--width);
 
   &:before {
     content: '';
@@ -15,7 +17,6 @@
     cursor-pointer
     overflow-hidden
     relative
-    w-full
     h-full;
   
   &-wheel {
@@ -46,7 +47,8 @@
         absolute
         w-full
         text-center
-        font-mono;
+        font-mono
+        select-none;
     }
   }
 

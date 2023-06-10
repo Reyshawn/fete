@@ -8,10 +8,11 @@ interface DScrollpickerProps {
   options: string[]
   value: string
   config?: {
+    width?: string
     rowHeight?: number
     wheelCount?: number
-    fontSize: string
-    backgroundFontColor: string
+    fontSize?: string
+    backgroundFontColor?: string
   }
   onChange?: (value: string) => void
 }
@@ -34,6 +35,7 @@ export default function DScrollpicker(props: DScrollpickerProps) {
     ['--item-height' as any]: itemHeight + 'px',
     ['--item-font-size' as any]: props.config?.fontSize,
     ['--item-background-font-color' as any]: props.config?.backgroundFontColor,
+    ['--width' as any]: props.config?.width,
     'height': `${2 * radius}px`
   }), [])
 
