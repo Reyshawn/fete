@@ -1,0 +1,54 @@
+.d-timepicker {
+  @apply
+    mb-5;
+
+  input {
+    @apply
+      w-full
+      border
+      pl-2 pr-10 py-2
+      leading-none
+      rounded
+      text-gray-600
+      text-xs
+      font-thin
+      font-mono;
+
+    &:focus {
+      @apply
+        border
+        border-purple-800
+        outline-none;
+    }
+  }
+
+  &:focus {
+    @apply
+      border
+      border-purple-800
+      outline-none;
+  } 
+}
+
+.d-timepicker-panel {
+  width: 200px;
+  @apply
+    bg-white
+    rounded-lg
+    shadow
+    p-4
+    flex
+    flex-row;
+
+  &-picker {
+    @apply
+      w-full;
+    
+    &-label {
+      @apply
+        text-xs
+        font-bold
+        text-center;
+    }
+  }
+}
