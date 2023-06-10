@@ -21,6 +21,7 @@ interface DraggableConfiguraiton {
   onDragStart?: (status: DraggableStatus) => void
   onDragging?: (status: DraggableStatus) => void
   onDragEnd?: (status: DraggableStatus) => void
+  shouldCancelOnMouseLeave?: Boolean
 }
 
 const DraggableStatusZero: () => DraggableStatus = () => ({
@@ -35,21 +36,16 @@ const DraggableStatusZero: () => DraggableStatus = () => ({
   t: 0
 })
 
-const defaultConfig: DraggableConfiguraiton = {
+const defaultConfig: () => DraggableConfiguraiton = () => ({
+  shouldCancelOnMouseLeave: true
+})
 
-}
-
-export const useDraggable = (ref: React.RefObject<HTMLDivElement>, options: DraggableConfiguraiton = defaultConfig) => {
-  // console.log("ref current:::", ref.current)
-
-  // const [dragStatus, setDragStatus] = useState<DraggableStatus>(DraggableStatusZero)
+export const useDraggable = (ref: React.RefObject<HTMLDivElement>, opts?: DraggableConfiguraiton) => {
+  const options = Object.assign(defaultConfig(), opts)
   const [rendering, setRendering] = useState(0)
   
-  
-  // TODO implement queue data structure
   const initDragStatus = useRef<DraggableStatus>(DraggableStatusZero())
   const dragStatusQueue = useRef<Queue<DraggableStatus>>(new Queue(2))
-  // const dragStatus = useRef(DraggableStatusZero)
   const isDragging = useRef(false)
 
 
@@ -111,10 +107,13 @@ export const useDraggable = (ref: React.RefObject<HTMLDivElement>, options: Drag
 
       isDragging.current = true
 
-
-      ref.current?.addEventListener("mousemove", onDragging)
-      ref.current?.addEventListener("touchmove", onDragging)
-      
+      if (options.shouldCancelOnMouseLeave) {
+        ref.current?.addEventListener("mousemove", onDragging)
+        ref.current?.addEventListener("touchmove", onDragging)
+      } else {
+        window.addEventListener("mousemove", onDragging)
+        window.addEventListener("touchmove", onDragging)
+      }      
 
       const status = DraggableStatusZero()
       if (event.type === "mousedown") {
@@ -147,11 +146,17 @@ export const useDraggable = (ref: React.RefObject<HTMLDivElement>, options: Drag
       }
 
       isDragging.current = false
-      ref.current?.removeEventListener("mousemove", onDragging)
-      ref.current?.removeEventListener("touchmove", onDragging)
-
+      if (options.shouldCancelOnMouseLeave) {
+        ref.current?.removeEventListener("mousemove", onDragging)
+        ref.current?.removeEventListener("touchmove", onDragging)
+      } else {
+        window.removeEventListener("mousemove", onDragging)
+        window.removeEventListener("touchmove", onDragging)
+      }
 
       options.onDragEnd?.(dragStatusQueue.current.latest!)
+
+      dragStatusQueue.current.flush()
     }
 
     const onDragCancel = (event: TouchEvent | MouseEvent) => {
@@ -162,7 +167,11 @@ export const useDraggable = (ref: React.RefObject<HTMLDivElement>, options: Drag
     ref.current?.addEventListener("touchstart", onDragStart)
     ref.current?.addEventListener("mouseup", onDragEnd)
     ref.current?.addEventListener("touchend", onDragEnd)
-    ref.current?.addEventListener("mouseleave", onDragCancel)
+
+    if (options.shouldCancelOnMouseLeave) {
+      ref.current?.addEventListener("mouseleave", onDragCancel)
+    }
+    
     ref.current?.addEventListener("touchcancel", onDragCancel) 
 
 
@@ -171,7 +180,9 @@ export const useDraggable = (ref: React.RefObject<HTMLDivElement>, options: Drag
       ref.current?.removeEventListener("touchstart", onDragStart)
       ref.current?.removeEventListener("mouseup", onDragEnd)
       ref.current?.removeEventListener("touchend", onDragEnd)
-      ref.current?.removeEventListener("mouseleave", onDragCancel)
+      if (options.shouldCancelOnMouseLeave) {
+        ref.current?.removeEventListener("mouseleave", onDragCancel)
+      }
       ref.current?.removeEventListener("touchcancel", onDragCancel) 
     }
   }, [ref.current])

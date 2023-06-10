@@ -39,4 +39,8 @@ export default class Queue<T> {
   get earliest(): T | undefined {
     return this.values[0]
   }
+
+  flush() {
+    this.values = []
+  }
 }
