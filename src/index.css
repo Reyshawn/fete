@@ -24,3 +24,54 @@ code {
   transform: translateY(-10%);
   transform: scale(0.8);
 }
+
+
+.t-icon {
+  transition: all .2s;
+  @apply
+    ease-in-out
+    cursor-pointer
+    p-1
+    border
+    border-white
+    rounded-lg
+    ml-1;
+
+    svg {
+      width: 15px;
+      height: 15px;
+      fill: #2B6CB0;
+    }
+
+  &:hover {
+    @apply
+      bg-red-100;
+
+    svg {
+      fill: #C53030;
+    }
+  }
+
+  &.disabled {
+    @apply 
+      cursor-not-allowed;
+
+    svg {
+      fill: #CBD5E0!important;
+    }
+    &:hover {
+      @apply
+        bg-white
+        border-white;
+
+      svg {
+        fill:#CBD5E0!important;
+      }
+    } 
+  }
+
+  &:focus {
+    @apply
+      outline-none;
+  }
+}

@@ -1,0 +1,224 @@
+
+
+.d-datepicker {
+  @apply
+    mb-5;
+
+  .d-datepicker-input {
+    @apply
+      w-full
+      border
+      pl-2 pr-10 py-2
+      leading-none
+      rounded
+      text-gray-600
+      text-xs
+      font-thin
+      font-mono;
+
+    &:focus {
+      @apply
+        border
+        border-purple-800
+        outline-none;
+    }
+  }
+}
+
+
+
+
+.d-datepicker-panel {
+  width: 300px;
+  @apply
+    bg-white
+    rounded-lg
+    shadow
+    p-4;
+  
+  &-header {
+    @apply
+      flex
+      justify-between
+      items-center
+      mb-2;
+
+    &__current-month {
+      @apply
+        text-lg font-bold text-gray-800;
+
+      &:hover {
+        @apply
+          text-red-700;
+      }
+    }
+
+    &__current-year {
+      @apply
+        ml-1 text-lg text-gray-600 font-normal;
+
+      &:hover {
+        @apply
+          text-red-700;
+      }
+    }
+  }
+
+  &-body {
+    @apply
+      overflow-hidden
+      relative
+      h-56;
+
+
+    &.day {
+      .datepicker-panel-switch-enter {
+        transform: translate3D(0, 100%, 0);
+      }
+
+      .datepicker-panel-switch-leave-active {
+        transform: translate3D(0, -100%, 0);
+      }
+    }
+
+    &.month {
+      .datepicker-panel-switch-enter {
+        transform: translate3D(0, -100%, 0);
+      }
+
+      .datepicker-panel-switch-leave-active {
+        transform: translate3D(0, 100%, 0);
+      }
+    }
+
+
+    &.year {
+      .datepicker-panel-switch-enter {
+        transform: translate3D(0, -100%, 0);
+      }
+
+      .datepicker-panel-switch-leave-active {
+        transform: translate3D(0, 100%, 0);
+      }
+    }
+  }
+
+  &-week-label {
+    @apply
+      flex
+      flex-wrap
+      mb-3;
+  }
+
+  &-days {
+    @apply
+      flex
+      flex-wrap
+      absolute
+      inset-0
+      -mx-1
+      transition-transform
+      duration-300
+      ease-in-out;
+
+    &-unit {
+      width: 14.28%;
+      @apply
+        text-center
+        px-1
+        text-sm;
+    }
+    &-day {
+      @apply
+        cursor-pointer
+        text-center
+        text-sm
+        leading-none
+        rounded-full
+        leading-loose
+        text-gray-700;
+      
+      &:hover {
+        @apply
+          bg-gray-300;
+      }
+
+      
+
+      &.selected {
+        @apply
+          bg-red-100
+          text-red-700;
+      }
+
+      &.today {
+        background-color: #162447
+        @apply
+          text-white;
+      }
+    }
+  }
+
+  &-slide {
+    @apply
+      relative
+      overflow-hidden
+      h-48;
+
+    &.prev {
+      .datepicker-panel-slide-enter {
+        transform: translate3D(-100%, 0, 0);
+      }
+
+      .datepicker-panel-slide-leave-active {
+        transform: translate3D(100%, 0, 0);
+      }
+    }
+
+    &.next {
+      .datepicker-panel-slide-enter {
+        transform: translate3D(100%, 0, 0);
+      }
+
+      .datepicker-panel-slide-leave-active {
+        transform: translate3D(-100%, 0, 0);
+      }
+    }
+  }
+
+  &-month-select {
+    @apply
+      flex
+      flex-wrap
+      items-center
+      justify-center;
+
+    &-unit {
+      width: 30%;
+      @apply
+        cursor-pointer
+        text-center
+        mx-1
+        p-2
+        text-xs
+        font-mono;
+        &:hover {
+          @apply
+            bg-gray-200
+            rounded-lg;
+        }
+
+      &.selected {
+        @apply
+          bg-red-100
+          text-red-700
+          rounded-lg;
+      }
+    }
+  }
+}
+
+
+.d-datepicker-panel-view {
+  transition: transform .3s ease-in-out;
+}
