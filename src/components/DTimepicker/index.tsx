@@ -4,12 +4,12 @@ import {
   offset,
   flip,
   shift,
-} from '@floating-ui/react-dom';
+} from '@floating-ui/react-dom'
 
-import { useState } from "react";
+import { useState } from "react"
 import { createPortal } from "react-dom"
 import DScrollpicker from "../DScrollpicker"
-import useClickAway from "@/utils/useClickAway";
+import useClickAway from "@/utils/useClickAway"
 
 
 const HOURS = Array.from(Array<never>(24).keys()).map(i => String(i).padStart(2, '0'))
@@ -41,8 +41,11 @@ export default function DTimepicker(props: DTimepickerProps) {
     middleware: [offset(10), shift(), flip()]
   })
 
-  useClickAway(refs.floating, (_) => {
-    setIsTimepickerShown(false)
+
+  useClickAway(refs.floating, (event) => {
+    if (event.target !== refs.reference.current) {
+      setIsTimepickerShown(false)
+    } 
   })
   
   const displayValue = displayTimeFrom(hour, minute, second)
@@ -56,31 +59,31 @@ export default function DTimepicker(props: DTimepickerProps) {
         onClick={() => setIsTimepickerShown(true)}
         readOnly
         value={displayValue} />  
-      {createPortal(isTimepickerShown ? 
-      <div
-        ref={refs.setFloating}
-        style={floatingStyles}
-        className={style["d-timepicker-panel"]}>
-        
-        <div className={style["d-timepicker-panel-picker"]}>
-          <div className={style["d-timepicker-panel-picker-label"]}>
-            HOUR
+      {isTimepickerShown && createPortal(
+        <div
+          ref={refs.setFloating}
+          style={floatingStyles}
+          className={style["d-timepicker-panel"]}>
+
+          <div className={style["d-timepicker-panel-picker"]}>
+            <div className={style["d-timepicker-panel-picker-label"]}>
+              HOUR
+            </div>
+            <DScrollpicker options={HOURS} value={hour ?? HOURS[0]} onChange={setHour} />
           </div>
-          <DScrollpicker options={HOURS} value={hour ?? HOURS[0]} onChange={setHour} />
-        </div>
-        <div className={style["d-timepicker-panel-picker"]}>
-          <div className={style["d-timepicker-panel-picker-label"]}>
-            MINUTE
+          <div className={style["d-timepicker-panel-picker"]}>
+            <div className={style["d-timepicker-panel-picker-label"]}>
+              MINUTE
+            </div>
+            <DScrollpicker options={MINUTES} value={minute ?? MINUTES[0]} onChange={setMinute} />
           </div>
-          <DScrollpicker options={MINUTES} value={minute ?? MINUTES[0]} onChange={setMinute} />
-        </div>
-        <div className={style["d-timepicker-panel-picker"]}>
-          <div className={style["d-timepicker-panel-picker-label"]}>
-            SECOND
+          <div className={style["d-timepicker-panel-picker"]}>
+            <div className={style["d-timepicker-panel-picker-label"]}>
+              SECOND
+            </div>
+            <DScrollpicker options={SECONDS} value={second ?? SECONDS[0]} onChange={setSecond} />
           </div>
-          <DScrollpicker options={SECONDS} value={second ?? SECONDS[0]} onChange={setSecond} />
-        </div>
-      </div> : null, document.body)}
+        </div>, document.body)}
     </div>
   )
 } 
