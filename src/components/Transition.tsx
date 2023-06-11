@@ -4,6 +4,8 @@ interface TransitionProps {
   name: string
   children: JSX.Element
   if: boolean
+  onAfterLeave?: () => void
+  onAfterEnter?: () => void
 }
 
 
@@ -32,6 +34,7 @@ export default function Transition(props: TransitionProps) {
   // If the transition didn't really start, stage will remain at the `.enterTransitionStart`
   const handleEnterTransitionEnd = useCallback(() => {
     setStage(TransitionStage.mounted)
+    props.onAfterEnter?.()
   }, [])
 
 
@@ -39,6 +42,7 @@ export default function Transition(props: TransitionProps) {
   // If the transition didn't really start, stage will remain at the `.leaveTransitionStart`
   const handleLeaveTransitionEnd = useCallback(() => {
     setStage(TransitionStage.notMounted)
+    props.onAfterLeave?.()
   }, [])
 
   const beginEnterTransition = useCallback(() => {

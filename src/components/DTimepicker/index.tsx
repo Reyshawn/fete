@@ -7,9 +7,9 @@ import {
 } from '@floating-ui/react-dom'
 
 import { useState } from "react"
-import { createPortal } from "react-dom"
 import DScrollpicker from "../DScrollpicker"
 import useClickAway from "@/utils/useClickAway"
+import Popper from "@/components/Popper"
 
 
 const HOURS = Array.from(Array<never>(24).keys()).map(i => String(i).padStart(2, '0'))
@@ -58,32 +58,29 @@ export default function DTimepicker(props: DTimepickerProps) {
         ref={refs.setReference}
         onClick={() => setIsTimepickerShown(true)}
         readOnly
-        value={displayValue} />  
-      {isTimepickerShown && createPortal(
-        <div
-          ref={refs.setFloating}
-          style={floatingStyles}
-          className={style["d-timepicker-panel"]}>
-
-          <div className={style["d-timepicker-panel-picker"]}>
-            <div className={style["d-timepicker-panel-picker-label"]}>
-              HOUR
+        value={displayValue} />
+        <Popper active={isTimepickerShown} setFloating={refs.setFloating} floatingStyles={floatingStyles}>
+          <div className={style["d-timepicker-panel"]}>
+            <div className={style["d-timepicker-panel-picker"]}>
+              <div className={style["d-timepicker-panel-picker-label"]}>
+                HOUR
+              </div>
+              <DScrollpicker options={HOURS} value={hour ?? HOURS[0]} onChange={setHour} />
             </div>
-            <DScrollpicker options={HOURS} value={hour ?? HOURS[0]} onChange={setHour} />
-          </div>
-          <div className={style["d-timepicker-panel-picker"]}>
-            <div className={style["d-timepicker-panel-picker-label"]}>
-              MINUTE
+            <div className={style["d-timepicker-panel-picker"]}>
+              <div className={style["d-timepicker-panel-picker-label"]}>
+                MINUTE
+              </div>
+              <DScrollpicker options={MINUTES} value={minute ?? MINUTES[0]} onChange={setMinute} />
             </div>
-            <DScrollpicker options={MINUTES} value={minute ?? MINUTES[0]} onChange={setMinute} />
-          </div>
-          <div className={style["d-timepicker-panel-picker"]}>
-            <div className={style["d-timepicker-panel-picker-label"]}>
-              SECOND
+            <div className={style["d-timepicker-panel-picker"]}>
+              <div className={style["d-timepicker-panel-picker-label"]}>
+                SECOND
+              </div>
+              <DScrollpicker options={SECONDS} value={second ?? SECONDS[0]} onChange={setSecond} />
             </div>
-            <DScrollpicker options={SECONDS} value={second ?? SECONDS[0]} onChange={setSecond} />
           </div>
-        </div>, document.body)}
+        </Popper>
     </div>
   )
 } 
