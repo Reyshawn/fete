@@ -1,9 +1,8 @@
-import { useRef, cloneElement, useState, useEffect, useCallback } from "react"
+import { useRef, cloneElement, useState, useEffect, useCallback, useLayoutEffect } from "react"
 
 interface TransitionProps {
   name: string
-  children: JSX.Element
-  if: boolean
+  children: JSX.Element | null
   onAfterLeave?: () => void
   onAfterEnter?: () => void
 }
@@ -19,7 +18,7 @@ enum TransitionStage {
 }
 
 
-function nextFrame(cb: () => void) {
+export function nextFrame(cb: () => void) {
   requestAnimationFrame(() => {
     requestAnimationFrame(cb)
   })
@@ -29,6 +28,7 @@ function nextFrame(cb: () => void) {
 export default function Transition(props: TransitionProps) {
   const [stage, setStage] = useState<TransitionStage>(TransitionStage.notMounted)
   const isMounted = useRef(false)
+  const prevChildren = useRef(props.children)
 
   // TODO
   // If the transition didn't really start, stage will remain at the `.enterTransitionStart`
@@ -71,21 +71,21 @@ export default function Transition(props: TransitionProps) {
   }, [stage])
 
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (!isMounted.current) {
       return
     }
 
-    if (props.if) {
+    if (props.children !== null) {
       beginEnterTransition()
     } else {
       beginLeaveTransition()
     }
-  }, [props.if])
+  }, [props.children === null])
 
 
   useEffect(() => {
-    if (props.if) {
+    if (props.children !== null) {
       beginEnterTransition()
 
     } else {
@@ -94,22 +94,25 @@ export default function Transition(props: TransitionProps) {
     isMounted.current = true
   } ,[])
 
-
   switch (stage) {
     case TransitionStage.notMounted:
+      prevChildren.current = null
       return <></>
     case TransitionStage.mounted:
+      if (props.children) {
+        prevChildren.current = cloneElement(props.children)
+      }
       return <>{props.children}</>
     case TransitionStage.beforeEnterTransition:
       return (
         <>
-          {cloneElement(props.children, {className: `${props.name}-enter-from ${props.name}-enter-active`})}
+          {props.children && cloneElement(props.children, {className: `${props.name}-enter-from ${props.name}-enter-active`})}
         </>
       )
     case TransitionStage.enterTransitionStart:
       return (
         <>
-          {cloneElement(props.children, {
+          {props.children && cloneElement(props.children, {
             className: `${props.name}-enter-to ${props.name}-enter-active`,
             onTransitionEnd: handleEnterTransitionEnd,
           })}
@@ -118,13 +121,13 @@ export default function Transition(props: TransitionProps) {
     case TransitionStage.beforeLeaveTransition:
       return (
         <>
-          {cloneElement(props.children, {className: `${props.name}-leave-from ${props.name}-leave-active`})}
+          {prevChildren.current && cloneElement(prevChildren.current!, {className: `${props.name}-leave-from ${props.name}-leave-active`})}
         </>
       )
     case TransitionStage.leaveTransitionStart:
       return (
         <>
-          {cloneElement(props.children, {
+          {prevChildren.current && cloneElement(prevChildren.current!, {
             className: `${props.name}-leave-to ${props.name}-leave-active`,
             onTransitionEnd: handleLeaveTransitionEnd,
           })}
