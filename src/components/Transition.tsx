@@ -46,7 +46,7 @@ export default function Transition(props: TransitionProps) {
   }, [])
 
   const beginEnterTransition = useCallback(() => {
-    if (stage !== TransitionStage.notMounted) {
+    if (stage !== TransitionStage.notMounted && stage !== TransitionStage.leaveTransitionStart) {
       setStage(TransitionStage.mounted)
       return
     }
@@ -59,7 +59,7 @@ export default function Transition(props: TransitionProps) {
 
 
   const beginLeaveTransition = useCallback(() => {
-    if (stage !== TransitionStage.mounted) {
+    if (stage !== TransitionStage.mounted && stage !== TransitionStage.enterTransitionStart) {
       setStage(TransitionStage.notMounted)
       return
     }
@@ -99,11 +99,12 @@ export default function Transition(props: TransitionProps) {
       prevChildren.current = null
       return <></>
     case TransitionStage.mounted:
+      return <>{props.children}</>
+    case TransitionStage.beforeEnterTransition:
       if (props.children) {
         prevChildren.current = cloneElement(props.children)
       }
-      return <>{props.children}</>
-    case TransitionStage.beforeEnterTransition:
+
       return (
         <>
           {props.children && cloneElement(props.children, {className: `${props.name}-enter-from ${props.name}-enter-active`})}
@@ -112,7 +113,7 @@ export default function Transition(props: TransitionProps) {
     case TransitionStage.enterTransitionStart:
       return (
         <>
-          {props.children && cloneElement(props.children, {
+          {prevChildren.current && cloneElement(prevChildren.current!, {
             className: `${props.name}-enter-to ${props.name}-enter-active`,
             onTransitionEnd: handleEnterTransitionEnd,
           })}
