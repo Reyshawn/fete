@@ -16,13 +16,12 @@ code {
 
 
 .popper-enter-active, .popper-leave-active {
-  transition: transform .3s cubic-bezier(.17,.77,.59,1.03), opacity .2s ease-in-out;
+  transition: transform .2s cubic-bezier(.17,.77,.59,1.03), opacity .2s ease-in-out;
   transform-origin: top center;
 }
 .popper-enter-from, .popper-leave-to {
   opacity: 0;
-  transform: translateY(-10%);
-  transform: scale(0.8);
+  transform: scaleY(0.7);
 }
 
 
