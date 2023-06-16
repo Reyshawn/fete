@@ -1,4 +1,4 @@
-import React, { cloneElement, Fragment, useEffect, useRef } from "react"
+import React, { cloneElement, Fragment, useEffect, useLayoutEffect, useRef } from "react"
 import { nextFrame } from "./Transition"
 
 
@@ -9,14 +9,12 @@ interface TransitionGroupProps {
 }
 
 
-
-
-
 interface TransitionGroupElement {
   node: HTMLElement
   key: React.Key
   action?: "enter" | "leave" | "move"
-  onTransitoinEnd?: () => void
+  onTransitionEnd?: () => void
+  onTransitionCancel?: () => void
 }
 
 
@@ -36,12 +34,15 @@ export default function TransitionGroup(props: TransitionGroupProps) {
   const positionMap = useRef(new Map<React.Key, TransitonContext>())
   const parentElement = useRef<HTMLElement | null>(null)
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (!isMounted.current) {
       return
     }
 
     // compare positionMap and current rendered elements
+
+    elements.current.forEach((ele) => resetNode(ele.node, props.name))
+    
     elements.current.forEach((ele) => {
       if (!positionMap.current.has(ele.key)) {
         ele.action = "enter"
@@ -56,7 +57,6 @@ export default function TransitionGroup(props: TransitionGroupProps) {
 
       if (dx !== 0 || dy !== 0) {
         ele.action = "move"
-
         ele.node.style.setProperty("transform", `translate(${dx}px, ${dy}px)`)
       }
     })
@@ -76,20 +76,13 @@ export default function TransitionGroup(props: TransitionGroupProps) {
       }
     })
 
+
     runAnimation(props.name, elements.current, parentElement.current!)
       .then(() => {
-        elements.current.forEach((ele, index) => {
-
-          const node = ele.node
-          const key = ele.key
-    
-    
-          positionMap.current.set(key, {
-            rect: node.getBoundingClientRect(),
-            position: index,
-            node: ele.node
-          })
-        })
+        
+      })
+      .catch(() => {
+        
       })
 
   })
@@ -98,21 +91,11 @@ export default function TransitionGroup(props: TransitionGroupProps) {
   useEffect(() => {
     isMounted.current = true
 
-    elements.current.forEach((ele, index) => {
-
-      const node = ele.node
-      const key = ele.key
-
-
-      positionMap.current.set(key, {
-        rect: node.getBoundingClientRect(),
-        position: index,
-        node: ele.node
-      })
-    })
+    recordPosition(elements.current, positionMap.current)
   } ,[])
 
 
+  recordPosition(elements.current, positionMap.current)
 
   elements.current = []
 
@@ -168,9 +151,9 @@ function runAnimation(name: string, elements: TransitionGroupElement[], parentNo
       }
 
 
-      ele.onTransitoinEnd = () => {
+      ele.onTransitionEnd = () => {
         count++
-        ele.node.removeEventListener("transitionend", ele.onTransitoinEnd!)
+        ele.node.removeEventListener("transitionend", ele.onTransitionEnd!)
         
         switch (ele.action) {
           case "enter":
@@ -188,7 +171,50 @@ function runAnimation(name: string, elements: TransitionGroupElement[], parentNo
           resolve(true)
         }
       }
-      ele.node.addEventListener("transitionend", ele.onTransitoinEnd)
+
+
+      ele.onTransitionCancel = () => {
+        
+        ele.node.removeEventListener("transitionend", ele.onTransitionEnd!)
+        ele.node.removeEventListener("transitioncancel", ele.onTransitionCancel!)
+      }
+
+      ele.node.addEventListener("transitionend", ele.onTransitionEnd)
+      ele.node.addEventListener("transitioncancel", ele.onTransitionCancel)
     }
   })
+}
+
+
+
+
+
+function recordPosition(elements: TransitionGroupElement[], positionMap: Map<React.Key, TransitonContext>) {
+  if (elements.length === 0) {
+    return
+  }
+
+  elements.forEach((ele, index) => {
+
+    const node = ele.node
+    const key = ele.key
+
+
+    positionMap.set(key, {
+      rect: node.getBoundingClientRect(),
+      position: index,
+      node: ele.node
+    })
+  })
+}
+
+
+function resetNode(node: HTMLElement, name: string) {
+  // clear all related classes
+
+  node.classList.remove(`${name}-enter-from`)
+  node.classList.remove(`${name}-enter-active`)
+  node.classList.remove(`${name}-leave-from`)
+  node.classList.remove(`${name}-leave-active`)
+  node.classList.remove(`${name}-move`)
 }
