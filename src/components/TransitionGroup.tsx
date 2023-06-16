@@ -1,4 +1,4 @@
-import React, { cloneElement, Fragment, useEffect, useRef, useState } from "react"
+import React, { cloneElement, Fragment, useEffect, useRef } from "react"
 import { nextFrame } from "./Transition"
 
 
@@ -76,13 +76,8 @@ export default function TransitionGroup(props: TransitionGroupProps) {
       }
     })
 
-
-    console.log('elements:::', elements)
-
     runAnimation(props.name, elements.current, parentElement.current!)
       .then(() => {
-        console.log("animation end????")
-
         elements.current.forEach((ele, index) => {
 
           const node = ele.node
@@ -152,22 +147,22 @@ function runAnimation(name: string, elements: TransitionGroupElement[], parentNo
         case "enter":
           ele.node.classList.add(`${name}-enter-from`)
           nextFrame(() => {
-            ele.node.classList.remove(`${name}-enter-from`)
             ele.node.classList.add(`${name}-enter-active`)
+            ele.node.classList.remove(`${name}-enter-from`)
           })
           break
   
         case "leave":
           ele.node.classList.add(`${name}-leave-from`)
           nextFrame(() => {
-            ele.node.classList.remove(`${name}-leave-from`)
             ele.node.classList.add(`${name}-leave-active`)
+            ele.node.classList.remove(`${name}-leave-from`)
           })
           break
         case "move":
-          ele.node.classList.add(`${name}-move`)
           nextFrame(() => {
-            ele.node.removeAttribute("style")
+            ele.node.classList.add(`${name}-move`)
+            ele.node.style.removeProperty("transform")
           })
           break
       }
@@ -197,5 +192,3 @@ function runAnimation(name: string, elements: TransitionGroupElement[], parentNo
     }
   })
 }
-
-
