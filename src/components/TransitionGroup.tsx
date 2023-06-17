@@ -192,7 +192,6 @@ function runAnimation(name: string, elements: TransitionGroupElement[], parentNo
 
 
       ele.onTransitionCancel = () => {
-        ele.node.removeEventListener("transitionend", ele.onTransitionEnd!)
         ele.node.removeEventListener("transitioncancel", ele.onTransitionCancel!)
       }
 
