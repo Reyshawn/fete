@@ -22,6 +22,7 @@ interface TransitonContext {
   rect: DOMRect
   node: HTMLElement
   position: number
+  isLeaving?: boolean
 }
 
 
@@ -49,7 +50,14 @@ export default function TransitionGroup(props: TransitionGroupProps) {
         return
       }
 
-      const oldRect = positionMap.current.get(ele.key)!.rect
+      const context = positionMap.current.get(ele.key)!
+
+      if (context.isLeaving) {
+        ele.action = "enter"
+        return
+      }
+
+      const oldRect = context.rect
       const newRect = ele.node.getBoundingClientRect()
       const dx = oldRect.x - newRect.x
       const dy = oldRect.y - newRect.y
@@ -98,6 +106,15 @@ export default function TransitionGroup(props: TransitionGroupProps) {
 
   recordPosition(elements.current, positionMap.current)
 
+
+  elements.current.forEach((ele) => {
+    if (ele.action === "leave", ele.node.classList.contains(`${props.name}-leave-active`)) {
+      let context = positionMap.current.get(ele.key)!
+      context.isLeaving = true
+      parentElement.current?.removeChild(ele.node)
+    }
+  })
+
   elements.current = []
 
   return (<Tag>
@@ -126,13 +143,13 @@ function runAnimation(name: string, elements: TransitionGroupElement[], parentNo
 
   return new Promise((resolve, reject) => {
 
-    for (const ele of elements) {
+    for (const ele of elements.filter(ele => ele.action != null)) {
       switch (ele.action) {
         case "enter":
           ele.node.classList.add(`${name}-enter-from`)
           nextFrame(() => {
             ele.node.classList.add(`${name}-enter-active`)
-            ele.node.classList.remove(`${name}-enter-from`)
+            removeClass(ele.node, `${name}-enter-from`)
           })
           break
   
@@ -150,21 +167,21 @@ function runAnimation(name: string, elements: TransitionGroupElement[], parentNo
       }
 
 
-      ele.onTransitionEnd = () => {
+      ele.onTransitionEnd = () => { 
         count++
         ele.node.removeEventListener("transitionend", ele.onTransitionEnd!)
         
         switch (ele.action) {
           case "enter":
-            ele.node.classList.remove(`${name}-enter-active`)
+            removeClass(ele.node, `${name}-enter-active`)
             break
           case "leave":
-            ele.node.classList.remove(`${name}-leave-active`)
-            ele.node.classList.remove(`${name}-leave-to`)
+            removeClass(ele.node, `${name}-leave-active`)
+            removeClass(ele.node, `${name}-leave-to`)
             parentNode.removeChild(ele.node)
             break
           case "move":
-            ele.node.classList.remove(`${name}-move`)
+            removeClass(ele.node, `${name}-move`)
             break
         }
 
@@ -175,7 +192,6 @@ function runAnimation(name: string, elements: TransitionGroupElement[], parentNo
 
 
       ele.onTransitionCancel = () => {
-        
         ele.node.removeEventListener("transitionend", ele.onTransitionEnd!)
         ele.node.removeEventListener("transitioncancel", ele.onTransitionCancel!)
       }
@@ -187,9 +203,6 @@ function runAnimation(name: string, elements: TransitionGroupElement[], parentNo
 }
 
 
-
-
-
 function recordPosition(elements: TransitionGroupElement[], positionMap: Map<React.Key, TransitonContext>) {
   if (elements.length === 0) {
     return
@@ -197,11 +210,13 @@ function recordPosition(elements: TransitionGroupElement[], positionMap: Map<Rea
 
   elements.forEach((ele, index) => {
 
-    if (ele.action === "leave") {
+    // If the element has finished the leave transition, it should be removed from the
+    // positionMap, otherwise it should be marked as it's in the leave transition
+    if (ele.action === "leave" && ele.node.classList.length === 0) {
       positionMap.delete(ele.key)
       return
     }
-    
+
     const node = ele.node
     const key = ele.key
 
@@ -218,9 +233,18 @@ function recordPosition(elements: TransitionGroupElement[], positionMap: Map<Rea
 function resetNode(node: HTMLElement, name: string) {
   // clear all related classes
 
-  node.classList.remove(`${name}-enter-from`)
-  node.classList.remove(`${name}-enter-active`)
-  node.classList.remove(`${name}-leave-active`)
-  node.classList.remove(`${name}-leave-to`)
-  node.classList.remove(`${name}-move`)
+  removeClass(node, `${name}-enter-from`)
+  removeClass(node, `${name}-enter-active`)
+  removeClass(node, `${name}-leave-active`)
+  removeClass(node, `${name}-leave-to`)
+  removeClass(node, `${name}-move`)
+}
+
+
+function removeClass(node: HTMLElement, className: string) {
+  node.classList.remove(className)
+
+  if (node.classList.length === 0) {
+    node.removeAttribute("class")
+  }
 }
