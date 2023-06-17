@@ -4,7 +4,7 @@ import { nextFrame } from "./Transition"
 
 interface TransitionGroupProps {
   name: string
-  tag: keyof JSX.IntrinsicElements
+  tag?: keyof JSX.IntrinsicElements
   children: JSX.Element[]
 }
 
@@ -66,6 +66,8 @@ export default function TransitionGroup(props: TransitionGroupProps) {
     Array.from(positionMap.current.keys()).forEach((key, index) => {
       if (!newKeys.includes(key)) {
         const context = positionMap.current.get(key)!
+
+        context.node.classList.add(`${props.name}-leave-active`)
         parentElement.current?.insertBefore(context.node, elements.current[context.position].node)
 
         elements.current.splice(context.position, 0, {
@@ -75,7 +77,6 @@ export default function TransitionGroup(props: TransitionGroupProps) {
         })
       }
     })
-
 
     runAnimation(props.name, elements.current, parentElement.current!)
       .then(() => {
@@ -136,10 +137,8 @@ function runAnimation(name: string, elements: TransitionGroupElement[], parentNo
           break
   
         case "leave":
-          ele.node.classList.add(`${name}-leave-from`)
           nextFrame(() => {
-            ele.node.classList.add(`${name}-leave-active`)
-            ele.node.classList.remove(`${name}-leave-from`)
+            ele.node.classList.add(`${name}-leave-to`)
           })
           break
         case "move":
@@ -161,6 +160,8 @@ function runAnimation(name: string, elements: TransitionGroupElement[], parentNo
             break
           case "leave":
             ele.node.classList.remove(`${name}-leave-active`)
+            ele.node.classList.remove(`${name}-leave-to`)
+            parentNode.removeChild(ele.node)
             break
           case "move":
             ele.node.classList.remove(`${name}-move`)
@@ -196,6 +197,11 @@ function recordPosition(elements: TransitionGroupElement[], positionMap: Map<Rea
 
   elements.forEach((ele, index) => {
 
+    if (ele.action === "leave") {
+      positionMap.delete(ele.key)
+      return
+    }
+    
     const node = ele.node
     const key = ele.key
 
@@ -214,7 +220,7 @@ function resetNode(node: HTMLElement, name: string) {
 
   node.classList.remove(`${name}-enter-from`)
   node.classList.remove(`${name}-enter-active`)
-  node.classList.remove(`${name}-leave-from`)
   node.classList.remove(`${name}-leave-active`)
+  node.classList.remove(`${name}-leave-to`)
   node.classList.remove(`${name}-move`)
 }
