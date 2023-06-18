@@ -56,7 +56,7 @@ module.exports = {
         ],
       },
       {
-        test: /\.(png|gif|jpe?g|svg)$/i,
+        test: /\.(png|gif|jpe?g)$/i,
         type: 'asset',
         parser: {
           dataUrlCondition: {
@@ -66,6 +66,16 @@ module.exports = {
         generator: {
           filename: 'images/design/[name].[hash:6][ext]',
         },
+      },
+      {
+        test: /\.svg$/i,
+        issuer: /\.[jt]sx?$/,
+        use: [
+          { 
+            loader: '@svgr/webpack',
+            options: { typescript: true } 
+          }
+        ],
       },
       // {
       //   test: /\.(eot|ttf|woff|woff2)$/,
