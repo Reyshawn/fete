@@ -1,7 +1,8 @@
-
-
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useState } from "react"
 import style from "./style.module.css"
+import "./style.css"
+
+import TransitionGroup from "@/components/TransitionGroup"
 
 
 const MONTH_NAMES = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
@@ -62,7 +63,10 @@ function DDatePickerDateView(props: any) {
   const [year, setYear] = useState(2023)
   const [month, setMonth] = useState(0)
 
+  const [action, setAction] = useState("")
+
   const nextMonth = useCallback(() => {
+    setAction("next")
     if (month === 11) {
       setMonth(0)
       setYear(year => year + 1)
@@ -72,6 +76,7 @@ function DDatePickerDateView(props: any) {
   }, [month])
 
   const prevMonth = useCallback(() => {
+    setAction("prev")
     if (month === 0) {
       setMonth(11)
       setYear(year => year - 1)
@@ -141,30 +146,33 @@ function DDatePickerDateView(props: any) {
         }
       </div>
 
-      <div className={style["d-datepicker-panel-slide"]}>
-        <div className={style["d-datepicker-panel-days"]}>
+      <div className={[style["d-datepicker-panel-slide"], "d-datepicker-panel-slide", action].join(" ")}>
+        <TransitionGroup name="d-datepicker-panel-slide">
         {
-          blankDays.map((_, index) => (
-          <div
-            key={'blankday' + index}
-            className={style["d-datepicker-panel-days-unit"]}></div>))
-        }
-
-        {
-          numOfDays.map((date, i) => (
-          <div
-            key={'days_' + i}
-            className={style["d-datepicker-panel-days-unit"]}>
+          [month].map(_ => (
+          <div className={style["d-datepicker-panel-days"]} key={`${year}-${month}`}>
+          {
+            blankDays.map((_, index) => (
             <div
-              className={style["d-datepicker-panel-days-day"]}>
-              { date }
-            </div>
-          </div>))
+              key={'blankday' + index}
+              className={style["d-datepicker-panel-days-unit"]}></div>))
+          }
+          {
+            numOfDays.map((date, i) => (
+            <div
+              key={'days_' + i}
+              className={style["d-datepicker-panel-days-unit"]}>
+              <div
+                className={style["d-datepicker-panel-days-day"]}>
+                { date }
+              </div>
+            </div>))
+          }
+          </div>
+          ))
         }
-
+        </TransitionGroup>
       </div>
-
-    </div>
       
     </div>
 

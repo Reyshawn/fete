@@ -75,6 +75,10 @@ export default function TransitionGroup(props: TransitionGroupProps) {
       if (!newKeys.includes(key)) {
         const context = positionMap.current.get(key)!
 
+        if (context.isLeaving) {
+          return
+        }
+
         context.node.classList.add(`${props.name}-leave-active`)
         parentElement.current?.insertBefore(context.node, elements.current[context.position].node)
 
@@ -88,7 +92,6 @@ export default function TransitionGroup(props: TransitionGroupProps) {
 
     runAnimation(props.name, elements.current, parentElement.current!)
       .then(() => {
-        
       })
       .catch(() => {
         
@@ -106,13 +109,20 @@ export default function TransitionGroup(props: TransitionGroupProps) {
 
   recordPosition(elements.current, positionMap.current)
 
-
   elements.current.forEach((ele) => {
-    if (ele.action === "leave", ele.node.classList.contains(`${props.name}-leave-active`)) {
+    if (ele.action !== "leave") {
+      return
+    }
+
+    if (ele.node.classList.contains(`${props.name}-leave-active`)) {
       let context = positionMap.current.get(ele.key)!
       context.isLeaving = true
-      parentElement.current?.removeChild(ele.node)
+      context.node.parentElement?.removeChild(context.node)
+      return
     }
+
+    
+    positionMap.current.delete(ele.key)
   })
 
   elements.current = []
@@ -167,7 +177,7 @@ function runAnimation(name: string, elements: TransitionGroupElement[], parentNo
       }
 
 
-      ele.onTransitionEnd = () => { 
+      ele.onTransitionEnd = () => {
         count++
         ele.node.removeEventListener("transitionend", ele.onTransitionEnd!)
         
@@ -207,15 +217,9 @@ function recordPosition(elements: TransitionGroupElement[], positionMap: Map<Rea
     return
   }
 
-  elements.forEach((ele, index) => {
-
-    // If the element has finished the leave transition, it should be removed from the
-    // positionMap, otherwise it should be marked as it's in the leave transition
-    if (ele.action === "leave" && ele.node.classList.length === 0) {
-      positionMap.delete(ele.key)
-      return
-    }
-
+  elements
+  .filter(ele => ele.action !== "leave")
+  .forEach((ele, index) => {
     const node = ele.node
     const key = ele.key
 

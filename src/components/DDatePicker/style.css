@@ -1,0 +1,27 @@
+.d-datepicker-panel-slide {
+  @apply
+    relative
+    overflow-hidden
+    h-48;
+
+  &.prev {
+    .d-datepicker-panel-slide-enter-from {
+      transform: translate3D(-100%, 0, 0);
+    }
+
+    .d-datepicker-panel-slide-leave-to {
+      transform: translate3D(100%, 0, 0);
+    }
+  }
+
+  &.next {
+    .d-datepicker-panel-slide-enter-from {
+      transform: translate3D(100%, 0, 0);
+    }
+
+    .d-datepicker-panel-slide-leave-to {
+      transform: translate3D(-100%, 0, 0);
+    }
+  }
+}
+
