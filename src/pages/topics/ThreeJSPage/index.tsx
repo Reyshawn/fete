@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useRef } from "react"
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+import * as dat from 'lil-gui'
+
 
 export default function ThreeJSPage(props: any) {
   return (
@@ -85,6 +87,9 @@ function ThreejsObitControls() {
   const containerRef = useRef<HTMLCanvasElement | null>(null)
 
   useEffect(() => {
+    const gui = new dat.GUI({
+      container: containerRef.current!.parentElement!
+    })
     const camera = new THREE.PerspectiveCamera(100, size.width / size.height, 0.01, 10 )
     camera.position.z = 1
 
@@ -100,6 +105,30 @@ function ThreejsObitControls() {
     const material = new THREE.MeshNormalMaterial();
 
     const mesh = new THREE.Mesh( geometry, material );
+
+    gui
+      .add(mesh.position, 'y')
+      .min(- 3)
+      .max(3)
+      .step(0.01)
+      .name('elevation')
+
+    gui.add(mesh, 'visible')
+    gui.add(material, 'wireframe')
+
+
+    const parameters = {
+      color: 0xff0000,
+      test: () => console.log("123")
+    }
+
+    gui.add(parameters, 'test')
+    // gui
+    //   .addColor(parameters, 'color')
+    //   .onChange(() => {
+    //     material.color.set(parameters.color)
+    //   })
+
 
     scene.add( mesh );
 
@@ -147,6 +176,7 @@ function ThreejsObitControls() {
 
     return () => {
       window.removeEventListener('resize', handleResize)
+      gui.destroy()
     }
   }, [])
 
