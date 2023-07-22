@@ -15,7 +15,12 @@ import {
   DSwitchPage,
   DScrollpickerPage,
   DDatePickerPage
-} from '../pages/components/index'
+} from '@/pages/components/index'
+
+
+import {
+  ThreeJSPage
+} from '@/pages/topics/index'
 
 import styles from '../App.module.css'
 
@@ -110,6 +115,18 @@ const componentsRoutes = [
 ]
 
 
+const topicsRoutes = [
+  {
+    path: '',
+    element: <Suspense><TopicsPage /></Suspense>
+  },
+  {
+    path: 'threejs',
+    element: <Suspense><ThreeJSPage /></Suspense>
+  }
+]
+
+
 const routes = [
   {
     path: '/',
@@ -130,7 +147,8 @@ const routes = [
       },
       {
         path: 'topics',
-        element: <Suspense><TopicsPage /></Suspense>
+        element: <Suspense><SidebarLayout routes={topicsRoutes.filter(r => r.path !== '')} /></Suspense>,
+        children: topicsRoutes
       }
     ]
   }
