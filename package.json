@@ -38,6 +38,7 @@
     "css-loader": "^6.5.1",
     "css-minimizer-webpack-plugin": "^5.0.0",
     "html-webpack-plugin": "^5.5.0",
+    "lil-gui": "^0.18.2",
     "mini-css-extract-plugin": "^2.4.5",
     "postcss": "^8.4.5",
     "postcss-loader": "^6.2.1",
