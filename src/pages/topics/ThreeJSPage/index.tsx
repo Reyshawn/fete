@@ -1,9 +1,24 @@
-import { useCallback, useEffect, useRef } from "react"
+import { lazy, useCallback, useEffect, useRef, Suspense } from "react"
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import * as dat from 'lil-gui'
 
 import TextureImage from "@/assets/texture01.jpg"
+
+
+const Chapter1 = lazy(() => import("./Chapter1/index"))
+const Chapter2 = lazy(() => import("./Chapter2/index"))
+
+export const Menus = [
+  {
+    name: 'chapter1',
+    element: <Suspense><Chapter1 /></Suspense>
+  },
+  {
+    name: 'chapter2',
+    element: <Suspense><Chapter2 /></Suspense>
+  }
+]
 
 
 
@@ -20,12 +35,10 @@ export default function ThreeJSPage(props: any) {
 }
 
 
-
 const size = {
   width: 300,
   height: 300
 }
-
 
 
 function ThreejsHelloWorld() {

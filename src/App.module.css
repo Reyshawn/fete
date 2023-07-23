@@ -58,12 +58,31 @@
 
       & > li {
         @apply
-          h-7
           text-sm;
 
-        &.selected {
+        &.selected > .menu-item {
           @apply
             font-medium;
+        }
+
+        .menu-item {
+          @apply
+            flex
+            justify-between
+            items-center;
+        }
+
+        svg {
+          @apply
+            w-3
+            h-3;
+        }
+
+        & > ul {
+          li.selected {
+            @apply
+              font-medium;
+          }
         }
       }
     }
