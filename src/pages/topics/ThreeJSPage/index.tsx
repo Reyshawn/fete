@@ -3,6 +3,9 @@ import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import * as dat from 'lil-gui'
 
+import TextureImage from "@/assets/texture01.jpg"
+
+
 
 export default function ThreeJSPage(props: any) {
   return (
@@ -11,6 +14,7 @@ export default function ThreeJSPage(props: any) {
 
       <ThreejsHelloWorld />
       <ThreejsObitControls />
+      <ThreejsTextures />
     </>
   )
 }
@@ -88,7 +92,7 @@ function ThreejsObitControls() {
 
   useEffect(() => {
     const gui = new dat.GUI({
-      container: containerRef.current!.parentElement!
+      // container: containerRef.current!.parentElement!
     })
     const camera = new THREE.PerspectiveCamera(100, size.width / size.height, 0.01, 10 )
     camera.position.z = 1
@@ -197,3 +201,88 @@ function ThreejsObitControls() {
   </>)
 }
 
+
+
+function ThreejsTextures() {
+  const containerRef = useRef<HTMLCanvasElement | null>(null)
+
+  useEffect(() => {
+    const camera = new THREE.OrthographicCamera(- 1, 1, 1, - 1, 0.1, 100)
+    camera.position.z = 1
+
+    const controls = new OrbitControls(camera, containerRef.current!)
+    // controls.enableDamping = true
+
+    const scene = new THREE.Scene()
+
+    const axesHelper = new THREE.AxesHelper(3)
+    scene.add(axesHelper)
+
+
+    const textureLoader = new THREE.TextureLoader()
+    const texture = textureLoader.load(
+      TextureImage
+    )
+
+    const material =new THREE.MeshBasicMaterial({map: texture});
+
+
+    const sphere = new THREE.Mesh(
+        new THREE.SphereGeometry(0.5, 16, 16),
+        material
+    )
+    sphere.position.x = - 1.5
+  
+    const plane = new THREE.Mesh(
+        new THREE.PlaneGeometry(1, 1),
+        material
+    )
+  
+    const torus = new THREE.Mesh(
+        new THREE.TorusGeometry(0.3, 0.2, 16, 32),
+        material
+    )
+    torus.position.x = 1.5
+    scene.add(sphere, plane, torus)
+
+
+    /**
+      * Lights
+    */
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.5)
+    scene.add(ambientLight)
+
+    const pointLight = new THREE.PointLight(0xffffff, 0.5)
+    pointLight.position.x = 2
+    pointLight.position.y = 3
+    pointLight.position.z = 4
+    scene.add(pointLight)
+
+
+    const renderer = new THREE.WebGLRenderer( {
+      canvas: containerRef.current!,
+      antialias: true 
+    });
+    renderer.setSize( size.width, size.height );
+
+    controls.update();
+
+    function animate() {
+    
+    	requestAnimationFrame( animate );
+    
+    	// required if controls.enableDamping or controls.autoRotate are set to true
+    	controls.update();
+    	renderer.render( scene, camera );
+    }
+
+    animate()
+
+  }, [])
+
+  return (<>
+    <h1>Threejs Texttures</h1>
+    
+    <canvas ref={containerRef} ></canvas>
+  </>)
+}
