@@ -20,7 +20,8 @@ import {
 
 
 import {
-  ThreeJSPage
+  ThreeJSPage,
+  RxJSPage
 } from '@/pages/topics/index'
 
 import {
@@ -33,7 +34,6 @@ import styles from '../App.module.css'
 
 
 const SvgAni  = React.lazy(() => import('../components/svgAni/index'))
-const Rxjs  = React.lazy(() => import('../components/rxjs/index'))
 const Animation  = React.lazy(() => import('../components/animation/index'))
 const Fetch = React.lazy(() => import('../components/fetch'))
 
@@ -77,7 +77,6 @@ function MenuItem(props: {menu: Menu}) {
   const r = props.menu
   const location = useLocation()
 
-
   const toggle = useCallback(() => {
     setExpanded(e => !e)
   }, [])
@@ -85,22 +84,24 @@ function MenuItem(props: {menu: Menu}) {
   return <li className={location.pathname.endsWith("/" + r.path) ? styles.selected : undefined}>
     <div className={styles['menu-item']}>
       <Link to={r.path!}>{r.path}</Link>
-      {r._subpages && <ArrowRightIcon onClick={toggle} />}
+      {r._subpages && <ArrowRightIcon onClick={toggle} style={{
+        transform: expanded ? "rotate(90deg)" : undefined
+      }} />}
     </div>
-    {
-      r._subpages && expanded && <ul>
-        {
-          r._subpages.map((sub, index) => {
-            return <li
-              className={location.pathname.endsWith("/" + sub.name) ? styles.selected : undefined}
-              key={r.path! + '/' + sub.name}>
-                <Link to={r.path! + '/' + sub.name} >{sub.name}
-              </Link>
-            </li>
-          })
-        }
-      </ul>
-    }
+    { r._subpages && <ul style={{
+      height: expanded ? (r._subpages.length * 20) + 'px' : 0
+    }}>
+      {
+        r._subpages.map((sub, index) => {
+          return <li
+            className={location.pathname.endsWith("/" + sub.name) ? styles.selected : undefined}
+            key={r.path! + '/' + sub.name}>
+              <Link to={r.path! + '/' + sub.name} >{sub.name}
+            </Link>
+          </li>
+        })
+      }
+    </ul>}
   </li>  
 }
 
@@ -169,9 +170,12 @@ const topicsMenus: Menu[] = [
     path: 'threejs',
     element: <Suspense><ThreeJSPage /></Suspense>,
     _subpages: ThreeJSMenus
+  },
+  {
+    path: 'rxjs',
+    element: <Suspense><RxJSPage /></Suspense>
   }
 ]
-
 
 
 function convertToRoutes(menus: Menu[]) {

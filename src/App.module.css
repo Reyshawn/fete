@@ -46,6 +46,7 @@
   .sidebar {
     flex: 0 0 200px;
     @apply
+      select-none
       px-5;
 
     & > ul {
@@ -74,11 +75,18 @@
 
         svg {
           @apply
+            transition-transform
+            cursor-pointer
             w-3
             h-3;
         }
 
         & > ul {
+          transition: height 150ms linear;
+          @apply
+            overflow-hidden
+            pl-3;
+          
           li.selected {
             @apply
               font-medium;
