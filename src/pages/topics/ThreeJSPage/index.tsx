@@ -2,6 +2,7 @@ import { lazy, useCallback, useEffect, useRef, Suspense } from "react"
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import * as dat from 'lil-gui'
+import styles from "@/styles/sectionPage.module.css"
 
 import TextureImage from "@/assets/texture01.jpg"
 
@@ -24,13 +25,13 @@ export const Menus = [
 
 export default function ThreeJSPage(props: any) {
   return (
-    <>
-      this is threejspage page
+    <section className={styles.page}>
+      <h1>Three.js</h1>
 
       <ThreejsHelloWorld />
       <ThreejsObitControls />
       <ThreejsTextures />
-    </>
+    </section>
   )
 }
 
@@ -91,7 +92,7 @@ function ThreejsHelloWorld() {
 
 
   return (<>
-    <h1>Hello Threejs</h1>
+    <h2>Hello Threejs</h2>
     
     <canvas ref={containerRef}></canvas>
   </>)
@@ -208,7 +209,7 @@ function ThreejsObitControls() {
   }, [])
 
   return (<>
-    <h1>Threejs orbit controls</h1>
+    <h2>Threejs orbit controls</h2>
     
     <canvas ref={containerRef} onDoubleClick={doubleClick}></canvas>
   </>)
@@ -294,8 +295,7 @@ function ThreejsTextures() {
   }, [])
 
   return (<>
-    <h1>Threejs Texttures</h1>
-    
+    <h2>Threejs Texttures</h2>
     <canvas ref={containerRef} ></canvas>
   </>)
 }

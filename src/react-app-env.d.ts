@@ -1,19 +1,19 @@
 /// <reference types="react-scripts" />
 
 
-declare module "body-scroll-lock" {
-  export interface BodyScrollOptions {
-    reserveScrollBarGap: boolean;
-  }
+declare module "*.png" {
+  const content: string
+  export default content
+}
 
-  export function disableBodyScroll(
-    targetElement: HTMLElement,
-    options?: BodyScrollOptions
-  ): void;
+declare module "*.jpeg" {
+  const content: string
+  export default content
+}
 
-  export function enableBodyScroll(targetElement: HTMLElement): void;
-
-  export function clearAllBodyScrollLocks(): void;
+declare module "*.jpg" {
+  const content: string
+  export default content
 }
 
 
