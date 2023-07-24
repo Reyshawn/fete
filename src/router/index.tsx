@@ -15,7 +15,8 @@ import {
 import {
   DSwitchPage,
   DScrollpickerPage,
-  DDatePickerPage
+  DDatePickerPage,
+  DColorPickerPage
 } from '@/pages/components/index'
 
 
@@ -149,6 +150,10 @@ const componentsRoutes = [
   {
     path: 'datepicker',
     element: <Suspense><DDatePickerPage /></Suspense>
+  },
+  {
+    path: 'colorpicker',
+    element: <Suspense><DColorPickerPage /></Suspense>
   }
 ]
 

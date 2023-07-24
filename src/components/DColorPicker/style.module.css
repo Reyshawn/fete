@@ -1,0 +1,59 @@
+
+.d-color-picker {
+
+  @apply 
+    flex
+    items-center;
+
+
+  &-indicator {
+    @apply
+      w-5
+      h-5
+      border
+      rounded
+      mr-2;
+  }
+}
+
+
+.d-color-picker-panel {
+  @apply
+    bg-white
+    rounded-lg
+    shadow
+    p-4;
+
+
+  &-color-palette {
+    width: 300px;
+    height: 300px;
+    position: relative;
+    canvas {
+      @apply
+        w-full
+        h-full;
+    }
+  }
+
+  &-hue-slider {
+    width: 300px;
+    height: 12px;
+    position: relative;
+
+    canvas {
+      @apply
+        mt-3
+        w-full
+        h-full;
+    }
+  }
+}
+
+.d-color-picker-cursor {
+  width: 12px;
+  height: 12px;
+  border-radius: 6px;
+  border: 2px solid white;
+  position: absolute;
+}
