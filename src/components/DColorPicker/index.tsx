@@ -89,8 +89,6 @@ function DColorPickerPanel(props: DColorPickerPanelProps) {
   )
 }
 
-// const MemoizedDColorPickerPanel = memo(DColorPickerPanel)
-
 
 function DColorPickerCursor({x, y, bgColor}: {x: number, y: number, bgColor: string}) {
   return (
@@ -212,8 +210,13 @@ function DColorPickerHueSlider(props: DColorPickerHueSliderProps) {
 
   }, [])
 
-  const status = useDraggable(parentRef, {
+  useDraggable(parentRef, {
     shouldCancelOnMouseLeave: false,
+    onDragging(status) {
+      if (initialX.current != null) {
+        props.onChange(Math.min(CANVAS_SIZE, Math.max(0, status.x - initialX.current)))
+      }
+    }, 
     onDragStart() {
       if (initialX.current == null) {
         initialX.current = parentRef.current?.getBoundingClientRect().x!
@@ -222,9 +225,6 @@ function DColorPickerHueSlider(props: DColorPickerHueSliderProps) {
   })
 
   const x = props.x - 6
-  if (initialX.current != null) {
-    props.onChange(Math.min(CANVAS_SIZE, Math.max(0, status.x - initialX.current)))
-  }
 
   let rgb = "rgba(255, 0, 0, 1)"
   if (context.current && x < CANVAS_SIZE - 6 && x > 0) {
