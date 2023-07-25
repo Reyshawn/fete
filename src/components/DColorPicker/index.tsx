@@ -11,6 +11,9 @@ import useClickAway from "@/utils/useClickAway"
 import { useDraggable } from "@/utils/useDraggable"
 import { hex, hsl, rgb } from "./helper"
 
+
+const CANVAS_SIZE = 300
+
 export default function DColorPicker(props: any) {
   const [isPanelShown, setIsPanelShown] = useState(false)
   const [hexValue, setHexValue] = useState("#ffffff")
@@ -31,8 +34,6 @@ export default function DColorPicker(props: any) {
     setHexValue(hex)
   }, [])
 
-  const [h, l, s] = hsl(rgb(hexValue))
-
 
   return (
   <div className={style["d-color-picker"]}>
@@ -46,7 +47,7 @@ export default function DColorPicker(props: any) {
     <span>{hexValue}</span>
 
     <Popper active={isPanelShown}  setFloating={refs.setFloating} floatingStyles={floatingStyles}>
-      <MemoizedDColorPickerPanel onChange={onHexChange} />
+      <DColorPickerPanel onChange={onHexChange} />
     </Popper>
   </div>
   )
@@ -63,25 +64,32 @@ interface DColorPickerPanelProps {
 
 function DColorPickerPanel(props: DColorPickerPanelProps) {
   const [baseColor, setBaseColor] = useState("rgba(255, 0, 0, 1)")
+  const [hueNumber, setHueNumber] = useState(0)
+  const [paletteLoc, setPaletteLoc] = useState([0, 0])
 
   const onHueChange = useCallback((color: string) => {
     setBaseColor(color)
   }, [])
 
   const onColorChange = useCallback((color: string) => {
-    // props.onChange?.(hex(color))
+    props.onChange?.(hex(color))
   }, [])
 
 
   return (
     <div className={style["d-color-picker-panel"]}>
-      <DColorPickerPalette baseColor={baseColor} onColorChange={onColorChange} />
-      <DColorPickerHueSlider hue={0} onHueChange={onHueChange} />
+      <DColorPickerPalette
+        baseColor={baseColor}
+        onColorChange={onColorChange}
+        x={paletteLoc[0]}
+        y={paletteLoc[1]}
+        onChange={(x, y) => setPaletteLoc([x, y])} />
+      <DColorPickerHueSlider x={hueNumber} onHueChange={onHueChange} onChange={setHueNumber} />
     </div>
   )
 }
 
-const MemoizedDColorPickerPanel = memo(DColorPickerPanel)
+// const MemoizedDColorPickerPanel = memo(DColorPickerPanel)
 
 
 function DColorPickerCursor({x, y, bgColor}: {x: number, y: number, bgColor: string}) {
@@ -98,52 +106,42 @@ function DColorPickerCursor({x, y, bgColor}: {x: number, y: number, bgColor: str
 interface DColorPickerPaletteProps {
   baseColor: string
   onColorChange?(color: string): void
+  x: number
+  y: number
+  onChange(x: number, y: number): void
 }
 
 
 function DColorPickerPalette(props: DColorPickerPaletteProps) {
-
   const parentRef = useRef<HTMLDivElement | null>(null)
   const paletteRef = useRef<HTMLCanvasElement | null>(null)
   const initialX = useRef<number | null>(null)
   const initialY = useRef<number | null>(null)
   const context = useRef<CanvasRenderingContext2D | null>(null)
-
+  
+  const hueColorRef = useRef(props.baseColor)
 
   useEffect(() => {
     // fill color palette
     const palette = paletteRef.current!
-    const paletteContext = palette.getContext("2d")!
+    const paletteContext = palette.getContext("2d", {willReadFrequently: true})!
     context.current = paletteContext
+    hueColorRef.current = props.baseColor
 
-    const width = palette.width
-    const height = palette.height
+    paletteContext.rect(0, 0, CANVAS_SIZE, CANVAS_SIZE)
+    fillColorPalette(paletteContext, props.baseColor)
+  }, [])
 
-    paletteContext.rect(0, 0, width, height)
-
-    paletteContext.fillStyle = props.baseColor
-    paletteContext.fillRect(0, 0, width, height)
-
-    const gradientWhite = paletteContext.createLinearGradient(0, 0, width, 0)
-    gradientWhite.addColorStop(0, 'rgba(255,255,255,1)')
-    gradientWhite.addColorStop(1 / width, 'rgba(255,255,255,1)')
-    gradientWhite.addColorStop(1 - 1 / width, 'rgba(255,255,255,0)')
-    gradientWhite.addColorStop(1, 'rgba(255,255,255,0)')
-    paletteContext.fillStyle = gradientWhite
-    paletteContext.fillRect(0, 0, width, height)
-
-    const gradientBlack = paletteContext.createLinearGradient(0, 0, 0, height)
-    gradientBlack.addColorStop(0, 'rgba(0,0,0,0)')
-    gradientWhite.addColorStop(1 / width, 'rgba(0,0,0,0)')
-    gradientWhite.addColorStop(1 - 1 / width, 'rgba(0,0,0,1)')
-    gradientBlack.addColorStop(1, 'rgba(0,0,0,1)')
-    paletteContext.fillStyle = gradientBlack
-    paletteContext.fillRect(0, 0, width, height)
-  }, [props.baseColor])
-
-  const status = useDraggable(parentRef, {
+  useDraggable(parentRef, {
     shouldCancelOnMouseLeave: false,
-    onDragStart() {
+    onDragging(status) {
+      if (initialX.current != null) {
+        const _x = Math.min(CANVAS_SIZE, Math.max(0, status.x - initialX.current))
+        const _y = Math.min(CANVAS_SIZE, Math.max(0, status.y - initialY.current!))
+        props.onChange(_x, _y)
+      }
+    }, 
+    onDragStart(status) {
       if (initialX.current == null) {
         initialX.current = parentRef.current?.getBoundingClientRect().x!
         initialY.current = parentRef.current?.getBoundingClientRect().y!
@@ -151,28 +149,31 @@ function DColorPickerPalette(props: DColorPickerPaletteProps) {
     }
   })
 
-  let x = -6 
-  let y = -6
+  const x = props.x - 6
+  const y = props.y - 6
 
-  if (initialX.current != null) {
-    x = Math.min(294, Math.max(-6, status.x - initialX.current - 6))
-    y = Math.min(294, Math.max(-6, status.y - initialY.current! - 6))
+
+  if (context.current && hueColorRef.current !== props.baseColor) {
+    fillColorPalette(context.current, props.baseColor)
+    hueColorRef.current = props.baseColor
   }
 
   let rgb = "rgba(255, 255, 255, 1)"
 
-  if (y === 294) {
+  if (y === CANVAS_SIZE - 6) {
     rgb = "rgba(0, 0, 0, 1)"
   } else if (context.current) {
-    const imageData = context.current.getImageData(Math.min(299, x+6), Math.min(299, y+6), 1, 1).data
+    const imageData = context.current.getImageData(Math.min(CANVAS_SIZE - 1, x+6), y+6, 1, 1).data
     rgb = `rgba(${imageData[0]}, ${imageData[1]}, ${imageData[2]}, 1)`
   }
 
-  props.onColorChange?.(rgb)
+  useEffect(() => {
+    props.onColorChange?.(rgb)
+  }, [rgb])
 
   return (
     <div className={style["d-color-picker-panel-color-palette"]} ref={parentRef}>
-      <canvas ref={paletteRef} width={300} height={300}></canvas>
+      <canvas ref={paletteRef} width={CANVAS_SIZE} height={CANVAS_SIZE}></canvas>
       <DColorPickerCursor x={x} y={y} bgColor={rgb} />
     </div>
   )
@@ -181,7 +182,8 @@ function DColorPickerPalette(props: DColorPickerPaletteProps) {
 
 interface DColorPickerHueSliderProps {
   onHueChange?(color: string): void
-  hue: number
+  x: number // range: [0, CANVAS_SIZE]
+  onChange(hueNumber: number): void
 }
 
 
@@ -194,7 +196,7 @@ function DColorPickerHueSlider(props: DColorPickerHueSliderProps) {
   useEffect(() => {
     // fill hue slider
     const hueSlider = hueSliderRef.current!
-    const hueSliderContext = hueSlider.getContext("2d")!
+    const hueSliderContext = hueSlider.getContext("2d", {willReadFrequently: true})!
     context.current = hueSliderContext
     hueSliderContext.rect(0, 0, hueSlider.width, hueSlider.height)
     const hueGradient = hueSliderContext.createLinearGradient(0, 0, hueSlider.width, 0)
@@ -219,24 +221,47 @@ function DColorPickerHueSlider(props: DColorPickerHueSliderProps) {
     }
   })
 
-  let x = -6
+  const x = props.x - 6
   if (initialX.current != null) {
-    x = Math.min(294, Math.max(-6, status.x - initialX.current - 6))
+    props.onChange(Math.min(CANVAS_SIZE, Math.max(0, status.x - initialX.current)))
   }
 
   let rgb = "rgba(255, 0, 0, 1)"
-  if (context.current && x < 294 && x > 0) {
-
+  if (context.current && x < CANVAS_SIZE - 6 && x > 0) {
     const imageData = context.current.getImageData(x+6, 0, 1, 1).data
     rgb = `rgba(${imageData[0]}, ${imageData[1]}, ${imageData[2]}, 1)`
   }
 
-  props.onHueChange?.(rgb)
+  useEffect(() => {
+    props.onHueChange?.(rgb)
+  }, [rgb])
 
   return (
     <div className={style["d-color-picker-panel-hue-slider"]} ref={parentRef}>
-      <canvas ref={hueSliderRef} width={300} height={12}></canvas>
+      <canvas ref={hueSliderRef} width={CANVAS_SIZE} height={12}></canvas>
       <DColorPickerCursor x={x} y={0} bgColor={rgb}/>
     </div>
   )
+}
+
+
+function fillColorPalette(context: CanvasRenderingContext2D, color: string) {
+  context.fillStyle = color
+  context.fillRect(0, 0, CANVAS_SIZE, CANVAS_SIZE)
+
+  const gradientWhite = context.createLinearGradient(0, 0, CANVAS_SIZE, 0)
+  gradientWhite.addColorStop(0, 'rgba(255,255,255,1)')
+  gradientWhite.addColorStop(1 / CANVAS_SIZE, 'rgba(255,255,255,1)')
+  gradientWhite.addColorStop(1 - 1 / CANVAS_SIZE, 'rgba(255,255,255,0)')
+  gradientWhite.addColorStop(1, 'rgba(255,255,255,0)')
+  context.fillStyle = gradientWhite
+  context.fillRect(0, 0, CANVAS_SIZE, CANVAS_SIZE)
+
+  const gradientBlack = context.createLinearGradient(0, 0, 0, CANVAS_SIZE)
+  gradientBlack.addColorStop(0, 'rgba(0,0,0,0)')
+  gradientWhite.addColorStop(1 / CANVAS_SIZE, 'rgba(0,0,0,0)')
+  gradientWhite.addColorStop(1 - 1 / CANVAS_SIZE, 'rgba(0,0,0,1)')
+  gradientBlack.addColorStop(1, 'rgba(0,0,0,1)')
+  context.fillStyle = gradientBlack
+  context.fillRect(0, 0, CANVAS_SIZE, CANVAS_SIZE)
 }
