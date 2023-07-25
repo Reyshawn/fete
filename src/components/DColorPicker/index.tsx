@@ -63,12 +63,12 @@ interface DColorPickerPanelProps {
 
 
 function DColorPickerPanel(props: DColorPickerPanelProps) {
-  const [baseColor, setBaseColor] = useState("rgba(255, 0, 0, 1)")
+  const [hueColor, setHueColor] = useState("rgba(255, 0, 0, 1)")
   const [hueNumber, setHueNumber] = useState(0)
   const [paletteLoc, setPaletteLoc] = useState([0, 0])
 
   const onHueChange = useCallback((color: string) => {
-    setBaseColor(color)
+    setHueColor(color)
   }, [])
 
   const onColorChange = useCallback((color: string) => {
@@ -79,7 +79,7 @@ function DColorPickerPanel(props: DColorPickerPanelProps) {
   return (
     <div className={style["d-color-picker-panel"]}>
       <DColorPickerPalette
-        baseColor={baseColor}
+        hueColor={hueColor}
         onColorChange={onColorChange}
         x={paletteLoc[0]}
         y={paletteLoc[1]}
@@ -104,7 +104,7 @@ function DColorPickerCursor({x, y, bgColor}: {x: number, y: number, bgColor: str
 
 
 interface DColorPickerPaletteProps {
-  baseColor: string
+  hueColor: string
   onColorChange?(color: string): void
   x: number
   y: number
@@ -119,17 +119,17 @@ function DColorPickerPalette(props: DColorPickerPaletteProps) {
   const initialY = useRef<number | null>(null)
   const context = useRef<CanvasRenderingContext2D | null>(null)
   
-  const hueColorRef = useRef(props.baseColor)
+  const hueColorRef = useRef(props.hueColor)
 
   useEffect(() => {
     // fill color palette
     const palette = paletteRef.current!
     const paletteContext = palette.getContext("2d", {willReadFrequently: true})!
     context.current = paletteContext
-    hueColorRef.current = props.baseColor
+    hueColorRef.current = props.hueColor
 
     paletteContext.rect(0, 0, CANVAS_SIZE, CANVAS_SIZE)
-    fillColorPalette(paletteContext, props.baseColor)
+    fillColorPalette(paletteContext, props.hueColor)
   }, [])
 
   useDraggable(parentRef, {
@@ -153,9 +153,9 @@ function DColorPickerPalette(props: DColorPickerPaletteProps) {
   const y = props.y - 6
 
 
-  if (context.current && hueColorRef.current !== props.baseColor) {
-    fillColorPalette(context.current, props.baseColor)
-    hueColorRef.current = props.baseColor
+  if (context.current && hueColorRef.current !== props.hueColor) {
+    fillColorPalette(context.current, props.hueColor)
+    hueColorRef.current = props.hueColor
   }
 
   let rgb = "rgba(255, 255, 255, 1)"
