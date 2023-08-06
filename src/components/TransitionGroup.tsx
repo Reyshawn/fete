@@ -233,7 +233,7 @@ function recordPosition(elements: TransitionGroupElement[], positionMap: Map<Rea
 }
 
 
-function resetNode(node: HTMLElement, name: string) {
+export function resetNode(node: HTMLElement, name: string) {
   // clear all related classes
 
   removeClass(node, `${name}-enter-from`)

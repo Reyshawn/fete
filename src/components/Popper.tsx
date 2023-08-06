@@ -26,8 +26,8 @@ export default function Popper(props: PopperProps) {
   return (
     isPopperShown ? createPortal(
       <div ref={props.setFloating} style={props.floatingStyles}>
-        <Transition name="popper" onAfterLeave={() => setIsPopperShown(false)}>
-          {props.active ? <div>{props.children}</div> : null}
+        <Transition name="popper" if={props.active} onAfterLeave={() => setIsPopperShown(false)}>
+          <div>{props.children}</div>
         </Transition>
       </div>, document.body
     ) : <></>
