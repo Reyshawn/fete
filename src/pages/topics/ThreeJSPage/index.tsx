@@ -75,7 +75,9 @@ function ThreejsHelloWorld() {
     const renderer = new THREE.WebGLRenderer( {
       canvas: containerRef.current!,
       antialias: true 
-    } );
+    } )
+
+    renderer.setPixelRatio( window.devicePixelRatio )
     renderer.setSize( size.width, size.height );
 
 
@@ -154,6 +156,7 @@ function ThreejsObitControls() {
       canvas: containerRef.current!,
       antialias: true 
     });
+    renderer.setPixelRatio( window.devicePixelRatio )
     renderer.setSize( size.width, size.height );
 
     controls.update();
@@ -185,6 +188,7 @@ function ThreejsObitControls() {
       camera.aspect = width / height
 
       // Update renderer
+      renderer.setPixelRatio( window.devicePixelRatio )
       renderer.setSize(width, height)
       renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
     }
@@ -277,6 +281,7 @@ function ThreejsTextures() {
       canvas: containerRef.current!,
       antialias: true 
     });
+    renderer.setPixelRatio( window.devicePixelRatio )
     renderer.setSize( size.width, size.height );
 
     controls.update();
