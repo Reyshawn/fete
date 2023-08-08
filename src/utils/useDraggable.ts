@@ -45,7 +45,7 @@ const defaultConfig: () => DraggableConfiguraiton = () => ({
 
 export const useDraggable = (ref: React.RefObject<HTMLDivElement>, opts?: DraggableConfiguraiton) => {
   const options = Object.assign(defaultConfig(), opts)
-  const setRendering = useRerender()
+  const setRendering = options.shouldRerenderOnDragging ? useRerender() : () => {}
   
   const initDragStatus = useRef<DraggableStatus>(DraggableStatusZero())
   const dragStatusQueue = useRef<Queue<DraggableStatus>>(new Queue(2))
@@ -94,9 +94,8 @@ export const useDraggable = (ref: React.RefObject<HTMLDivElement>, opts?: Dragga
 
     
     dragStatusQueue.current.enqueue(status)
-    setRendering()
-
     options.onDragging?.(status)
+    setRendering()
   }, [])
 
 

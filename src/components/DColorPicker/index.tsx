@@ -9,7 +9,8 @@ import Popper from "@/components/Popper"
 import { useCallback, useEffect, useRef, useState, memo } from "react"
 import useClickAway from "@/utils/useClickAway"
 import { useDraggable } from "@/utils/useDraggable"
-import { hex, hsl, rgb } from "./helper"
+import { hex, hsv, rgb } from "./helper"
+import useRerender from "@/utils/useRerender"
 
 
 const CANVAS_SIZE = 300
@@ -29,7 +30,6 @@ export default function DColorPicker(props: any) {
     } 
   })
 
-
   const onHexChange = useCallback((hex: string) => {
     setHexValue(hex)
   }, [])
@@ -47,7 +47,7 @@ export default function DColorPicker(props: any) {
     <span>{hexValue}</span>
 
     <Popper active={isPanelShown}  setFloating={refs.setFloating} floatingStyles={floatingStyles}>
-      <DColorPickerPanel onChange={onHexChange} />
+      <DColorPickerPanel onChange={onHexChange} hex={hexValue} />
     </Popper>
   </div>
   )
@@ -56,35 +56,52 @@ export default function DColorPicker(props: any) {
 
 interface DColorPickerPanelProps {
   onChange?(hex: string): void
-  // hue: number
-  // saturation: number
-  // lightness: number
+  hex?: string
 }
 
 
 function DColorPickerPanel(props: DColorPickerPanelProps) {
-  const [hueColor, setHueColor] = useState("rgba(255, 0, 0, 1)")
-  const [hueNumber, setHueNumber] = useState(0)
-  const [paletteLoc, setPaletteLoc] = useState([0, 0])
+  const {
+    onChange,
+    hex: hexValue = "#ffffff"
+  } = props
 
-  const onHueChange = useCallback((color: string) => {
-    setHueColor(color)
-  }, [])
+  const [h, s, v] = hsv(rgb(hexValue))
+
+  const [hueColor, setHueColor] = useState("rgba(255, 0, 0, 1)")
+  const [hueNumber, setHueNumber] = useState((h * CANVAS_SIZE / 360))
+  const [paletteLoc, setPaletteLoc] = useState([s * CANVAS_SIZE, (1 - v) * CANVAS_SIZE])
+  const hasFiredMouseDown = useRef(false)
 
   const onColorChange = useCallback((color: string) => {
-    props.onChange?.(hex(color))
+    if (!hasFiredMouseDown.current) {
+      return
+    }
+
+    onChange?.(hex(color))
   }, [])
 
+  const handlePaletteChange = useCallback((x: number, y: number) => {
+    setPaletteLoc([x, y])
+  }, [])
+
+  const handleMouseDown = useCallback(() => {
+    if (hasFiredMouseDown.current) {
+      return
+    }
+
+    hasFiredMouseDown.current = true
+  }, [])
 
   return (
-    <div className={style["d-color-picker-panel"]}>
-      <DColorPickerPalette
+    <div className={style["d-color-picker-panel"]} onMouseDownCapture={handleMouseDown}>
+      <MemoizedDColorPickerPalette
         hueColor={hueColor}
         onColorChange={onColorChange}
         x={paletteLoc[0]}
         y={paletteLoc[1]}
-        onChange={(x, y) => setPaletteLoc([x, y])} />
-      <DColorPickerHueSlider x={hueNumber} onHueChange={onHueChange} onChange={setHueNumber} />
+        onChange={handlePaletteChange} />
+      <MemoizedDColorPickerHueSlider x={hueNumber} onHueChange={setHueColor} onChange={setHueNumber} />
     </div>
   )
 }
@@ -128,27 +145,30 @@ function DColorPickerPalette(props: DColorPickerPaletteProps) {
 
     paletteContext.rect(0, 0, CANVAS_SIZE, CANVAS_SIZE)
     fillColorPalette(paletteContext, props.hueColor)
-  }, [])
+  }, [props.hueColor])
 
   useDraggable(parentRef, {
+    shouldRerenderOnDragging: false,
     onDragging(status) {
-      if (initialX.current != null) {
-        const _x = Math.min(CANVAS_SIZE, Math.max(0, status.x - initialX.current))
-        const _y = Math.min(CANVAS_SIZE, Math.max(0, status.y - initialY.current!))
-        props.onChange(_x, _y)
-      }
+      const _x = Math.min(CANVAS_SIZE, Math.max(0, status.x - initialX.current!))
+      const _y = Math.min(CANVAS_SIZE, Math.max(0, status.y - initialY.current!))
+      props.onChange(_x, _y)
     }, 
     onDragStart(status) {
       if (initialX.current == null) {
         initialX.current = parentRef.current?.getBoundingClientRect().x!
         initialY.current = parentRef.current?.getBoundingClientRect().y!
       }
+
+      const _x = Math.min(CANVAS_SIZE, Math.max(0, status.x - initialX.current))
+      const _y = Math.min(CANVAS_SIZE, Math.max(0, status.y - initialY.current!))
+      props.onChange(_x, _y)
     }
   })
 
+
   const x = props.x - 6
   const y = props.y - 6
-
 
   if (context.current && hueColorRef.current !== props.hueColor) {
     fillColorPalette(context.current, props.hueColor)
@@ -190,6 +210,8 @@ function DColorPickerHueSlider(props: DColorPickerHueSliderProps) {
   const initialX = useRef<number | null>(null)
   const context = useRef<CanvasRenderingContext2D | null>(null)
 
+  const setRendering = useRerender()
+
   useEffect(() => {
     // fill hue slider
     const hueSlider = hueSliderRef.current!
@@ -210,16 +232,16 @@ function DColorPickerHueSlider(props: DColorPickerHueSliderProps) {
   }, [])
 
   useDraggable(parentRef, {
-    shouldCancelOnMouseLeave: false,
+    shouldRerenderOnDragging: false,
     onDragging(status) {
-      if (initialX.current != null) {
-        props.onChange(Math.min(CANVAS_SIZE, Math.max(0, status.x - initialX.current)))
-      }
+      props.onChange(Math.min(CANVAS_SIZE, Math.max(0, status.x - initialX.current!)))
     }, 
-    onDragStart() {
+    onDragStart(status) {
       if (initialX.current == null) {
         initialX.current = parentRef.current?.getBoundingClientRect().x!
       }
+
+      props.onChange(Math.min(CANVAS_SIZE, Math.max(0, status.x - initialX.current!)))
     }
   })
 
@@ -227,9 +249,13 @@ function DColorPickerHueSlider(props: DColorPickerHueSliderProps) {
 
   let rgb = "rgba(255, 0, 0, 1)"
   if (context.current && x < CANVAS_SIZE - 6 && x > 0) {
-    const imageData = context.current.getImageData(x+6, 0, 1, 1).data
+    const imageData = context.current.getImageData(x + 6, 0, 1, 1).data
     rgb = `rgba(${imageData[0]}, ${imageData[1]}, ${imageData[2]}, 1)`
   }
+
+  useEffect(() => {
+    setRendering()
+  }, [context.current])
 
   useEffect(() => {
     props.onHueChange?.(rgb)
@@ -264,3 +290,7 @@ function fillColorPalette(context: CanvasRenderingContext2D, color: string) {
   context.fillStyle = gradientBlack
   context.fillRect(0, 0, CANVAS_SIZE, CANVAS_SIZE)
 }
+
+
+const MemoizedDColorPickerHueSlider = memo(DColorPickerHueSlider)
+const MemoizedDColorPickerPalette = memo(DColorPickerPalette)

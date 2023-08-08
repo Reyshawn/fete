@@ -35,7 +35,7 @@ export function rgb(hex: string): [number, number, number] {
   return [r, g, b]
 }
 
-export function hsl(rgb: [number, number, number]) {
+export function hsl(rgb: [number, number, number]): [number, number, number] {
   let [r, g, b] = rgb
   r /= 255;
   g /= 255;
@@ -54,4 +54,29 @@ export function hsl(rgb: [number, number, number]) {
     100 * (s ? (l <= 0.5 ? s / (2 * l - s) : s / (2 - (2 * l - s))) : 0),
     (100 * (2 * l - s)) / 2,
   ]
+}
+
+export function hsv(rgb: [number, number, number]): [number, number, number] {
+  let [r, g, b] = rgb
+  r /= 255, g /= 255, b /= 255;
+
+  let max = Math.max(r, g, b), min = Math.min(r, g, b);
+  let h = 0, s, v = max;
+
+  let d = max - min;
+  s = max == 0 ? 0 : d / max;
+
+  if (max == min) {
+    h = 0; // achromatic
+  } else {
+    switch (max) {
+      case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+      case g: h = (b - r) / d + 2; break;
+      case b: h = (r - g) / d + 4; break;
+    }
+
+    h *= 60;
+  }
+
+  return [ h, s, v ];
 }
