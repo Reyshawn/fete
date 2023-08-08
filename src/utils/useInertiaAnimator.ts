@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useRef, useState } from "react";
 import { AnimationFrame, AnimationState, Animator, AnimatorConfiguration, createAnimator, FrameGenerator } from "./animation";
 import { inertia } from "./inertia";
-import useLazyValue from "./useLazyValue";
+import useRerender from "./useRerender";
 
 
 export interface InertiaAnimatorConfiguration extends AnimatorConfiguration {
@@ -19,7 +19,7 @@ export interface InertiaAnimatorConfiguration extends AnimatorConfiguration {
 
 
 export function useInertiaAnimator(): [AnimationFrame, Animator<InertiaAnimatorConfiguration>] {
-  const [rendering, setRendering] = useState(0)
+  const setRendering = useRerender()
   
   const frame = useRef<AnimationFrame>({
     elapsedTime: 0,
@@ -50,7 +50,7 @@ export function useInertiaAnimator(): [AnimationFrame, Animator<InertiaAnimatorC
     frame.current.elapsedTime = elapsed
     frame.current.values[0] = state.value
     animationState.current.status = state.done ? "finished" : "running"
-    setRendering(i => i + 1)
+    setRendering()
   }, [])
 
   const animator = createAnimator<InertiaAnimatorConfiguration>(setRendering, frame.current, animationState.current, tick)

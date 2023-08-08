@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from "react"
 import Queue from "./collections/queue"
+import useRerender from "./useRerender"
 
 // make an element draggable
 // add mousedown, mouseup, mousemove event handler, touchstart, touchmove, touchend, touchcancel event handler
@@ -22,6 +23,7 @@ interface DraggableConfiguraiton {
   onDragging?: (status: DraggableStatus) => void
   onDragEnd?: (status: DraggableStatus) => void
   shouldCancelOnMouseLeave?: Boolean
+  shouldRerenderOnDragging?: Boolean
 }
 
 const DraggableStatusZero: () => DraggableStatus = () => ({
@@ -37,12 +39,13 @@ const DraggableStatusZero: () => DraggableStatus = () => ({
 })
 
 const defaultConfig: () => DraggableConfiguraiton = () => ({
-  shouldCancelOnMouseLeave: true
+  shouldCancelOnMouseLeave: false,
+  shouldRerenderOnDragging: true
 })
 
 export const useDraggable = (ref: React.RefObject<HTMLDivElement>, opts?: DraggableConfiguraiton) => {
   const options = Object.assign(defaultConfig(), opts)
-  const [rendering, setRendering] = useState(0)
+  const setRendering = useRerender()
   
   const initDragStatus = useRef<DraggableStatus>(DraggableStatusZero())
   const dragStatusQueue = useRef<Queue<DraggableStatus>>(new Queue(2))
@@ -91,8 +94,7 @@ export const useDraggable = (ref: React.RefObject<HTMLDivElement>, opts?: Dragga
 
     
     dragStatusQueue.current.enqueue(status)
-
-    setRendering(i => i+1)
+    setRendering()
 
     options.onDragging?.(status)
   }, [])
@@ -138,9 +140,8 @@ export const useDraggable = (ref: React.RefObject<HTMLDivElement>, opts?: Dragga
       initDragStatus.current = status
       dragStatusQueue.current.enqueue(status)
 
-
       options.onDragStart?.(status)
-      setRendering(0)
+      setRendering()
     }
     
     

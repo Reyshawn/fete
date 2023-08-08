@@ -131,7 +131,6 @@ function DColorPickerPalette(props: DColorPickerPaletteProps) {
   }, [])
 
   useDraggable(parentRef, {
-    shouldCancelOnMouseLeave: false,
     onDragging(status) {
       if (initialX.current != null) {
         const _x = Math.min(CANVAS_SIZE, Math.max(0, status.x - initialX.current))

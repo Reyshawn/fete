@@ -73,7 +73,7 @@ export interface FrameGenerator {
 
 
 export function createAnimator<T extends AnimatorConfiguration>(
-  setRendering: React.Dispatch<React.SetStateAction<number>>,
+  setRendering: () => void,
   frame: AnimationFrame,
   state: AnimationState<T>,
   tick: (now: number) => void
@@ -106,7 +106,7 @@ export function createAnimator<T extends AnimatorConfiguration>(
         state.rafId = null
         state.pausedTime = frame.elapsedTime
         state.status = "pasued"
-        setRendering(i => i+1)
+        setRendering()
       }
     },
 

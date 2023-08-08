@@ -2,6 +2,7 @@ import { useState, useRef, useMemo, useCallback, useEffect } from "react"
 import { AnimationFrame, AnimationState, Animator, AnimatorConfiguration, createAnimator } from "./animation"
 import { spring } from "./spring"
 import useLazyValue from "./useLazyValue"
+import useRerender from "./useRerender"
 
 
 interface SpringAnimatorConfiguration extends AnimatorConfiguration {
@@ -15,7 +16,7 @@ interface SpringAnimatorConfiguration extends AnimatorConfiguration {
 
 
 export function useSpringAnimator(): [AnimationFrame, Animator<SpringAnimatorConfiguration>] {
-  const [rendering, setRendering] = useState(0)
+  const setRendering = useRerender()
 
   const keyframe = useRef<AnimationFrame>({
     elapsedTime: 0,
@@ -56,7 +57,7 @@ export function useSpringAnimator(): [AnimationFrame, Animator<SpringAnimatorCon
 
     keyframe.current.elapsedTime = elapsed
     animationState.current.status = isDone ? "finished" : "running"
-    setRendering(i => i+1)
+    setRendering()
   }, [])
 
   const animator = createAnimator(setRendering, keyframe.current, animationState.current, tick)

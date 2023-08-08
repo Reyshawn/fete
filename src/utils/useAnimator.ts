@@ -8,11 +8,12 @@ import {
   InteractiveAnimator,
   convertAnimator
  } from "./animation"
+import useRerender from "./useRerender"
 
 
 export function useAnimator(): [AnimationFrame, InteractiveAnimator<EasingAnimatorConfiguration>] {
   
-  const [rendering, setRendering] = useState(0)
+  const setRendering = useRerender()
   const frame = useRef<AnimationFrame>({
     elapsedTime: 0,
     values: []
@@ -37,7 +38,7 @@ export function useAnimator(): [AnimationFrame, InteractiveAnimator<EasingAnimat
       state.current.status = "finished"
       f.values = [...config.to]
       f.elapsedTime = duration
-      setRendering(i => i+1)
+      setRendering()
       return
     }
 
@@ -48,7 +49,7 @@ export function useAnimator(): [AnimationFrame, InteractiveAnimator<EasingAnimat
     f.elapsedTime = elapsed
     f.values = config.from.map((f, index) => f + (config.to[index] - f) * curve(progress))
 
-    setRendering(i => i+1)
+    setRendering()
     state.current.rafId = requestAnimationFrame(tick)
   }, [])
 
@@ -70,7 +71,7 @@ export function useAnimator(): [AnimationFrame, InteractiveAnimator<EasingAnimat
       frame.current.values = config.from.map((f, index) => f + (config.to[index] - f) * curve(progress))
 
 
-      setRendering(i => i+1)
+      setRendering()
     }
 
     return convertAnimator(a, set)
