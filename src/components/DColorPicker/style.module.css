@@ -37,8 +37,6 @@
   }
 
   &-hue-slider {
-    width: 300px;
-    height: 12px;
     position: relative;
 
     canvas {
@@ -51,9 +49,9 @@
 }
 
 .d-color-picker-cursor {
-  width: 12px;
-  height: 12px;
-  border-radius: 6px;
+  width: var(--size);
+  height: var(--size);
+  border-radius: calc(var(--size) / 2);
   border: 2px solid white;
   position: absolute;
 }

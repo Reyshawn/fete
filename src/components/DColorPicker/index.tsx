@@ -14,6 +14,10 @@ import useRerender from "@/utils/useRerender"
 
 
 const CANVAS_SIZE = 300
+const HUE_SLIDER_HEIGHT = 12
+const CURSOR_DIAMETER = 12
+const CURSOR_RADIUS = CURSOR_DIAMETER / 2
+const HUE_SLIDER_CURSOR_Y = (HUE_SLIDER_HEIGHT - CURSOR_DIAMETER) / 2
 
 export default function DColorPicker(props: any) {
   const [isPanelShown, setIsPanelShown] = useState(false)
@@ -110,6 +114,7 @@ function DColorPickerPanel(props: DColorPickerPanelProps) {
 function DColorPickerCursor({x, y, bgColor}: {x: number, y: number, bgColor: string}) {
   return (
     <div className={style["d-color-picker-cursor"]} style={{
+      ['--size' as any]: CURSOR_DIAMETER + "px",
       left: x + "px",
       top: y + "px",
       backgroundColor: bgColor
@@ -167,8 +172,8 @@ function DColorPickerPalette(props: DColorPickerPaletteProps) {
   })
 
 
-  const x = props.x - 6
-  const y = props.y - 6
+  const x = props.x - CURSOR_RADIUS
+  const y = props.y - CURSOR_RADIUS
 
   if (context.current && hueColorRef.current !== props.hueColor) {
     fillColorPalette(context.current, props.hueColor)
@@ -177,7 +182,7 @@ function DColorPickerPalette(props: DColorPickerPaletteProps) {
 
   let rgb = "rgba(255, 255, 255, 1)"
 
-  if (y === CANVAS_SIZE - 6) {
+  if (y === CANVAS_SIZE - CURSOR_RADIUS) {
     rgb = "rgba(0, 0, 0, 1)"
   } else if (context.current) {
     const imageData = context.current.getImageData(Math.min(CANVAS_SIZE - 1, x+6), y+6, 1, 1).data
@@ -245,11 +250,11 @@ function DColorPickerHueSlider(props: DColorPickerHueSliderProps) {
     }
   })
 
-  const x = props.x - 6
+  const x = props.x
 
   let rgb = "rgba(255, 0, 0, 1)"
-  if (context.current && x < CANVAS_SIZE - 6 && x > 0) {
-    const imageData = context.current.getImageData(x + 6, 0, 1, 1).data
+  if (context.current && x < CANVAS_SIZE && x > 0) {
+    const imageData = context.current.getImageData(x, 0, 1, 1).data
     rgb = `rgba(${imageData[0]}, ${imageData[1]}, ${imageData[2]}, 1)`
   }
 
@@ -262,9 +267,15 @@ function DColorPickerHueSlider(props: DColorPickerHueSliderProps) {
   }, [rgb])
 
   return (
-    <div className={style["d-color-picker-panel-hue-slider"]} ref={parentRef}>
-      <canvas ref={hueSliderRef} width={CANVAS_SIZE} height={12}></canvas>
-      <DColorPickerCursor x={x} y={0} bgColor={rgb}/>
+    <div
+      style={{
+        width: CANVAS_SIZE + "px",
+        height: HUE_SLIDER_HEIGHT + "px"
+      }}
+      className={style["d-color-picker-panel-hue-slider"]}
+      ref={parentRef}>
+      <canvas ref={hueSliderRef} width={CANVAS_SIZE} height={HUE_SLIDER_HEIGHT}></canvas>
+      <DColorPickerCursor x={x - CURSOR_RADIUS} y={HUE_SLIDER_CURSOR_Y} bgColor={rgb}/>
     </div>
   )
 }
