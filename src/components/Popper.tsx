@@ -11,8 +11,7 @@ interface PopperProps {
 
 
 export default function Popper(props: PopperProps) {
-  const [isPopperShown, setIsPopperShown] = useState(false)
-
+  const [isPopperShown, setIsPopperShown] = useState(props.active)
 
   useEffect(() => {
     if (props.active) {

@@ -11,6 +11,7 @@ import useClickAway from "@/utils/useClickAway"
 import { useDraggable } from "@/utils/useDraggable"
 import { hex, hsv, rgb } from "./helper"
 import useRerender from "@/utils/useRerender"
+import useDisclosure from "@/utils/useDisclosure"
 
 
 const CANVAS_SIZE = 300
@@ -20,18 +21,11 @@ const CURSOR_RADIUS = CURSOR_DIAMETER / 2
 const HUE_SLIDER_CURSOR_Y = (HUE_SLIDER_HEIGHT - CURSOR_DIAMETER) / 2
 
 export default function DColorPicker(props: any) {
-  const [isPanelShown, setIsPanelShown] = useState(false)
   const [hexValue, setHexValue] = useState("#ffffff")
 
-  const {refs, floatingStyles } = useFloating({
+  const { getAnchorProps, getPopperProps } = useDisclosure({
     placement: "bottom-start",
     middleware: [offset(10), shift(), flip()]
-  })
-
-  useClickAway(refs.floating, (event) => {
-    if (event.target !== refs.reference.current) {
-      setIsPanelShown(false)
-    } 
   })
 
   const onHexChange = useCallback((hex: string) => {
@@ -46,11 +40,10 @@ export default function DColorPicker(props: any) {
       style={{
         backgroundColor: hexValue
       }}
-      ref={refs.setReference}
-      onClick={() => setIsPanelShown(true)}></div>
+      {...getAnchorProps()}></div>
     <span>{hexValue}</span>
 
-    <Popper active={isPanelShown}  setFloating={refs.setFloating} floatingStyles={floatingStyles}>
+    <Popper {...getPopperProps()}>
       <DColorPickerPanel onChange={onHexChange} hex={hexValue} />
     </Popper>
   </div>

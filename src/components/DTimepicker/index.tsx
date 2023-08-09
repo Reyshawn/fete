@@ -10,6 +10,7 @@ import { useState } from "react"
 import DScrollpicker from "../DScrollpicker"
 import useClickAway from "@/utils/useClickAway"
 import Popper from "@/components/Popper"
+import useDisclosure from "@/utils/useDisclosure"
 
 
 const HOURS = Array.from(Array<never>(24).keys()).map(i => String(i).padStart(2, '0'))
@@ -31,21 +32,13 @@ function displayTimeFrom(hour?: string, minute?: string, second?: string) {
 
 
 export default function DTimepicker(props: DTimepickerProps) {
-  const [isTimepickerShown, setIsTimepickerShown] = useState(false)
   const [hour, setHour] = useState(props.hour ?? HOURS[0])
   const [minute, setMinute] = useState(props.minute ?? MINUTES[0])
   const [second, setSecond] = useState(props.second ?? SECONDS[0])
 
-  const {refs, floatingStyles } = useFloating({
+  const { getAnchorProps, getPopperProps } = useDisclosure({
     placement: "bottom-start",
     middleware: [offset(10), shift(), flip()]
-  })
-
-
-  useClickAway(refs.floating, (event) => {
-    if (event.target !== refs.reference.current) {
-      setIsTimepickerShown(false)
-    } 
   })
   
   const displayValue = displayTimeFrom(hour, minute, second)
@@ -55,11 +48,10 @@ export default function DTimepicker(props: DTimepickerProps) {
     <div className={style["d-timepicker"]}>
       <input
         type="text"
-        ref={refs.setReference}
-        onClick={() => setIsTimepickerShown(true)}
+        {...getAnchorProps()}
         readOnly
         value={displayValue} />
-        <Popper active={isTimepickerShown} setFloating={refs.setFloating} floatingStyles={floatingStyles}>
+        <Popper {...getPopperProps()}>
           <div className={style["d-timepicker-panel"]}>
             <div className={style["d-timepicker-panel-picker"]}>
               <div className={style["d-timepicker-panel-picker-label"]}>
