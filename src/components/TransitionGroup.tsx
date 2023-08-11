@@ -1,4 +1,4 @@
-import React, { cloneElement, Fragment, useEffect, useLayoutEffect, useRef } from "react"
+import React, { cloneElement, Fragment, useEffect, useRef } from "react"
 import { nextFrame } from "./Transition"
 
 
@@ -36,7 +36,7 @@ export default function TransitionGroup(props: TransitionGroupProps) {
   const positionMap = useRef(new Map<React.Key, TransitonContext>())
   const parentElement = useRef<HTMLElement | null>(null)
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (!isMounted.current) {
       return
     }
@@ -97,7 +97,6 @@ export default function TransitionGroup(props: TransitionGroupProps) {
       .catch(() => {
         
       })
-
   })
 
 

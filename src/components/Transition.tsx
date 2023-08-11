@@ -108,8 +108,6 @@ export default function Transition(props: TransitionProps) {
         
         break
     }
-
-
   }, [stage])
 
   switch (stage) {

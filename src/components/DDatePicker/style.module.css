@@ -65,8 +65,12 @@
     }
 
     &__current-year {
+      transition: transform .3s ease-in-out;
       @apply
-        ml-1 text-lg text-gray-600 font-normal;
+        ml-1
+        text-sm
+        text-gray-600
+        font-normal;
 
       &:hover {
         @apply

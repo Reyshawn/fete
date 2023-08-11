@@ -13,6 +13,22 @@ const MONTH_NAMES = ['January', 'February', 'March', 'April', 'May', 'June', 'Ju
 const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 
 
+const YEAR_TRANSFORM = [
+  -42, // January
+  -30, // February
+  -52, // March
+  -63, // April
+  -68, // May
+  -65, // June
+  -72, // July
+  -45, // August
+  -12, // September
+  -35, // October
+  -17, // November
+  -17, // December
+]
+
+
 export default function DDatePicker(props: any) {
   return (
   <>
@@ -41,8 +57,6 @@ function DDatePickerInput(props: any) {
       </div>
     </div>
   )
-
-
 }
 
 
@@ -103,7 +117,11 @@ function DDatePickerDateView(props: any) {
             </TransitionGroup>
           </div>
           <span
-            className={style["datepicker-panel-header__current-year"]}>
+            className={style["d-datepicker-panel-header__current-year"]}
+            style={{
+              transform: `translateX(${YEAR_TRANSFORM[month]}px)`
+            }}
+          >
             { year }
           </span>
         </div>
@@ -125,27 +143,23 @@ function DDatePickerDateView(props: any) {
       style["d-datepicker-panel-view"],
       style["d-datepicker-panel-month-view"]].join(" ")}>
       <div className={style["d-datepicker-panel-week-label"]}>
-        {
-          DAYS.map((day, index) => (<div
-            style={{"width": "14.26%"}}
-            className="px-1"
-            key={"week_" + index}>
+        { DAYS.map((day, index) => (
+          <div
+              style={{"width": "14.26%"}}
+              className="px-1"
+              key={"week_" + index}>
             <div className="text-gray-800 font-medium text-center text-xs" >{ day }</div>
-          </div>))
-        }
+          </div>)) }
       </div>
 
       <div className={[style["d-datepicker-panel-slide"], "d-datepicker-panel-slide", action].join(" ")}>
         <TransitionGroup name="d-datepicker-panel-slide">
           <div className={style["d-datepicker-panel-days"]} key={`${year}-${month}`}>
-          {
-            blankDays.map((_, index) => (
+          { blankDays.map((_, index) => (
             <div
               key={'blankday' + index}
-              className={style["d-datepicker-panel-days-unit"]}></div>))
-          }
-          {
-            numOfDays.map((date, i) => (
+              className={style["d-datepicker-panel-days-unit"]} />)) }
+          { numOfDays.map((date, i) => (
             <div
               key={'days_' + i}
               className={style["d-datepicker-panel-days-unit"]}>
@@ -153,8 +167,7 @@ function DDatePickerDateView(props: any) {
                 className={style["d-datepicker-panel-days-day"]}>
                 { date }
               </div>
-            </div>))
-          }
+            </div>)) }
           </div>
         </TransitionGroup>
       </div>
