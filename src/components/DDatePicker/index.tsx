@@ -5,6 +5,7 @@ import "./style.css"
 import TransitionGroup from "@/components/TransitionGroup"
 import ArrowLeftIcon from '@/assets/svg/dp_arrow_left.svg'
 import ArrowRightIcon from '@/assets/svg/dp_arrow_right.svg'
+import CalendarIcon from "@/assets/svg/calendar.svg"
 
 
 
@@ -13,38 +14,33 @@ const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 
 
 export default function DDatePicker(props: any) {
-  return (<>
-
-
-  <div className={style["d-datepicker"]}>
-    <div className="relative">
-      <input type="hidden" name="date"/>
-      <input
-        type="text"
-        readOnly
-        className={style["d-datepicker-input"]}
-        placeholder="Select date" />
-      <div className="absolute top-0 right-0 px-3 py-2">
-        <svg className="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
-            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-        </svg>
-      </div>
-      
-    </div>
-  </div>
-
-  <DDatePickerDateView />
-  </>
-    
+  return (
+  <>
+    <DDatePickerInput /> 
+    <DDatePickerDateView />
+  </> 
   )
 }
 
 
 
 function DDatePickerInput(props: any) {
+  return (
+    <div className={style["d-datepicker"]}>
+      <div className="relative">
+        <input type="hidden" name="date"/>
+        <input
+          type="text"
+          readOnly
+          className={style["d-datepicker-input"]}
+          placeholder="Select date" />
+        <div className="absolute top-0 right-0 px-3 py-2">
+          <CalendarIcon /> 
+        </div>
 
-
+      </div>
+    </div>
+  )
 
 
 }
@@ -96,11 +92,18 @@ function DDatePickerDateView(props: any) {
   return (
     <div className={style["d-datepicker-panel"]}>
       <div className={style["d-datepicker-panel-header"]}>
-        <div className="cursor-pointer select-none">
-          <span
-            className={style["d-datepicker-panel-header__current-month"]}>
-            { MONTH_NAMES[month] }&nbsp;
-          </span>
+        <div className="cursor-pointer select-none flex items-center">
+          <div className={["d-datepicker-month-label", action].join(" ")}>
+            <TransitionGroup name="d-datepicker-month-label-slide">
+              {
+                [month].map(m => <span
+                  key={`month_label_${year}-${month}`} 
+                  className={style["d-datepicker-panel-header__current-month"]}>
+                  { MONTH_NAMES[m] }
+                </span>)
+              }
+            </TransitionGroup>
+          </div>
           <span
             className={style["datepicker-panel-header__current-year"]}>
             { year }

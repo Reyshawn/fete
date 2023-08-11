@@ -21,7 +21,13 @@
         border
         border-purple-800
         outline-none;
-    }
+    }    
+  }
+  svg {
+    @apply
+      text-gray-400
+      w-4
+      h-4;
   }
 }
 
@@ -44,8 +50,13 @@
       mb-2;
 
     &__current-month {
+      transition: transform .3s ease-in-out, opacity .3s ease-in-out;
       @apply
-        text-lg font-bold text-gray-800;
+        text-lg
+        font-bold
+        text-gray-800
+        absolute
+        inset-0;
 
       &:hover {
         @apply
@@ -122,10 +133,9 @@
       ease-in-out;
 
     &-unit {
-      width: 14.28%;
+      width: 14.2857%;
       @apply
         text-center
-        px-1
         text-sm;
     }
     &-day {
@@ -216,9 +226,4 @@
       }
     }
   }
-}
-
-
-.d-datepicker-panel-view {
-  transition: transform .3s ease-in-out;
 }
