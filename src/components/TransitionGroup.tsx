@@ -5,7 +5,7 @@ import { nextFrame } from "./Transition"
 interface TransitionGroupProps {
   name: string
   tag?: keyof JSX.IntrinsicElements
-  children: JSX.Element[]
+  children: JSX.Element[] | JSX.Element
 }
 
 
@@ -27,6 +27,7 @@ interface TransitonContext {
 
 
 export default function TransitionGroup(props: TransitionGroupProps) {
+  const _children = Array.isArray(props.children) ? props.children : [props.children]
   const Tag = props.tag ?? Fragment
   
   const isMounted = useRef(false)
@@ -128,7 +129,7 @@ export default function TransitionGroup(props: TransitionGroupProps) {
   elements.current = []
 
   return (<Tag>
-    {props.children.map((child, index) => (cloneElement(child, {
+    {_children.map((child, index) => (cloneElement(child, {
       ref: (el: HTMLElement | null) => {
         if (el) {
           elements.current[index] = {

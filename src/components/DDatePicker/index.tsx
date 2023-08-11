@@ -95,13 +95,11 @@ function DDatePickerDateView(props: any) {
         <div className="cursor-pointer select-none flex items-center">
           <div className={["d-datepicker-month-label", action].join(" ")}>
             <TransitionGroup name="d-datepicker-month-label-slide">
-              {
-                [month].map(m => <span
-                  key={`month_label_${year}-${month}`} 
-                  className={style["d-datepicker-panel-header__current-month"]}>
-                  { MONTH_NAMES[m] }
-                </span>)
-              }
+              <span
+                 key={`month_label_${year}-${month}`} 
+                 className={style["d-datepicker-panel-header__current-month"]}>
+                 { MONTH_NAMES[month] }
+              </span>
             </TransitionGroup>
           </div>
           <span
@@ -139,8 +137,6 @@ function DDatePickerDateView(props: any) {
 
       <div className={[style["d-datepicker-panel-slide"], "d-datepicker-panel-slide", action].join(" ")}>
         <TransitionGroup name="d-datepicker-panel-slide">
-        {
-          [month].map(_ => (
           <div className={style["d-datepicker-panel-days"]} key={`${year}-${month}`}>
           {
             blankDays.map((_, index) => (
@@ -160,8 +156,6 @@ function DDatePickerDateView(props: any) {
             </div>))
           }
           </div>
-          ))
-        }
         </TransitionGroup>
       </div>
       
