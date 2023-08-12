@@ -8,7 +8,7 @@ export default function DSwitchPage(props: any) {
   return (
     <section className={styles.page}>
       <h1>Switch Component</h1>
-      <DSwitch value={state} setValue={setState} />
+      <DSwitch value={state} onChange={setState} />
 
       <p>
         switch value: {state.toString()}
