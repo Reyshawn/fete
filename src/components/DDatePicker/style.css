@@ -1,8 +1,8 @@
 .d-datepicker-panel-slide {
+  height: calc(32px * 5);
   @apply
     relative
-    overflow-hidden
-    h-48;
+    overflow-hidden;
 
   &.prev {
     .d-datepicker-panel-slide-enter-from {

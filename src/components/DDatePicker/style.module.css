@@ -35,7 +35,7 @@
 
 
 .d-datepicker-panel {
-  width: 300px;
+  width: calc(32px * 7 + 32px);
   @apply
     bg-white
     rounded-lg
@@ -82,8 +82,7 @@
   &-body {
     @apply
       overflow-hidden
-      relative
-      h-56;
+      relative;
 
 
     &.day {
@@ -126,30 +125,35 @@
   }
 
   &-days {
+    width: 100%;
+    border: 0;
     @apply
       flex
       flex-wrap
+      content-start
       absolute
       inset-0
-      -mx-1
       transition-transform
       duration-300
       ease-in-out;
 
     &-unit {
-      width: 14.2857%;
+      width: 32px;
+      height: 32px;
       @apply
         text-center
         text-sm;
     }
     &-day {
       @apply
+        flex
+        items-center
+        justify-center
+        w-full
+        h-full
         cursor-pointer
-        text-center
         text-sm
-        leading-none
         rounded-full
-        leading-loose
         text-gray-700;
       
       &:hover {
