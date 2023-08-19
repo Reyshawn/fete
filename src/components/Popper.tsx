@@ -29,6 +29,6 @@ export default function Popper(props: PopperProps) {
           <div>{props.children}</div>
         </Transition>
       </div>, document.body
-    ) : <></>
+    ) : null
   )
 }

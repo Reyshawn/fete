@@ -18,6 +18,10 @@ export default function useDisclosure(props: UseDisclosureProps) {
   const [isPopperShown, setIsPopperShown] = useState(defaultValue)
   
   useClickAway(refs.floating, (event) => {
+    if (!isPopperShown) {
+      return
+    }
+
     if (event.target === refs.reference.current) {
       willTriggerAnchor.current = true
     } else {

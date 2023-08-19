@@ -49,7 +49,8 @@ export default function Transition(props: TransitionProps) {
   }, [])
 
   const beginEnterTransition = useCallback(() => {
-    if (stage !== TransitionStage.notMounted && stage !== TransitionStage.leaveTransitionStart) {
+    // which will not enter the transition
+    if (stage !== TransitionStage.notMounted) {
       setStage(TransitionStage.mounted)
       return
     }
@@ -63,6 +64,7 @@ export default function Transition(props: TransitionProps) {
 
 
   const beginLeaveTransition = useCallback(() => {
+    // which could not enter the transition
     if (stage !== TransitionStage.mounted && stage !== TransitionStage.enterTransitionStart) {
       setStage(TransitionStage.notMounted)
       return

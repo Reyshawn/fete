@@ -1,6 +1,5 @@
 import style from "./style.module.css"
 import {
-  useFloating,
   offset,
   flip,
   shift,
@@ -8,7 +7,6 @@ import {
 
 import { useState } from "react"
 import DScrollpicker from "../DScrollpicker"
-import useClickAway from "@/utils/useClickAway"
 import Popper from "@/components/Popper"
 import useDisclosure from "@/utils/useDisclosure"
 
