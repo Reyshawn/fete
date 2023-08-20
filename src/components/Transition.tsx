@@ -30,6 +30,7 @@ export function nextFrame(cb: () => void) {
 export default function Transition(props: TransitionProps) {
   const [stage, setStage] = useState<TransitionStage>(TransitionStage.notMounted)
   const nodeRef = useRef<HTMLElement | null>(null)
+  const isMounted = useRef(false)
 
   // TODO
   // If the transition didn't really start, stage will remain at the `.enterTransitionStart`
@@ -56,10 +57,6 @@ export default function Transition(props: TransitionProps) {
     }
 
     setStage(TransitionStage.beforeEnterTransition)
-    nextFrame(() => {
-      setStage(TransitionStage.enterTransitionStart)
-      nodeRef.current?.addEventListener("transitionend", handleEnterTransitionEnd)
-    })
   }, [stage])
 
 
@@ -71,21 +68,21 @@ export default function Transition(props: TransitionProps) {
     }
 
     setStage(TransitionStage.beforeLeaveTransition)
-
-    nextFrame(() => {
-      setStage(TransitionStage.leaveTransitionStart)
-      nodeRef.current?.addEventListener("transitionend", handleLeaveTransitionEnd)
-    })
   }, [stage])
 
 
   useEffect(() => {
+    if (!isMounted.current) {
+      return
+    }
+
     if (props.if) {
       beginEnterTransition()
     } else {
       beginLeaveTransition()
     }
   }, [props.if])
+
 
   useLayoutEffect(() => {
     switch (stage) {
@@ -94,6 +91,12 @@ export default function Transition(props: TransitionProps) {
         nodeRef.current?.removeEventListener("transitionend", handleEnterTransitionEnd)
         nodeRef.current?.removeEventListener("transitionend", handleLeaveTransitionEnd)
         nodeRef.current?.classList.add(`${props.name}-enter-from`)
+        
+        nextFrame(() => {
+          setStage(TransitionStage.enterTransitionStart)
+          nodeRef.current?.addEventListener("transitionend", handleEnterTransitionEnd)
+        })
+
         break
       case TransitionStage.enterTransitionStart:
         nodeRef.current?.classList.add(`${props.name}-enter-active`)
@@ -104,9 +107,14 @@ export default function Transition(props: TransitionProps) {
         nodeRef.current?.removeEventListener("transitionend", handleEnterTransitionEnd)
         nodeRef.current?.removeEventListener("transitionend", handleLeaveTransitionEnd)
         nodeRef.current?.classList.add(`${props.name}-leave-active`)
+
+        nextFrame(() => {
+          setStage(TransitionStage.leaveTransitionStart)
+          nodeRef.current?.addEventListener("transitionend", handleLeaveTransitionEnd)
+        })
+
         break
       case TransitionStage.leaveTransitionStart:
-        nodeRef.current?.classList.remove(`${props.name}-leave-from`)
         nodeRef.current?.classList.add(`${props.name}-leave-to`)
         break
       default:
@@ -119,6 +127,10 @@ export default function Transition(props: TransitionProps) {
         break
     }
   }, [stage])
+
+  useEffect(() => {
+    isMounted.current = true
+  }, [])
 
   switch (stage) {
     case TransitionStage.notMounted:

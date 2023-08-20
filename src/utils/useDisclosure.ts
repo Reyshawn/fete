@@ -1,5 +1,5 @@
 import { useFloating, UseFloatingOptions } from "@floating-ui/react-dom";
-import { useCallback, useRef, useState } from "react";
+import { MouseEventHandler, useCallback, useRef, useState } from "react";
 import useClickAway from "./useClickAway";
 
 
@@ -31,7 +31,7 @@ export default function useDisclosure(props: UseDisclosureProps) {
     setIsPopperShown(false)   
   })
   
-  const open = useCallback(() => {
+  const open = useCallback<MouseEventHandler>((event) => {
     if (willTriggerAnchor.current) {
       willTriggerAnchor.current = false
       return
