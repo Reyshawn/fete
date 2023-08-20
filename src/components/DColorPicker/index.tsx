@@ -7,30 +7,26 @@ import {
 } from '@floating-ui/react-dom'
 import Popper from "@/components/Popper"
 import { useCallback, useEffect, useRef, useState, memo } from "react"
-import useClickAway from "@/utils/useClickAway"
 import { useDraggable } from "@/utils/useDraggable"
 import { hex, hsv, rgb } from "./helper"
 import useRerender from "@/utils/useRerender"
 import useDisclosure from "@/utils/useDisclosure"
 
 
-const CANVAS_SIZE = 300
-const HUE_SLIDER_HEIGHT = 12
+const CANVAS_SIZE = 200
+const SLIDER_HEIGHT = 12
 const CURSOR_DIAMETER = 12
 const CURSOR_RADIUS = CURSOR_DIAMETER / 2
-const HUE_SLIDER_CURSOR_Y = (HUE_SLIDER_HEIGHT - CURSOR_DIAMETER) / 2
+const SLIDER_CURSOR_Y = (SLIDER_HEIGHT - CURSOR_DIAMETER) / 2
 
 export default function DColorPicker(props: any) {
   const [hexValue, setHexValue] = useState("#ffffff")
+  const [alphaValue, setAlphaValue] = useState(100) // (0, 100)
 
   const { getAnchorProps, getPopperProps } = useDisclosure({
     placement: "bottom-start",
     middleware: [offset(10), shift(), flip()]
   })
-
-  const onHexChange = useCallback((hex: string) => {
-    setHexValue(hex)
-  }, [])
 
 
   return (
@@ -38,13 +34,13 @@ export default function DColorPicker(props: any) {
     <div
       className={style["d-color-picker-indicator"]}
       style={{
-        backgroundColor: hexValue
+        backgroundColor: `rgba(${rgb(hexValue).join(",")}, ${alphaValue}%`,
       }}
       {...getAnchorProps()}></div>
     <span>{hexValue}</span>
-
+    <span>{alphaValue}%</span>
     <Popper {...getPopperProps()}>
-      <DColorPickerPanel onChange={onHexChange} hex={hexValue} />
+      <DColorPickerPanel onHexChange={setHexValue} hex={hexValue} onAlphaChange={setAlphaValue} alpha={alphaValue} />
     </Popper>
   </div>
   )
@@ -52,14 +48,18 @@ export default function DColorPicker(props: any) {
 
 
 interface DColorPickerPanelProps {
-  onChange?(hex: string): void
-  hex?: string
+  onHexChange(hex: string): void
+  hex: string
+  onAlphaChange(alpha: number): void
+  alpha: number
 }
 
 
 function DColorPickerPanel(props: DColorPickerPanelProps) {
   const {
-    onChange,
+    onAlphaChange,
+    alpha: alphaValue,
+    onHexChange,
     hex: hexValue = "#ffffff"
   } = props
 
@@ -67,6 +67,8 @@ function DColorPickerPanel(props: DColorPickerPanelProps) {
 
   const [hueColor, setHueColor] = useState("rgba(255, 0, 0, 1)")
   const [hueNumber, setHueNumber] = useState((h * CANVAS_SIZE / 360))
+  const [alphaNumber, setAlphaNumber] = useState(alphaValue * CANVAS_SIZE / 100)
+
   const [paletteLoc, setPaletteLoc] = useState([s * CANVAS_SIZE, (1 - v) * CANVAS_SIZE])
   const hasFiredMouseDown = useRef(false)
 
@@ -75,7 +77,7 @@ function DColorPickerPanel(props: DColorPickerPanelProps) {
       return
     }
 
-    onChange?.(hex(color))
+    onHexChange(hex(color))
   }, [])
 
   const handlePaletteChange = useCallback((x: number, y: number) => {
@@ -90,6 +92,11 @@ function DColorPickerPanel(props: DColorPickerPanelProps) {
     hasFiredMouseDown.current = true
   }, [])
 
+  useEffect(() => {
+    onAlphaChange(Math.min(100, Math.max(0, Number((alphaNumber * 100 / CANVAS_SIZE).toFixed(2)))))
+  }, [alphaNumber])
+
+
   return (
     <div className={style["d-color-picker-panel"]} onMouseDownCapture={handleMouseDown}>
       <MemoizedDColorPickerPalette
@@ -99,6 +106,7 @@ function DColorPickerPanel(props: DColorPickerPanelProps) {
         y={paletteLoc[1]}
         onChange={handlePaletteChange} />
       <MemoizedDColorPickerHueSlider x={hueNumber} onHueChange={setHueColor} onChange={setHueNumber} />
+      <MemoizedDColorPickerAlphaSlider hex={hexValue} x={alphaNumber} onChange={setAlphaNumber} />
     </div>
   )
 }
@@ -187,7 +195,12 @@ function DColorPickerPalette(props: DColorPickerPaletteProps) {
   }, [rgb])
 
   return (
-    <div className={style["d-color-picker-panel-color-palette"]} ref={parentRef}>
+    <div
+      style={{
+        ['--size' as any]: CANVAS_SIZE + "px",
+      }}
+      className={style["d-color-picker-panel-color-palette"]}
+      ref={parentRef}>
       <canvas ref={paletteRef} width={CANVAS_SIZE} height={CANVAS_SIZE}></canvas>
       <DColorPickerCursor x={x} y={y} bgColor={rgb} />
     </div>
@@ -263,18 +276,65 @@ function DColorPickerHueSlider(props: DColorPickerHueSliderProps) {
     <div
       style={{
         width: CANVAS_SIZE + "px",
-        height: HUE_SLIDER_HEIGHT + "px"
+        height: SLIDER_HEIGHT + "px"
       }}
       className={style["d-color-picker-panel-hue-slider"]}
       ref={parentRef}>
-      <canvas ref={hueSliderRef} width={CANVAS_SIZE} height={HUE_SLIDER_HEIGHT}></canvas>
-      <DColorPickerCursor x={x - CURSOR_RADIUS} y={HUE_SLIDER_CURSOR_Y} bgColor={rgb}/>
+      <canvas ref={hueSliderRef} width={CANVAS_SIZE} height={SLIDER_HEIGHT}></canvas>
+      <DColorPickerCursor x={x - CURSOR_RADIUS} y={SLIDER_CURSOR_Y} bgColor={rgb}/>
+    </div>
+  )
+}
+
+
+interface DColorPickerAlphaSliderProps {
+  hex: string
+  x: number // range: [0, CANVAS_SIZE]
+  onChange(alphaNumber: number): void
+}
+
+function DColorPickerAlphaSlider(props: DColorPickerAlphaSliderProps) {
+  const parentRef = useRef<HTMLDivElement | null>(null)
+  const { hex: hexValue, x } = props
+  const rgbString = rgb(hexValue).join(", ")
+  const initialX = useRef<number | null>(null)
+
+  useDraggable(parentRef, {
+    shouldRerenderOnDragging: false,
+    onDragging(status) {
+      props.onChange(Math.min(CANVAS_SIZE, Math.max(0, status.x - initialX.current!)))
+    }, 
+    onDragStart(status) {
+      if (initialX.current == null) {
+        initialX.current = parentRef.current?.getBoundingClientRect().x!
+      }
+
+      props.onChange(Math.min(CANVAS_SIZE, Math.max(0, status.x - initialX.current!)))
+    }
+  })
+
+  return (
+    <div
+      ref={parentRef}
+      style={{
+        width: CANVAS_SIZE + "px",
+        height: SLIDER_HEIGHT + "px"
+      }}
+      className={style["d-color-picker-panel-alpha-slider"]}
+    >
+      <div 
+      className={style["d-color-picker-panel-alpha-slider-gradient"] }
+      style={{
+        background: `linear-gradient(to right, rgba(${rgbString}, 0) 0%, rgb(${rgbString}) 100%)`
+      }}></div>
+      <DColorPickerCursor x={x - CURSOR_RADIUS} y={SLIDER_CURSOR_Y} bgColor={`rgba(${rgbString}, ${x / CANVAS_SIZE})`}/>
     </div>
   )
 }
 
 
 function fillColorPalette(context: CanvasRenderingContext2D, color: string) {
+  context.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE)
   context.fillStyle = color
   context.fillRect(0, 0, CANVAS_SIZE, CANVAS_SIZE)
 
@@ -298,3 +358,4 @@ function fillColorPalette(context: CanvasRenderingContext2D, color: string) {
 
 const MemoizedDColorPickerHueSlider = memo(DColorPickerHueSlider)
 const MemoizedDColorPickerPalette = memo(DColorPickerPalette)
+const MemoizedDColorPickerAlphaSlider = memo(DColorPickerAlphaSlider)

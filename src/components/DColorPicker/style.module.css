@@ -1,18 +1,16 @@
 
 .d-color-picker {
-
   @apply 
     flex
-    items-center;
-
+    items-center
+    gap-4;
 
   &-indicator {
     @apply
       w-5
       h-5
       border
-      rounded
-      mr-2;
+      rounded;
   }
 }
 
@@ -26,8 +24,8 @@
 
 
   &-color-palette {
-    width: 300px;
-    height: 300px;
+    width: var(--size);
+    height: var(--size);
     position: relative;
     canvas {
       @apply
@@ -38,10 +36,24 @@
 
   &-hue-slider {
     position: relative;
+    @apply
+      mt-3;
 
     canvas {
       @apply
-        mt-3
+        w-full
+        h-full;
+    }
+  }
+
+  &-alpha-slider {
+    background: conic-gradient(rgb(204, 204, 204) 25%, rgb(255, 255, 255) 0deg, rgb(255, 255, 255) 50%, rgb(204, 204, 204) 0deg, rgb(204, 204, 204) 75%, rgb(255, 255, 255) 0deg) 0% 0% / 8px 8px;
+    position: relative;
+    @apply
+      mt-3;
+    
+    &-gradient {
+      @apply
         w-full
         h-full;
     }
