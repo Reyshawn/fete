@@ -12,7 +12,8 @@
       text-gray-600
       text-xs
       font-thin
-      font-mono;
+      font-mono
+      cursor-pointer;
 
     &:focus {
       @apply
