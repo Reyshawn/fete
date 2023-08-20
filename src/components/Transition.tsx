@@ -50,7 +50,7 @@ export default function Transition(props: TransitionProps) {
 
   const beginEnterTransition = useCallback(() => {
     // which will not enter the transition
-    if (stage !== TransitionStage.notMounted) {
+    if (stage !== TransitionStage.notMounted && stage !== TransitionStage.leaveTransitionStart) {
       setStage(TransitionStage.mounted)
       return
     }
@@ -90,6 +90,9 @@ export default function Transition(props: TransitionProps) {
   useLayoutEffect(() => {
     switch (stage) {
       case TransitionStage.beforeEnterTransition:
+        resetNode(nodeRef.current!, props.name) 
+        nodeRef.current?.removeEventListener("transitionend", handleEnterTransitionEnd)
+        nodeRef.current?.removeEventListener("transitionend", handleLeaveTransitionEnd)
         nodeRef.current?.classList.add(`${props.name}-enter-from`)
         break
       case TransitionStage.enterTransitionStart:
@@ -97,6 +100,9 @@ export default function Transition(props: TransitionProps) {
         nodeRef.current?.classList.remove(`${props.name}-enter-from`)
         break
       case TransitionStage.beforeLeaveTransition: 
+        resetNode(nodeRef.current!, props.name)
+        nodeRef.current?.removeEventListener("transitionend", handleEnterTransitionEnd)
+        nodeRef.current?.removeEventListener("transitionend", handleLeaveTransitionEnd)
         nodeRef.current?.classList.add(`${props.name}-leave-active`)
         break
       case TransitionStage.leaveTransitionStart:
@@ -106,6 +112,8 @@ export default function Transition(props: TransitionProps) {
       default:
         if (nodeRef.current) {
           resetNode(nodeRef.current, props.name)
+          nodeRef.current?.removeEventListener("transitionend", handleEnterTransitionEnd)
+          nodeRef.current?.removeEventListener("transitionend", handleLeaveTransitionEnd)
         }
         
         break
