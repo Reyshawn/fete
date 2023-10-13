@@ -3,20 +3,21 @@ import { MouseEventHandler, useCallback, useRef, useState } from "react";
 import useClickAway from "./useClickAway";
 
 
-interface UseDisclosureProps extends UseFloatingOptions {
+interface UsePopperProps extends UseFloatingOptions {
   default?: boolean,
 }
 
-export default function useDisclosure(props: UseDisclosureProps) {
-  const { 
+export default function usePopper(props: UsePopperProps) {
+  const {
     default: defaultValue = false,
   } = props
 
-  const {refs, floatingStyles } = useFloating(props)
+  const { refs, floatingStyles } = useFloating(props)
 
   const willTriggerAnchor = useRef(false)
+
   const [isPopperShown, setIsPopperShown] = useState(defaultValue)
-  
+
   useClickAway(refs.floating, (event) => {
     if (!isPopperShown) {
       return
@@ -27,16 +28,16 @@ export default function useDisclosure(props: UseDisclosureProps) {
     } else {
       willTriggerAnchor.current = false
     }
-    
-    setIsPopperShown(false)   
+
+    setIsPopperShown(false)
   })
-  
+
   const open = useCallback<MouseEventHandler>((event) => {
     if (willTriggerAnchor.current) {
       willTriggerAnchor.current = false
       return
     }
-    
+
     setIsPopperShown(true)
   }, [])
 

@@ -6,27 +6,25 @@ interface PopperProps {
   active: boolean
   children: JSX.Element
   setFloating: (node: HTMLElement | null) => void
-  floatingStyles:  React.CSSProperties
+  floatingStyles: React.CSSProperties
 }
 
 
 export default function Popper(props: PopperProps) {
+  const { active, children, setFloating, floatingStyles } = props
   const [isPopperShown, setIsPopperShown] = useState(props.active)
 
   useEffect(() => {
-    if (props.active) {
+    if (active) {
       setIsPopperShown(true)
-    } else {
-  
     }
-  }, [props.active])
-  
+  }, [active])
 
   return (
     isPopperShown ? createPortal(
-      <div ref={props.setFloating} style={props.floatingStyles}>
-        <Transition name="popper" if={props.active} onAfterLeave={() => setIsPopperShown(false)}>
-          <div>{props.children}</div>
+      <div ref={setFloating} style={floatingStyles}>
+        <Transition name="popper" if={active} onAfterLeave={() => setIsPopperShown(false)}>
+          <div>{children}</div>
         </Transition>
       </div>, document.body
     ) : null

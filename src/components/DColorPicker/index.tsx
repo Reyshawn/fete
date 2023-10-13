@@ -10,7 +10,7 @@ import { useCallback, useEffect, useRef, useState, memo } from "react"
 import { useDraggable } from "@/utils/useDraggable"
 import { hex, hsv, rgb } from "./helper"
 import useRerender from "@/utils/useRerender"
-import useDisclosure from "@/utils/useDisclosure"
+import usePopper from "@/utils/usePopper"
 
 
 const CANVAS_SIZE = 200
@@ -23,7 +23,7 @@ export default function DColorPicker(props: any) {
   const [hexValue, setHexValue] = useState("#ffffff")
   const [alphaValue, setAlphaValue] = useState(100) // (0, 100)
 
-  const { getAnchorProps, getPopperProps } = useDisclosure({
+  const { getAnchorProps, getPopperProps } = usePopper({
     placement: "bottom-start",
     middleware: [offset(10), shift(), flip()]
   })

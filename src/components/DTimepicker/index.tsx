@@ -8,7 +8,7 @@ import {
 import { useState } from "react"
 import DScrollpicker from "../DScrollpicker"
 import Popper from "@/components/Popper"
-import useDisclosure from "@/utils/useDisclosure"
+import usePopper from "@/utils/usePopper"
 
 
 const HOURS = Array.from(Array<never>(24).keys()).map(i => String(i).padStart(2, '0'))
@@ -34,7 +34,7 @@ export default function DTimepicker(props: DTimepickerProps) {
   const [minute, setMinute] = useState(props.minute ?? MINUTES[0])
   const [second, setSecond] = useState(props.second ?? SECONDS[0])
 
-  const { getAnchorProps, getPopperProps } = useDisclosure({
+  const { getAnchorProps, getPopperProps } = usePopper({
     placement: "bottom-start",
     middleware: [offset(10), shift(), flip()]
   })
