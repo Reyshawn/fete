@@ -1,5 +1,6 @@
+import { PopperProps } from "@/components/Popper";
 import { useFloating, UseFloatingOptions } from "@floating-ui/react-dom";
-import { MouseEventHandler, useCallback, useRef, useState } from "react";
+import { MouseEventHandler, Ref, useCallback, useRef, useState } from "react";
 import useClickAway from "./useClickAway";
 
 
@@ -7,43 +8,48 @@ interface UsePopperProps extends UseFloatingOptions {
   default?: boolean,
 }
 
-export default function usePopper(props: UsePopperProps) {
+
+interface AnchorProps<T = HTMLElement> {
+  ref: Ref<T>,
+  onClick: MouseEventHandler
+}
+
+export default function usePopper(props: UsePopperProps): {
+  getAnchorProps: () => AnchorProps,
+  getPopperProps: () => Omit<PopperProps, "children">
+} {
   const {
     default: defaultValue = false,
   } = props
 
   const { refs, floatingStyles } = useFloating(props)
-
-  const willTriggerAnchor = useRef(false)
-
+  
+  const anchorRef = useRef<HTMLElement | null>(null)
   const [isPopperShown, setIsPopperShown] = useState(defaultValue)
 
-  useClickAway(refs.floating, (event) => {
-    if (!isPopperShown) {
-      return
+  useClickAway({
+    enabled: isPopperShown,
+    ref: refs.floating, 
+    handler: (event) => {
+      if (!anchorRef.current?.contains(event.target as HTMLElement)) {
+        setIsPopperShown(false)
+      }
     }
-
-    if (event.target === refs.reference.current) {
-      willTriggerAnchor.current = true
-    } else {
-      willTriggerAnchor.current = false
-    }
-
-    setIsPopperShown(false)
   })
 
   const open = useCallback<MouseEventHandler>((event) => {
-    if (willTriggerAnchor.current) {
-      willTriggerAnchor.current = false
-      return
-    }
-
-    setIsPopperShown(true)
+    setIsPopperShown(i => !i)
   }, [])
 
   return {
     getAnchorProps: () => ({
-      ref: refs.setReference,
+      ref: (node) => {
+        if (anchorRef.current == null) {
+          anchorRef.current = node
+        }
+
+        refs.setReference(node)
+      },
       onClick: open
     }),
 

@@ -1,17 +1,26 @@
 import Transition from "@/components/Transition"
-import { useEffect, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { createPortal } from "react-dom"
 
-interface PopperProps {
+
+export interface PopperProps {
   active: boolean
-  children: JSX.Element
+  children: JSX.Element | JSX.Element[]
   setFloating: (node: HTMLElement | null) => void
   floatingStyles: React.CSSProperties
+
+  container?: Element | DocumentFragment
 }
 
 
 export default function Popper(props: PopperProps) {
-  const { active, children, setFloating, floatingStyles } = props
+  const {
+    active,
+    children,
+    setFloating,
+    floatingStyles,
+    container
+  } = props
   const [isPopperShown, setIsPopperShown] = useState(props.active)
 
   useEffect(() => {
@@ -20,13 +29,17 @@ export default function Popper(props: PopperProps) {
     }
   }, [active])
 
+  const fiberNode = useMemo(() => (
+    <div ref={setFloating} style={floatingStyles}>
+      <Transition name="popper" if={active} onAfterLeave={() => setIsPopperShown(false)}>
+        <div>{children}</div>
+      </Transition>
+    </div>
+  ), [setFloating, floatingStyles, active, children])
+
   return (
-    isPopperShown ? createPortal(
-      <div ref={setFloating} style={floatingStyles}>
-        <Transition name="popper" if={active} onAfterLeave={() => setIsPopperShown(false)}>
-          <div>{children}</div>
-        </Transition>
-      </div>, document.body
-    ) : null
+    isPopperShown
+      ? (container == null ? fiberNode : createPortal(fiberNode, container))
+      : null
   )
 }

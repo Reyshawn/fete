@@ -5,20 +5,36 @@ type EventHandlerType = <K extends keyof DocumentEventMap>(evt: DocumentEventMap
 
 const defaultEvents: (keyof DocumentEventMap)[] = ['mousedown', 'touchstart'];
 
-const useClickAway = <E extends Event = Event>(
+
+interface UseClickAwayProps {
+  enabled?: boolean,
   ref: RefObject<HTMLElement | null>,
-  onClickAway: EventHandlerType,
-  events: (keyof DocumentEventMap)[] = defaultEvents
-) => {
-  const savedCallback = useRef(onClickAway);
+  handler: EventHandlerType,
+  events?: (keyof DocumentEventMap)[]
+}
+
+const useClickAway = <E extends Event = Event>(props: UseClickAwayProps) => {
+  const {
+    enabled = true,
+    ref,
+    handler: onClickAway,
+    events = defaultEvents
+  } = props
+  const savedCallback = useRef(onClickAway)
+
   useEffect(() => {
-    savedCallback.current = onClickAway;
-  }, [onClickAway]);
+    savedCallback.current = onClickAway
+  }, [onClickAway])
+
   useEffect(() => {
+    if (!enabled) {
+      return
+    }
+
     const handler: EventHandlerType = (event) => {
       const { current: el } = ref
       el && !el.contains(event.target as HTMLElement) && savedCallback.current(event);
-    };
+    }
     for (const eventName of events) {
       document.addEventListener(eventName, handler)
     }
@@ -26,8 +42,8 @@ const useClickAway = <E extends Event = Event>(
       for (const eventName of events) {
         document.removeEventListener(eventName, handler)
       }
-    };
-  }, [events, ref])
-};
+    }
+  }, [enabled, events, ref])
+}
 
 export default useClickAway
