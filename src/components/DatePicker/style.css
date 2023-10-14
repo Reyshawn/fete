@@ -1,4 +1,4 @@
-.d-datepicker-panel-slide {
+.date-picker-panel-slide {
   height: calc(32px * 5);
   @apply
     relative
@@ -26,7 +26,7 @@
 }
 
 
-.d-datepicker-month-label {
+.date-picker-month-label {
   width: 12ch;
   height: 28px;
   @apply  

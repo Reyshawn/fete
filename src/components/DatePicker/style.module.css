@@ -1,10 +1,10 @@
 
 
-.d-datepicker {
+.date-picker {
   @apply
     mb-5;
 
-  .d-datepicker-input {
+  &-input {
     @apply
       w-full
       border
@@ -32,7 +32,7 @@
 }
 
 
-.d-datepicker-panel {
+.date-picker-panel {
   width: calc(32px * 7 + 32px);
   @apply
     bg-white

@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react"
+import { ForwardedRef, forwardRef, memo, MouseEventHandler, useCallback, useState } from "react"
 import style from "./style.module.css"
 import "./style.css"
 
@@ -6,6 +6,8 @@ import TransitionGroup from "@/components/TransitionGroup"
 import ArrowLeftIcon from '@/assets/svg/dp_arrow_left.svg'
 import ArrowRightIcon from '@/assets/svg/dp_arrow_right.svg'
 import CalendarIcon from "@/assets/svg/calendar.svg"
+import usePopper from "@/utils/usePopper"
+import Popper from "../Popper"
 
 
 
@@ -30,25 +32,31 @@ const YEAR_TRANSFORM = [
 
 
 export default function DatePicker(props: any) {
+  const { getAnchorProps, getPopperProps } = usePopper<HTMLDivElement>()
+
   return (
-  <>
-    <DatePickerInput /> 
-    <DatePickerDateView />
-  </> 
+    <>
+      <MemoizedDatePickerInput {...getAnchorProps()} />
+      <Popper {...getPopperProps()}>
+        <DatePickerDateView />
+      </Popper>
+    </>
   )
 }
 
+interface DatePickerInputProps {
+  onClick: MouseEventHandler<HTMLDivElement>
+}
 
-
-function DatePickerInput(props: any) {
+function DatePickerInput({ onClick }: DatePickerInputProps, ref: ForwardedRef<HTMLDivElement>) {
   return (
-    <div className={style["d-datepicker"]}>
+    <div className={style["date-picker"]} onClick={onClick} ref={ref}>
       <div className="relative">
         <input type="hidden" name="date"/>
         <input
           type="text"
           readOnly
-          className={style["d-datepicker-input"]}
+          className={style["date-picker-input"]}
           placeholder="Select date" />
         <div className="absolute top-0 right-0 px-3 py-2">
           <CalendarIcon /> 
@@ -58,6 +66,8 @@ function DatePickerInput(props: any) {
     </div>
   )
 }
+
+const MemoizedDatePickerInput = memo(forwardRef(DatePickerInput))
 
 
 function DatePickerYearView(props: any) {
@@ -104,20 +114,20 @@ function DatePickerDateView(props: any) {
 
 
   return (
-    <div className={style["d-datepicker-panel"]}>
-      <div className={style["d-datepicker-panel-header"]}>
+    <div className={style["date-picker-panel"]}>
+      <div className={style["date-picker-panel-header"]}>
         <div className="cursor-pointer select-none flex items-center">
-          <div className={["d-datepicker-month-label", action].join(" ")}>
-            <TransitionGroup name="d-datepicker-month-label-slide">
+          <div className={["date-picker-month-label", action].join(" ")}>
+            <TransitionGroup name="date-picker-month-label-slide">
               <span
                  key={`month_label_${year}-${month}`} 
-                 className={style["d-datepicker-panel-header__current-month"]}>
+                 className={style["date-picker-panel-header__current-month"]}>
                  { MONTH_NAMES[month] }
               </span>
             </TransitionGroup>
           </div>
           <span
-            className={style["d-datepicker-panel-header__current-year"]}
+            className={style["date-picker-panel-header__current-year"]}
             style={{
               transform: `translateX(${YEAR_TRANSFORM[month]}px)`
             }}
@@ -140,9 +150,9 @@ function DatePickerDateView(props: any) {
       </div>
 
     <div className={[
-      style["d-datepicker-panel-view"],
-      style["d-datepicker-panel-month-view"]].join(" ")}>
-      <div className={style["d-datepicker-panel-week-label"]}>
+      style["date-picker-panel-view"],
+      style["date-picker-panel-month-view"]].join(" ")}>
+      <div className={style["date-picker-panel-week-label"]}>
         { DAYS.map((day, index) => (
           <div
               style={{"width": "14.26%"}}
@@ -152,19 +162,19 @@ function DatePickerDateView(props: any) {
           </div>)) }
       </div>
 
-      <div className={[style["d-datepicker-panel-slide"], "d-datepicker-panel-slide", action].join(" ")}>
-        <TransitionGroup name="d-datepicker-panel-slide">
-          <div className={style["d-datepicker-panel-days"]} key={`${year}-${month}`}>
+      <div className={[style["date-picker-panel-slide"], "date-picker-panel-slide", action].join(" ")}>
+        <TransitionGroup name="date-picker-panel-slide">
+          <div className={style["date-picker-panel-days"]} key={`${year}-${month}`}>
           { blankDays.map((_, index) => (
             <div
               key={'blankday' + index}
-              className={style["d-datepicker-panel-days-unit"]} />)) }
+              className={style["date-picker-panel-days-unit"]} />)) }
           { numOfDays.map((date, i) => (
             <div
               key={'days_' + i}
-              className={style["d-datepicker-panel-days-unit"]}>
+              className={style["date-picker-panel-days-unit"]}>
               <div
-                className={style["d-datepicker-panel-days-day"]}>
+                className={style["date-picker-panel-days-day"]}>
                 { date }
               </div>
             </div>)) }

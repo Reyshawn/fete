@@ -34,10 +34,7 @@ export default function TimePicker(props: TimePickerProps) {
   const [minute, setMinute] = useState(props.minute ?? MINUTES[0])
   const [second, setSecond] = useState(props.second ?? SECONDS[0])
 
-  const { getAnchorProps, getPopperProps } = usePopper<HTMLInputElement>({
-    placement: "bottom-start",
-    middleware: [offset(10), shift(), flip()]
-  })
+  const { getAnchorProps, getPopperProps } = usePopper<HTMLInputElement>()
   
   const displayValue = displayTimeFrom(hour, minute, second)
   props.onChange?.(displayValue)

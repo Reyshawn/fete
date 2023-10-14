@@ -1,5 +1,12 @@
 import { PopperProps } from "@/components/Popper";
-import { autoUpdate, useFloating, UseFloatingOptions } from "@floating-ui/react-dom";
+import {
+  autoUpdate,
+  useFloating,
+  UseFloatingOptions,
+  offset,
+  flip,
+  shift
+} from "@floating-ui/react-dom";
 import { MouseEventHandler, Ref, useCallback, useRef, useState } from "react";
 import { mergeRefs } from "./mergeRefs";
 import useClickAway from "./useClickAway";
@@ -15,7 +22,7 @@ interface AnchorProps<T> {
   onClick: MouseEventHandler<T>
 }
 
-export default function usePopper<T extends HTMLElement>(props: UsePopperProps): {
+export default function usePopper<T extends HTMLElement>(props: UsePopperProps | undefined = {}): {
   getAnchorProps: () => AnchorProps<T>,
   getPopperProps: () => Omit<PopperProps, "children">
 } {
@@ -25,6 +32,8 @@ export default function usePopper<T extends HTMLElement>(props: UsePopperProps):
 
   const anchorRef = useRef<HTMLElement | null>(null)
   const { refs, floatingStyles, placement } = useFloating({
+    placement: "bottom-start",
+    middleware: [offset(10), shift(), flip()],
     whileElementsMounted: autoUpdate,
     ...props
   })
