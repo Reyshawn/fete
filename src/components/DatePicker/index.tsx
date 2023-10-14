@@ -29,18 +29,18 @@ const YEAR_TRANSFORM = [
 ]
 
 
-export default function DDatePicker(props: any) {
+export default function DatePicker(props: any) {
   return (
   <>
-    <DDatePickerInput /> 
-    <DDatePickerDateView />
+    <DatePickerInput /> 
+    <DatePickerDateView />
   </> 
   )
 }
 
 
 
-function DDatePickerInput(props: any) {
+function DatePickerInput(props: any) {
   return (
     <div className={style["d-datepicker"]}>
       <div className="relative">
@@ -60,18 +60,18 @@ function DDatePickerInput(props: any) {
 }
 
 
-function DDatePickerYearView(props: any) {
+function DatePickerYearView(props: any) {
 
 }
 
 
-function DDatePickerMonthView(props: any) {
+function DatePickerMonthView(props: any) {
   
 }
 
 
 
-function DDatePickerDateView(props: any) {
+function DatePickerDateView(props: any) {
   
   const [year, setYear] = useState(2023)
   const [month, setMonth] = useState(0)

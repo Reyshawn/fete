@@ -6,7 +6,7 @@ import {
 } from '@floating-ui/react-dom'
 
 import { useState } from "react"
-import DScrollpicker from "../DScrollpicker"
+import ScrollPicker from "../ScrollPicker"
 import Popper from "@/components/Popper"
 import usePopper from "@/utils/usePopper"
 
@@ -55,19 +55,19 @@ export default function DTimepicker(props: DTimepickerProps) {
               <div className={style["d-timepicker-panel-picker-label"]}>
                 HOUR
               </div>
-              <DScrollpicker options={HOURS} value={hour ?? HOURS[0]} onChange={setHour} />
+              <ScrollPicker options={HOURS} value={hour ?? HOURS[0]} onChange={setHour} />
             </div>
             <div className={style["d-timepicker-panel-picker"]}>
               <div className={style["d-timepicker-panel-picker-label"]}>
                 MINUTE
               </div>
-              <DScrollpicker options={MINUTES} value={minute ?? MINUTES[0]} onChange={setMinute} />
+              <ScrollPicker options={MINUTES} value={minute ?? MINUTES[0]} onChange={setMinute} />
             </div>
             <div className={style["d-timepicker-panel-picker"]}>
               <div className={style["d-timepicker-panel-picker-label"]}>
                 SECOND
               </div>
-              <DScrollpicker options={SECONDS} value={second ?? SECONDS[0]} onChange={setSecond} />
+              <ScrollPicker options={SECONDS} value={second ?? SECONDS[0]} onChange={setSecond} />
             </div>
           </div>
         </Popper>

@@ -18,7 +18,7 @@ const CURSOR_DIAMETER = 12
 const CURSOR_RADIUS = CURSOR_DIAMETER / 2
 const SLIDER_CURSOR_Y = (SLIDER_HEIGHT - CURSOR_DIAMETER) / 2
 
-export default function DColorPicker(props: any) {
+export default function ColorPicker(props: any) {
   const [hexValue, setHexValue] = useState("#ffffff")
   const [alphaValue, setAlphaValue] = useState(100) // (0, 100)
 
@@ -39,14 +39,14 @@ export default function DColorPicker(props: any) {
     <span>{hexValue}</span>
     <span>{alphaValue}%</span>
     <Popper {...getPopperProps()}>
-      <DColorPickerPanel onHexChange={setHexValue} hex={hexValue} onAlphaChange={setAlphaValue} alpha={alphaValue} />
+      <ColorPickerPanel onHexChange={setHexValue} hex={hexValue} onAlphaChange={setAlphaValue} alpha={alphaValue} />
     </Popper>
   </div>
   )
 }
 
 
-interface DColorPickerPanelProps {
+interface ColorPickerPanelProps {
   onHexChange(hex: string): void
   hex: string
   onAlphaChange(alpha: number): void
@@ -54,7 +54,7 @@ interface DColorPickerPanelProps {
 }
 
 
-function DColorPickerPanel(props: DColorPickerPanelProps) {
+function ColorPickerPanel(props: ColorPickerPanelProps) {
   const {
     onAlphaChange,
     alpha: alphaValue,
@@ -98,20 +98,20 @@ function DColorPickerPanel(props: DColorPickerPanelProps) {
 
   return (
     <div className={style["d-color-picker-panel"]} onMouseDownCapture={handleMouseDown}>
-      <MemoizedDColorPickerPalette
+      <MemoizedColorPickerPalette
         hueColor={hueColor}
         onColorChange={onColorChange}
         x={paletteLoc[0]}
         y={paletteLoc[1]}
         onChange={handlePaletteChange} />
-      <MemoizedDColorPickerHueSlider x={hueNumber} onHueChange={setHueColor} onChange={setHueNumber} />
-      <MemoizedDColorPickerAlphaSlider hex={hexValue} x={alphaNumber} onChange={setAlphaNumber} />
+      <MemoizedColorPickerHueSlider x={hueNumber} onHueChange={setHueColor} onChange={setHueNumber} />
+      <MemoizedColorPickerAlphaSlider hex={hexValue} x={alphaNumber} onChange={setAlphaNumber} />
     </div>
   )
 }
 
 
-function DColorPickerCursor({x, y, bgColor}: {x: number, y: number, bgColor: string}) {
+function ColorPickerCursor({x, y, bgColor}: {x: number, y: number, bgColor: string}) {
   return (
     <div className={style["d-color-picker-cursor"]} style={{
       ['--size' as any]: CURSOR_DIAMETER + "px",
@@ -123,7 +123,7 @@ function DColorPickerCursor({x, y, bgColor}: {x: number, y: number, bgColor: str
 }
 
 
-interface DColorPickerPaletteProps {
+interface ColorPickerPaletteProps {
   hueColor: string
   onColorChange?(color: string): void
   x: number
@@ -132,7 +132,7 @@ interface DColorPickerPaletteProps {
 }
 
 
-function DColorPickerPalette(props: DColorPickerPaletteProps) {
+function ColorPickerPalette(props: ColorPickerPaletteProps) {
   const parentRef = useRef<HTMLDivElement | null>(null)
   const paletteRef = useRef<HTMLCanvasElement | null>(null)
   const initialX = useRef<number | null>(null)
@@ -201,20 +201,20 @@ function DColorPickerPalette(props: DColorPickerPaletteProps) {
       className={style["d-color-picker-panel-color-palette"]}
       ref={parentRef}>
       <canvas ref={paletteRef} width={CANVAS_SIZE} height={CANVAS_SIZE}></canvas>
-      <DColorPickerCursor x={x} y={y} bgColor={rgb} />
+      <ColorPickerCursor x={x} y={y} bgColor={rgb} />
     </div>
   )
 }
 
 
-interface DColorPickerHueSliderProps {
+interface ColorPickerHueSliderProps {
   onHueChange?(color: string): void
   x: number // range: [0, CANVAS_SIZE]
   onChange(hueNumber: number): void
 }
 
 
-function DColorPickerHueSlider(props: DColorPickerHueSliderProps) {
+function ColorPickerHueSlider(props: ColorPickerHueSliderProps) {
   const parentRef = useRef<HTMLDivElement | null>(null)
   const hueSliderRef = useRef<HTMLCanvasElement | null>(null)
   const initialX = useRef<number | null>(null)
@@ -280,19 +280,19 @@ function DColorPickerHueSlider(props: DColorPickerHueSliderProps) {
       className={style["d-color-picker-panel-hue-slider"]}
       ref={parentRef}>
       <canvas ref={hueSliderRef} width={CANVAS_SIZE} height={SLIDER_HEIGHT}></canvas>
-      <DColorPickerCursor x={x - CURSOR_RADIUS} y={SLIDER_CURSOR_Y} bgColor={rgb}/>
+      <ColorPickerCursor x={x - CURSOR_RADIUS} y={SLIDER_CURSOR_Y} bgColor={rgb}/>
     </div>
   )
 }
 
 
-interface DColorPickerAlphaSliderProps {
+interface ColorPickerAlphaSlider {
   hex: string
   x: number // range: [0, CANVAS_SIZE]
   onChange(alphaNumber: number): void
 }
 
-function DColorPickerAlphaSlider(props: DColorPickerAlphaSliderProps) {
+function ColorPickerAlphaSlider(props: ColorPickerAlphaSlider) {
   const parentRef = useRef<HTMLDivElement | null>(null)
   const { hex: hexValue, x } = props
   const rgbString = rgb(hexValue).join(", ")
@@ -326,7 +326,7 @@ function DColorPickerAlphaSlider(props: DColorPickerAlphaSliderProps) {
       style={{
         background: `linear-gradient(to right, rgba(${rgbString}, 0) 0%, rgb(${rgbString}) 100%)`
       }}></div>
-      <DColorPickerCursor x={x - CURSOR_RADIUS} y={SLIDER_CURSOR_Y} bgColor={`rgba(${rgbString}, ${x / CANVAS_SIZE})`}/>
+      <ColorPickerCursor x={x - CURSOR_RADIUS} y={SLIDER_CURSOR_Y} bgColor={`rgba(${rgbString}, ${x / CANVAS_SIZE})`}/>
     </div>
   )
 }
@@ -355,6 +355,6 @@ function fillColorPalette(context: CanvasRenderingContext2D, color: string) {
 }
 
 
-const MemoizedDColorPickerHueSlider = memo(DColorPickerHueSlider)
-const MemoizedDColorPickerPalette = memo(DColorPickerPalette)
-const MemoizedDColorPickerAlphaSlider = memo(DColorPickerAlphaSlider)
+const MemoizedColorPickerHueSlider = memo(ColorPickerHueSlider)
+const MemoizedColorPickerPalette = memo(ColorPickerPalette)
+const MemoizedColorPickerAlphaSlider = memo(ColorPickerAlphaSlider)

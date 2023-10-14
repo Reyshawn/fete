@@ -1,5 +1,5 @@
 import { useState } from "react"
-import DSwitch from "@/components/DSwitch"
+import Switch from "@/components/Switch"
 import styles from "@/styles/sectionPage.module.css"
 
 export default function DSwitchPage(props: any) {
@@ -8,7 +8,7 @@ export default function DSwitchPage(props: any) {
   return (
     <section className={styles.page}>
       <h1>Switch Component</h1>
-      <DSwitch value={state} onChange={setState} />
+      <Switch value={state} onChange={setState} />
 
       <p>
         switch value: {state.toString()}

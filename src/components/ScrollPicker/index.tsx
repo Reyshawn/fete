@@ -4,7 +4,7 @@ import style from "./style.module.css"
 import { useDraggable } from "@/utils/useDraggable"
 import { useInertiaAnimator } from "@/utils/useInertiaAnimator"
 
-interface DScrollpickerProps {
+interface ScrollPicker {
   options: string[]
   value: string
   config?: {
@@ -18,7 +18,7 @@ interface DScrollpickerProps {
 }
 
 
-export default function DScrollpicker(props: DScrollpickerProps) {
+export default function ScrollPicker(props: ScrollPicker) {
   const itemHeight = props.config?.rowHeight || 36
   const wheelCount = props.config?.wheelCount || 20
 
