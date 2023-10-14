@@ -5,21 +5,21 @@
     overflow-hidden;
 
   &.prev {
-    .d-datepicker-panel-slide-enter-from {
+    .date-picker-panel-slide-enter-from {
       transform: translate3D(-100%, 0, 0);
     }
 
-    .d-datepicker-panel-slide-leave-to {
+    .date-picker-panel-slide-leave-to {
       transform: translate3D(100%, 0, 0);
     }
   }
 
   &.next {
-    .d-datepicker-panel-slide-enter-from {
+    .date-picker-panel-slide-enter-from {
       transform: translate3D(100%, 0, 0);
     }
 
-    .d-datepicker-panel-slide-leave-to {
+    .date-picker-panel-slide-leave-to {
       transform: translate3D(-100%, 0, 0);
     }
   }
@@ -34,24 +34,24 @@
     overflow-hidden; 
 
   &.prev {
-    .d-datepicker-month-label-slide-enter-from {
+    .date-picker-month-label-slide-enter-from {
       opacity: 0;
       transform: translate3D(0, 100%, 0);
     }
 
-    .d-datepicker-month-label-slide-leave-to {
+    .date-picker-month-label-slide-leave-to {
       opacity: 0;
       transform: translate3D(0, -100%, 0);
     }
   }
 
   &.next {
-    .d-datepicker-month-label-slide-enter-from {
+    .date-picker-month-label-slide-enter-from {
       opacity: 0;
       transform: translate3D(0, -100%, 0);
     }
 
-    .d-datepicker-month-label-slide-leave-to {
+    .date-picker-month-label-slide-leave-to {
       opacity: 0;
       transform: translate3D(0, 100%, 0);
     }

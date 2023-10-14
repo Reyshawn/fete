@@ -82,7 +82,7 @@ function DatePickerMonthView(props: any) {
 
 
 function DatePickerDateView(props: any) {
-  
+
   const [year, setYear] = useState(2023)
   const [month, setMonth] = useState(0)
 
@@ -106,7 +106,7 @@ function DatePickerDateView(props: any) {
     } else {
       setMonth(month => month - 1)
     }
-    
+
   }, [month])
 
 
@@ -120,9 +120,9 @@ function DatePickerDateView(props: any) {
           <div className={["date-picker-month-label", action].join(" ")}>
             <TransitionGroup name="date-picker-month-label-slide">
               <span
-                 key={`month_label_${year}-${month}`} 
-                 className={style["date-picker-panel-header__current-month"]}>
-                 { MONTH_NAMES[month] }
+                key={`month_label_${year}-${month}`}
+                className={style["date-picker-panel-header__current-month"]}>
+                {MONTH_NAMES[month]}
               </span>
             </TransitionGroup>
           </div>
@@ -132,14 +132,14 @@ function DatePickerDateView(props: any) {
               transform: `translateX(${YEAR_TRANSFORM[month]}px)`
             }}
           >
-            { year }
+            {year}
           </span>
         </div>
         <div>
           <button type="button"
             onClick={prevMonth}
             className="t-icon">
-              <ArrowLeftIcon />
+            <ArrowLeftIcon />
           </button>
           <button type="button"
             onClick={nextMonth}
@@ -149,41 +149,39 @@ function DatePickerDateView(props: any) {
         </div>
       </div>
 
-    <div className={[
-      style["date-picker-panel-view"],
-      style["date-picker-panel-month-view"]].join(" ")}>
-      <div className={style["date-picker-panel-week-label"]}>
-        { DAYS.map((day, index) => (
-          <div
-              style={{"width": "14.26%"}}
+      <div className={[
+        style["date-picker-panel-view"],
+        style["date-picker-panel-month-view"]].join(" ")}>
+        <div className={style["date-picker-panel-week-label"]}>
+          {DAYS.map((day, index) => (
+            <div
+              style={{ "width": "14.26%" }}
               className="px-1"
               key={"week_" + index}>
-            <div className="text-gray-800 font-medium text-center text-xs" >{ day }</div>
-          </div>)) }
-      </div>
+              <div className="text-gray-800 font-medium text-center text-xs" >{day}</div>
+            </div>))}
+        </div>
 
-      <div className={[style["date-picker-panel-slide"], "date-picker-panel-slide", action].join(" ")}>
-        <TransitionGroup name="date-picker-panel-slide">
-          <div className={style["date-picker-panel-days"]} key={`${year}-${month}`}>
-          { blankDays.map((_, index) => (
-            <div
-              key={'blankday' + index}
-              className={style["date-picker-panel-days-unit"]} />)) }
-          { numOfDays.map((date, i) => (
-            <div
-              key={'days_' + i}
-              className={style["date-picker-panel-days-unit"]}>
-              <div
-                className={style["date-picker-panel-days-day"]}>
-                { date }
-              </div>
-            </div>)) }
-          </div>
-        </TransitionGroup>
+        <div className={[style["date-picker-panel-slide"], "date-picker-panel-slide", action].join(" ")}>
+          <TransitionGroup name="date-picker-panel-slide">
+            <div className={style["date-picker-panel-days"]} key={`${year}-${month}`}>
+              {blankDays.map((_, index) => (
+                <div
+                  key={'blankday' + index}
+                  className={style["date-picker-panel-days-unit"]} />))}
+              {numOfDays.map((date, i) => (
+                <div
+                  key={'days_' + i}
+                  className={style["date-picker-panel-days-unit"]}>
+                  <div
+                    className={style["date-picker-panel-days-day"]}>
+                    {date}
+                  </div>
+                </div>))}
+            </div>
+          </TransitionGroup>
+        </div>
       </div>
-      
-    </div>
-
     </div>
   )
 }

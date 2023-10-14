@@ -1,9 +1,4 @@
 import style from "./style.module.css"
-import {
-  offset,
-  flip,
-  shift,
-} from '@floating-ui/react-dom'
 import Popper from "@/components/Popper"
 import { useCallback, useEffect, useRef, useState, memo } from "react"
 import { useDraggable } from "@/utils/useDraggable"
