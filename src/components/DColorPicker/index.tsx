@@ -1,6 +1,5 @@
 import style from "./style.module.css"
 import {
-  useFloating,
   offset,
   flip,
   shift,

@@ -1,6 +1,7 @@
 import { PopperProps } from "@/components/Popper";
 import { useFloating, UseFloatingOptions } from "@floating-ui/react-dom";
 import { MouseEventHandler, Ref, useCallback, useRef, useState } from "react";
+import { mergeRefs } from "./mergeRefs";
 import useClickAway from "./useClickAway";
 
 
@@ -22,8 +23,8 @@ export default function usePopper(props: UsePopperProps): {
     default: defaultValue = false,
   } = props
 
-  const { refs, floatingStyles } = useFloating(props)
-  
+  const { refs, floatingStyles, placement } = useFloating(props)
+
   const anchorRef = useRef<HTMLElement | null>(null)
   const [isPopperShown, setIsPopperShown] = useState(defaultValue)
 
@@ -43,20 +44,15 @@ export default function usePopper(props: UsePopperProps): {
 
   return {
     getAnchorProps: () => ({
-      ref: (node) => {
-        if (anchorRef.current == null) {
-          anchorRef.current = node
-        }
-
-        refs.setReference(node)
-      },
+      ref: mergeRefs(refs.setReference, anchorRef),
       onClick: open
     }),
 
     getPopperProps: () => ({
       active: isPopperShown,
       setFloating: refs.setFloating,
-      floatingStyles: floatingStyles
+      floatingStyles: floatingStyles,
+      placement
     })
   }
 }

@@ -32,8 +32,6 @@
 }
 
 
-
-
 .d-datepicker-panel {
   width: calc(32px * 7 + 32px);
   @apply

@@ -1,0 +1,18 @@
+.popper-enter-active, .popper-leave-active {
+  transition: transform .25s cubic-bezier(.17,.77,.59,1.03), opacity .25s cubic-bezier(.17,.77,.59,1.03);
+  will-change: transform, opacity;
+
+
+  &[data-popper-placement="bottom-start"] {
+    transform-origin: top center;
+  }
+
+  &[data-popper-placement="top-start"] {
+    transform-origin: bottom center;
+  }
+}
+
+.popper-enter-from, .popper-leave-to {
+  opacity: 0;
+  transform: scaleY(0.01);
+}
