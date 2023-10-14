@@ -1,18 +1,24 @@
 .popper-enter-active, .popper-leave-active {
-  transition: transform .25s cubic-bezier(.17,.77,.59,1.03), opacity .25s cubic-bezier(.17,.77,.59,1.03);
-  will-change: transform, opacity;
-
-
   &[data-popper-placement="bottom-start"] {
-    transform-origin: top center;
+    transform-origin: top left;
   }
 
   &[data-popper-placement="top-start"] {
-    transform-origin: bottom center;
+    transform-origin: bottom left;
   }
+}
+
+.popper-enter-active {
+  transition: transform .2s cubic-bezier(.4,0,.2,1), opacity .2s cubic-bezier(.4,0,.2,1);
+  will-change: transform, opacity;
+}
+
+.popper-leave-active {
+  transition: transform .1s ease-out, opacity .1s ease-out;
+  will-change: transform, opacity;
 }
 
 .popper-enter-from, .popper-leave-to {
   opacity: 0;
-  transform: scaleY(0.01);
+  transform: scale(0.8);
 }

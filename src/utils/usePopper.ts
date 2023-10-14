@@ -1,5 +1,5 @@
 import { PopperProps } from "@/components/Popper";
-import { useFloating, UseFloatingOptions } from "@floating-ui/react-dom";
+import { autoUpdate, useFloating, UseFloatingOptions } from "@floating-ui/react-dom";
 import { MouseEventHandler, Ref, useCallback, useRef, useState } from "react";
 import { mergeRefs } from "./mergeRefs";
 import useClickAway from "./useClickAway";
@@ -23,9 +23,12 @@ export default function usePopper(props: UsePopperProps): {
     default: defaultValue = false,
   } = props
 
-  const { refs, floatingStyles, placement } = useFloating(props)
-
   const anchorRef = useRef<HTMLElement | null>(null)
+  const { refs, floatingStyles, placement } = useFloating({
+    whileElementsMounted: autoUpdate,
+    ...props
+  })
+  
   const [isPopperShown, setIsPopperShown] = useState(defaultValue)
 
   useClickAway({
