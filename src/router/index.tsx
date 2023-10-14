@@ -19,6 +19,10 @@ import {
   DColorPickerPage
 } from '@/pages/components/index'
 
+import {
+  ListAnimationPage
+} from "@/pages/animations/index"
+
 
 import {
   ThreeJSPage,
@@ -183,6 +187,18 @@ const topicsMenus: Menu[] = [
 ]
 
 
+const animationsRoutes: Menu[] = [
+  {
+    path: '',
+    element: <Suspense><AnimationsPage /></Suspense>
+  },
+  {
+    path: 'list',
+    element: <Suspense><ListAnimationPage /></Suspense>,
+  },
+]
+
+
 function convertToRoutes(menus: Menu[]) {
   return menus.reduce<NonIndexRouteObject[]>((accu, curr) => {
 
@@ -220,7 +236,8 @@ const routes = [
       },
       {
         path: 'animations',
-        element: <Suspense><AnimationsPage /></Suspense>
+        element: <Suspense><SidebarLayout menus={animationsRoutes.filter(r => r.path !== '')} /></Suspense>,
+        children: animationsRoutes
       },
       {
         path: 'solutions',

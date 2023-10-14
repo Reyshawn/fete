@@ -31,7 +31,7 @@ function TransitionGroup(props: TransitionGroupProps) {
 
   const _children: ReactElement[] = Array.isArray(props.children)
     ? children as ReactElement[]
-    : useMemo(() => ([(children as ReactElement)]), [(children as ReactElement).key])
+    : [(children as ReactElement)]
 
   const Tag = props.tag ?? Fragment
   const isMounted = useRef(false)
