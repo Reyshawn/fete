@@ -1,5 +1,5 @@
 
-.d-color-picker {
+.color-picker {
   @apply 
     flex
     items-center
@@ -15,7 +15,7 @@
 }
 
 
-.d-color-picker-panel {
+.color-picker-panel {
   @apply
     bg-white
     rounded-lg
@@ -60,7 +60,7 @@
   }
 }
 
-.d-color-picker-cursor {
+.color-picker-cursor {
   width: var(--size);
   height: var(--size);
   border-radius: calc(var(--size) / 2);

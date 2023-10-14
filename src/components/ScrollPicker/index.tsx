@@ -4,7 +4,7 @@ import style from "./style.module.css"
 import { useDraggable } from "@/utils/useDraggable"
 import { useInertiaAnimator } from "@/utils/useInertiaAnimator"
 
-interface ScrollPicker {
+interface ScrollPickerProps {
   options: string[]
   value: string
   config?: {
@@ -18,7 +18,7 @@ interface ScrollPicker {
 }
 
 
-export default function ScrollPicker(props: ScrollPicker) {
+export default function ScrollPicker(props: ScrollPickerProps) {
   const itemHeight = props.config?.rowHeight || 36
   const wheelCount = props.config?.wheelCount || 20
 
@@ -94,12 +94,12 @@ export default function ScrollPicker(props: ScrollPicker) {
   
   return (
     <div
-      className={style["d-picker"]}
+      className={style["scroll-picker"]}
       style={cssVars}
       ref={picker}>
-      <div className={style["d-picker-wheel"]}>
+      <div className={style["scroll-picker-wheel"]}>
         <div
-          className={style["d-picker-wheel-rotate"]}
+          className={style["scroll-picker-wheel-rotate"]}
           style={{
             'transform': `rotateX(${-1 * itemAngle * scroll}deg)`
           }}>
@@ -108,7 +108,7 @@ export default function ScrollPicker(props: ScrollPicker) {
             return (
               <div
                 key={"wh_" + i}
-                className={style["d-picker-wheel-item"]}
+                className={style["scroll-picker-wheel-item"]}
                 style={{
                   'transform': `rotateX(${i * itemAngle}deg) translateZ(-${radius}px)`,
                   'visibility': Math.abs(i - Math.round(scroll)) > halfWheelCount ? 'hidden' : 'visible'
@@ -121,9 +121,9 @@ export default function ScrollPicker(props: ScrollPicker) {
         </div>
         
       </div>
-      <div className={style["d-picker-board"]}>
+      <div className={style["scroll-picker-board"]}>
         <div
-          className={style["d-picker-board-transform"]}
+          className={style["scroll-picker-board-transform"]}
           style={{
             'transform': `translateY(${-1 * itemHeight * scroll}px)`
           }}>
@@ -132,7 +132,7 @@ export default function ScrollPicker(props: ScrollPicker) {
             return (
               <div
                 key={"board_" + index}
-                className={style["d-picker-board-option"]}>{option}</div>
+                className={style["scroll-picker-board-option"]}>{option}</div>
             )
           })
         }

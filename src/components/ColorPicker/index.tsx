@@ -29,9 +29,9 @@ export default function ColorPicker(props: any) {
 
 
   return (
-  <div className={style["d-color-picker"]}>
+  <div className={style["color-picker"]}>
     <div
-      className={style["d-color-picker-indicator"]}
+      className={style["color-picker-indicator"]}
       style={{
         backgroundColor: `rgba(${rgb(hexValue).join(",")}, ${alphaValue}%`,
       }}
@@ -97,7 +97,7 @@ function ColorPickerPanel(props: ColorPickerPanelProps) {
 
 
   return (
-    <div className={style["d-color-picker-panel"]} onMouseDownCapture={handleMouseDown}>
+    <div className={style["color-picker-panel"]} onMouseDownCapture={handleMouseDown}>
       <MemoizedColorPickerPalette
         hueColor={hueColor}
         onColorChange={onColorChange}
@@ -113,7 +113,7 @@ function ColorPickerPanel(props: ColorPickerPanelProps) {
 
 function ColorPickerCursor({x, y, bgColor}: {x: number, y: number, bgColor: string}) {
   return (
-    <div className={style["d-color-picker-cursor"]} style={{
+    <div className={style["color-picker-cursor"]} style={{
       ['--size' as any]: CURSOR_DIAMETER + "px",
       left: x + "px",
       top: y + "px",
@@ -198,7 +198,7 @@ function ColorPickerPalette(props: ColorPickerPaletteProps) {
       style={{
         ['--size' as any]: CANVAS_SIZE + "px",
       }}
-      className={style["d-color-picker-panel-color-palette"]}
+      className={style["color-picker-panel-color-palette"]}
       ref={parentRef}>
       <canvas ref={paletteRef} width={CANVAS_SIZE} height={CANVAS_SIZE}></canvas>
       <ColorPickerCursor x={x} y={y} bgColor={rgb} />
@@ -277,7 +277,7 @@ function ColorPickerHueSlider(props: ColorPickerHueSliderProps) {
         width: CANVAS_SIZE + "px",
         height: SLIDER_HEIGHT + "px"
       }}
-      className={style["d-color-picker-panel-hue-slider"]}
+      className={style["color-picker-panel-hue-slider"]}
       ref={parentRef}>
       <canvas ref={hueSliderRef} width={CANVAS_SIZE} height={SLIDER_HEIGHT}></canvas>
       <ColorPickerCursor x={x - CURSOR_RADIUS} y={SLIDER_CURSOR_Y} bgColor={rgb}/>
@@ -319,10 +319,10 @@ function ColorPickerAlphaSlider(props: ColorPickerAlphaSlider) {
         width: CANVAS_SIZE + "px",
         height: SLIDER_HEIGHT + "px"
       }}
-      className={style["d-color-picker-panel-alpha-slider"]}
+      className={style["color-picker-panel-alpha-slider"]}
     >
       <div 
-      className={style["d-color-picker-panel-alpha-slider-gradient"] }
+      className={style["color-picker-panel-alpha-slider-gradient"] }
       style={{
         background: `linear-gradient(to right, rgba(${rgbString}, 0) 0%, rgb(${rgbString}) 100%)`
       }}></div>

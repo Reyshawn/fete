@@ -1,4 +1,4 @@
-.d-timepicker {
+.time-picker {
   @apply
     mb-5;
 
@@ -31,7 +31,7 @@
   } 
 }
 
-.d-timepicker-panel {
+.time-picker-panel {
   width: 200px;
   @apply
     bg-white

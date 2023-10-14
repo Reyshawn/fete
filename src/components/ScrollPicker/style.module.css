@@ -1,4 +1,4 @@
-.d-picker {
+.scroll-picker {
   overscroll-behavior: contain;
   width: 100%;
   width: var(--width);

@@ -2,12 +2,12 @@ import { Dispatch, SetStateAction } from "react"
 import style from "./style.module.css"
 
 
-interface DSwitchProp {
+interface SwitchProp {
   value: boolean,
   onChange: Dispatch<SetStateAction<boolean>>
 }
 
-export default function DSwitch(props: DSwitchProp) {
+export default function Switch(props: SwitchProp) {
   const { value, onChange } = props
 
   return (

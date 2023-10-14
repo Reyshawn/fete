@@ -16,7 +16,7 @@ const MINUTES = Array.from(Array<never>(60).keys()).map(i => String(i).padStart(
 const SECONDS = Array.from(Array<never>(60).keys()).map(i => String(i).padStart(2, '0'))
 
 
-interface DTimepickerProps {
+interface TimePickerProps {
   hour?: string
   minute?: string
   second?: string
@@ -29,7 +29,7 @@ function displayTimeFrom(hour?: string, minute?: string, second?: string) {
 }
 
 
-export default function DTimepicker(props: DTimepickerProps) {
+export default function TimePicker(props: TimePickerProps) {
   const [hour, setHour] = useState(props.hour ?? HOURS[0])
   const [minute, setMinute] = useState(props.minute ?? MINUTES[0])
   const [second, setSecond] = useState(props.second ?? SECONDS[0])
@@ -43,28 +43,28 @@ export default function DTimepicker(props: DTimepickerProps) {
   props.onChange?.(displayValue)
 
   return (
-    <div className={style["d-timepicker"]}>
+    <div className={style["time-picker"]}>
       <input
         type="text"
         {...getAnchorProps()}
         readOnly
         value={displayValue} />
         <Popper {...getPopperProps()}>
-          <div className={style["d-timepicker-panel"]}>
-            <div className={style["d-timepicker-panel-picker"]}>
-              <div className={style["d-timepicker-panel-picker-label"]}>
+          <div className={style["time-picker-panel"]}>
+            <div className={style["time-picker-panel-picker"]}>
+              <div className={style["time-picker-panel-picker-label"]}>
                 HOUR
               </div>
               <ScrollPicker options={HOURS} value={hour ?? HOURS[0]} onChange={setHour} />
             </div>
-            <div className={style["d-timepicker-panel-picker"]}>
-              <div className={style["d-timepicker-panel-picker-label"]}>
+            <div className={style["time-picker-panel-picker"]}>
+              <div className={style["time-picker-panel-picker-label"]}>
                 MINUTE
               </div>
               <ScrollPicker options={MINUTES} value={minute ?? MINUTES[0]} onChange={setMinute} />
             </div>
-            <div className={style["d-timepicker-panel-picker"]}>
-              <div className={style["d-timepicker-panel-picker-label"]}>
+            <div className={style["time-picker-panel-picker"]}>
+              <div className={style["time-picker-panel-picker-label"]}>
                 SECOND
               </div>
               <ScrollPicker options={SECONDS} value={second ?? SECONDS[0]} onChange={setSecond} />
