@@ -1,11 +1,11 @@
-import React, { cloneElement, Fragment, useEffect, useRef } from "react"
+ import React, { cloneElement, Fragment, memo, ReactElement, useEffect, useMemo, useRef } from "react"
 import { nextFrame } from "./Transition"
 
 
 interface TransitionGroupProps {
   name: string
   tag?: keyof JSX.IntrinsicElements
-  children: JSX.Element[] | JSX.Element
+  children: ReactElement[] | ReactElement
 }
 
 
@@ -26,10 +26,14 @@ interface TransitonContext {
 }
 
 
-export default function TransitionGroup(props: TransitionGroupProps) {
-  const _children = Array.isArray(props.children) ? props.children : [props.children]
+function TransitionGroup(props: TransitionGroupProps) {
+  const { children } = props
+
+  const _children: ReactElement[] = Array.isArray(props.children)
+    ? children as ReactElement[]
+    : useMemo(() => ([(children as ReactElement)]), [(children as ReactElement).key])
+
   const Tag = props.tag ?? Fragment
-  
   const isMounted = useRef(false)
   const elements = useRef<TransitionGroupElement[]>([])
 
@@ -42,9 +46,8 @@ export default function TransitionGroup(props: TransitionGroupProps) {
     }
 
     // compare positionMap and current rendered elements
-
     elements.current.forEach((ele) => resetNode(ele.node, props.name))
-    
+
     elements.current.forEach((ele) => {
       if (!positionMap.current.has(ele.key)) {
         ele.action = "enter"
@@ -62,7 +65,6 @@ export default function TransitionGroup(props: TransitionGroupProps) {
       const newRect = ele.node.getBoundingClientRect()
       const dx = oldRect.x - newRect.x
       const dy = oldRect.y - newRect.y
-
 
       if (dx !== 0 || dy !== 0) {
         ele.action = "move"
@@ -95,16 +97,18 @@ export default function TransitionGroup(props: TransitionGroupProps) {
       .then(() => {
       })
       .catch(() => {
-        
-      })
-  })
 
+      })
+  }, [_children.map(c => c.key).join()])
 
   useEffect(() => {
     isMounted.current = true
-
     recordPosition(elements.current, positionMap.current)
-  } ,[])
+
+    return () => {
+      isMounted.current = false
+    }
+  }, [])
 
 
   recordPosition(elements.current, positionMap.current)
@@ -121,7 +125,7 @@ export default function TransitionGroup(props: TransitionGroupProps) {
       return
     }
 
-    
+
     positionMap.current.delete(ele.key)
   })
 
@@ -136,7 +140,7 @@ export default function TransitionGroup(props: TransitionGroupProps) {
             key: child.key as React.Key
           }
 
-          if (parentElement.current == null ) {
+          if (parentElement.current == null) {
             parentElement.current = el.parentElement
           }
         }
@@ -145,12 +149,12 @@ export default function TransitionGroup(props: TransitionGroupProps) {
   </Tag>)
 }
 
+export default memo(TransitionGroup)
+
 
 function runAnimation(name: string, elements: TransitionGroupElement[], parentNode: HTMLElement) {
-
   let count = 0
   const animatedElementsCount = elements.filter(ele => ele.action !== undefined).length
-
   return new Promise((resolve, reject) => {
 
     for (const ele of elements.filter(ele => ele.action != null)) {
@@ -162,7 +166,7 @@ function runAnimation(name: string, elements: TransitionGroupElement[], parentNo
             removeClass(ele.node, `${name}-enter-from`)
           })
           break
-  
+
         case "leave":
           nextFrame(() => {
             ele.node.classList.add(`${name}-leave-to`)
@@ -180,7 +184,7 @@ function runAnimation(name: string, elements: TransitionGroupElement[], parentNo
       ele.onTransitionEnd = () => {
         count++
         ele.node.removeEventListener("transitionend", ele.onTransitionEnd!)
-        
+
         switch (ele.action) {
           case "enter":
             removeClass(ele.node, `${name}-enter-active`)
@@ -218,18 +222,18 @@ function recordPosition(elements: TransitionGroupElement[], positionMap: Map<Rea
   }
 
   elements
-  .filter(ele => ele.action !== "leave")
-  .forEach((ele, index) => {
-    const node = ele.node
-    const key = ele.key
+    .filter(ele => ele.action !== "leave")
+    .forEach((ele, index) => {
+      const node = ele.node
+      const key = ele.key
 
 
-    positionMap.set(key, {
-      rect: node.getBoundingClientRect(),
-      position: index,
-      node: ele.node
+      positionMap.set(key, {
+        rect: node.getBoundingClientRect(),
+        position: index,
+        node: ele.node
+      })
     })
-  })
 }
 
 
