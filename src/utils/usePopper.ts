@@ -10,13 +10,13 @@ interface UsePopperProps extends UseFloatingOptions {
 }
 
 
-interface AnchorProps<T = HTMLElement> {
+interface AnchorProps<T> {
   ref: Ref<T>,
-  onClick: MouseEventHandler
+  onClick: MouseEventHandler<T>
 }
 
-export default function usePopper(props: UsePopperProps): {
-  getAnchorProps: () => AnchorProps,
+export default function usePopper<T extends HTMLElement>(props: UsePopperProps): {
+  getAnchorProps: () => AnchorProps<T>,
   getPopperProps: () => Omit<PopperProps, "children">
 } {
   const {

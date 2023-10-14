@@ -22,11 +22,10 @@ export default function ColorPicker(props: any) {
   const [hexValue, setHexValue] = useState("#ffffff")
   const [alphaValue, setAlphaValue] = useState(100) // (0, 100)
 
-  const { getAnchorProps, getPopperProps } = usePopper({
+  const { getAnchorProps, getPopperProps } = usePopper<HTMLDivElement>({
     placement: "bottom-start",
     middleware: [offset(10), shift(), flip()]
   })
-
 
   return (
   <div className={style["color-picker"]}>
