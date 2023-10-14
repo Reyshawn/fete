@@ -1,97 +1,44 @@
 import styles from "@/styles/sectionPage.module.css"
 import TransitionGroup from "@/components/TransitionGroup"
-import { useCallback, useState } from "react"
-import Transition from "@/components/Transition"
+import { useRef, useState } from "react"
 
 
 export default function ListAnimationPage() {
   return <section className={styles.page}>
-    <h1>Insert Random</h1>
-    <InsertRandomDemo />
-    <h1>Remove Random</h1>
-    <RemoveRandomDemo />
-    <h1>Shuffle</h1>
-    <ShuffleDemo />
+    <h1>List Animation</h1>
+    <ListAnimationDemo />
   </section>
 }
 
 
-function InsertRandomDemo() {
+
+function ListAnimationDemo() {
   const [values, setValues] = useState([1, 2, 3, 4, 5, 6, 7])
 
-  const handleClick = () => {
+  const countRef = useRef(values.length)
+
+  const handleInsert = () => {
 
     const plusIndex = Math.floor(Math.random() * values.length)
     const newValues = [...values]
-    newValues.splice(plusIndex, 0, newValues.length + 1)
+    newValues.splice(plusIndex, 0, countRef.current + 1)
+
+    countRef.current++
 
     setValues(newValues)
   }
 
-
-  return (
-    <div style={{
-      height: "500px",
-      maxHeight: "500px",
-      overflow: "auto"
-    }}>
-      <button onClick={handleClick}>insert</button>
-      <ul style={{ position: "relative" }}>
-        <TransitionGroup name="shuffle">
-          {
-            values.map((i, index) => <li key={"k-" + i} data-key={"k-" + i} style={{ border: "1px solid teal", width: "100%", height: "30px" }}>- {i}</li>)
-          }
-        </TransitionGroup>
-      </ul>
-
-    </div>
-  )
-}
-
-
-function RemoveRandomDemo() {
-  const [values, setValues] = useState([1, 2, 3, 4, 5, 6, 7])
-
-  const handleClick = () => {
-
-
+  const handleRemove = () => {
     const removeIndex = Math.floor(Math.random() * values.length)
 
     const newValues = [...values]
-    console.log("values:::", values.length)
-    console.log("removeIndex:::", removeIndex)
     newValues.splice(removeIndex, 1)
 
     setValues(newValues)
   }
 
-
-  return (
-    <div style={{
-      height: "500px",
-      maxHeight: "500px",
-      overflow: "auto"
-    }}>
-      <button onClick={handleClick}>insert</button>
-      <ul style={{ position: "relative" }}>
-        <TransitionGroup name="shuffle">
-          {
-            values.map((i, index) => <li key={"k-" + i} data-key={"k-" + i} style={{ border: "1px solid teal", width: "100%", height: "30px" }}>- {i}</li>)
-          }
-        </TransitionGroup>
-      </ul>
-
-    </div>
-  )
-}
-
-
-function ShuffleDemo() {
-  const [values, setValues] = useState([1, 2, 3, 4, 5, 6, 7])
-
-  const handleClick = () => {
+  const handleShuffle = () => {
     const newValues = [...shuffle(values)]
-
     setValues(newValues)
   }
 
@@ -102,7 +49,9 @@ function ShuffleDemo() {
       maxHeight: "500px",
       overflow: "auto"
     }}>
-      <button onClick={handleClick}>insert</button>
+      <button onClick={handleInsert}>insert</button>
+      <button onClick={handleRemove}>remove</button>
+      <button onClick={handleShuffle}>shuffle</button>
       <ul style={{ position: "relative" }}>
         <TransitionGroup name="shuffle">
           {

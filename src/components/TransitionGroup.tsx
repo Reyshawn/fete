@@ -83,7 +83,12 @@ function TransitionGroup(props: TransitionGroupProps) {
         }
 
         context.node.classList.add(`${props.name}-leave-active`)
-        parentElement.current?.insertBefore(context.node, elements.current[context.position].node)
+
+        if (context.position === elements.current.length) {
+          parentElement.current?.appendChild(context.node)
+        } else {
+          parentElement.current?.insertBefore(context.node, elements.current[context.position].node)
+        }
 
         elements.current.splice(context.position, 0, {
           node: context.node,
