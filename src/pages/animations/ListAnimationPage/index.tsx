@@ -11,11 +11,18 @@ export default function ListAnimationPage() {
 }
 
 
+enum ListTransitionType {
+  shuffle = "shuffle",
+  mutation = "list-mutation"
+}
+
 
 function ListAnimationDemo() {
   const [values, setValues] = useState([1, 2, 3, 4, 5, 6, 7])
 
   const countRef = useRef(values.length)
+
+  const transitionType = useRef(ListTransitionType.shuffle)
 
   const handleInsert = () => {
 
@@ -25,6 +32,7 @@ function ListAnimationDemo() {
 
     countRef.current++
 
+    transitionType.current = ListTransitionType.mutation
     setValues(newValues)
   }
 
@@ -34,11 +42,14 @@ function ListAnimationDemo() {
     const newValues = [...values]
     newValues.splice(removeIndex, 1)
 
+    transitionType.current = ListTransitionType.mutation
     setValues(newValues)
   }
 
   const handleShuffle = () => {
     const newValues = [...shuffle(values)]
+
+    transitionType.current = ListTransitionType.shuffle
     setValues(newValues)
   }
 
@@ -52,10 +63,26 @@ function ListAnimationDemo() {
       <button onClick={handleInsert}>insert</button>
       <button onClick={handleRemove}>remove</button>
       <button onClick={handleShuffle}>shuffle</button>
-      <ul style={{ position: "relative" }}>
-        <TransitionGroup name="shuffle">
+      <ul style={{ 
+        position: "relative",
+      }}>
+        <TransitionGroup name={transitionType.current}>
           {
-            values.map((i, index) => <li key={"k-" + i} data-key={"k-" + i} style={{ border: "1px solid teal", width: "100%", height: "30px" }}>- {i}</li>)
+            values.map((i, index) => 
+            <li
+              key={"k-" + i}
+              style={{
+                borderRadius: "4px",
+                marginTop: "2px",
+                backgroundColor: "#363062",
+                color: "white",
+                width: "100%",
+                height: "30px",
+                willChange: "opacity, transform"
+              }}
+            >
+              - {i}
+            </li>)
           }
         </TransitionGroup>
       </ul>

@@ -27,7 +27,7 @@ interface TransitonContext {
 
 
 function TransitionGroup(props: TransitionGroupProps) {
-  const { children } = props
+  const { children, name } = props
 
   const _children: ReactElement[] = Array.isArray(props.children)
     ? children as ReactElement[]
@@ -46,7 +46,7 @@ function TransitionGroup(props: TransitionGroupProps) {
     }
 
     // compare positionMap and current rendered elements
-    elements.current.forEach((ele) => resetNode(ele.node, props.name))
+    elements.current.forEach((ele) => resetNode(ele.node, name))
 
     elements.current.forEach((ele) => {
       if (!positionMap.current.has(ele.key)) {
@@ -82,8 +82,7 @@ function TransitionGroup(props: TransitionGroupProps) {
           return
         }
 
-        context.node.classList.add(`${props.name}-leave-active`)
-
+        context.node.classList.add(`${name}-leave-active`)
         if (context.position === elements.current.length) {
           parentElement.current?.appendChild(context.node)
         } else {
@@ -98,13 +97,13 @@ function TransitionGroup(props: TransitionGroupProps) {
       }
     })
 
-    runAnimation(props.name, elements.current, parentElement.current!)
+    runAnimation(name, elements.current, parentElement.current!)
       .then(() => {
       })
       .catch(() => {
 
       })
-  }, [_children.map(c => c.key).join()])
+  }, [_children.map(c => c.key).join(), name])
 
   useEffect(() => {
     isMounted.current = true
@@ -123,7 +122,7 @@ function TransitionGroup(props: TransitionGroupProps) {
       return
     }
 
-    if (ele.node.classList.contains(`${props.name}-leave-active`)) {
+    if (ele.node.classList.contains(`${name}-leave-active`)) {
       let context = positionMap.current.get(ele.key)!
       context.isLeaving = true
       context.node.parentElement?.removeChild(context.node)

@@ -1,0 +1,29 @@
+.list-mutation-move {
+  transition: all .3s linear;
+}
+
+.list-mutation-enter-active {
+  transition: all .3s cubic-bezier(0.33, 1, 0.68, 1);
+}
+
+.list-mutation-leave-active {
+  transition: all .3s cubic-bezier(0.32, 0, 0.67, 0);
+}
+
+.list-mutation-enter-from,
+.list-mutation-leave-to {
+  opacity: 0;
+  transform: scaleY(0);
+}
+
+.list-mutation-enter-to,
+.list-mutation-leave-from {
+  opacity: 1;
+  transform: none;
+}
+
+/* 3. ensure leaving items are taken out of layout flow so that moving
+      animations can be calculated correctly. */
+.list-mutation-leave-active {
+  position: absolute;
+}
