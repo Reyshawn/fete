@@ -9,7 +9,7 @@ import {
 } from "@floating-ui/react-dom";
 import { MouseEventHandler, Ref, useCallback, useRef, useState } from "react";
 import { mergeRefs } from "./mergeRefs";
-import { useClickAway } from "@demoo/hooks";
+import { useClickAway } from "@fete/hooks";
 
 
 interface UsePopperProps extends UseFloatingOptions {
