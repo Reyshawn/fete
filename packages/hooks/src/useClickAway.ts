@@ -1,6 +1,5 @@
 import { RefObject, useEffect, useRef } from 'react';
 
-
 type EventHandlerType = <K extends keyof DocumentEventMap>(evt: DocumentEventMap[K]) => void
 
 const defaultEvents: (keyof DocumentEventMap)[] = ['mousedown', 'touchstart'];

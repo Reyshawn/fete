@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@demoo/hooks':
+        specifier: workspace:^
+        version: link:packages/hooks
       '@demoo/utils':
         specifier: workspace:*
         version: link:packages/utils
@@ -129,6 +132,12 @@ importers:
       webpack-dev-server:
         specifier: ^4.15.1
         version: 4.15.1(webpack-cli@5.1.4)(webpack@5.89.0)
+
+  packages/hooks:
+    dependencies:
+      react:
+        specifier: ^18.2.0
+        version: 18.2.0
 
   packages/utils: {}
 
