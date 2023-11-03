@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@demoo/utils": "workspace:*",
     "@floating-ui/react-dom": "^2.0.2",
     "@reduxjs/toolkit": "^1.9.7",
     "autoprefixer": "^10.4.16",
