@@ -8,7 +8,7 @@ import {
   InteractiveAnimator,
   convertAnimator
  } from "./animation"
-import useRerender from "./useRerender"
+import { useRerender } from "@fete/hooks"
 
 
 export function useAnimator(): [AnimationFrame, InteractiveAnimator<EasingAnimatorConfiguration>] {

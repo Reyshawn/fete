@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useRef, useState } from "react";
 import { AnimationFrame, AnimationState, Animator, AnimatorConfiguration, createAnimator, FrameGenerator } from "./animation";
 import { inertia } from "./inertia";
-import useRerender from "./useRerender";
+import { useRerender } from "@fete/hooks";
 
 
 export interface InertiaAnimatorConfiguration extends AnimatorConfiguration {

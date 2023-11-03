@@ -1,8 +1,8 @@
 import { useState, useRef, useMemo, useCallback, useEffect } from "react"
 import { AnimationFrame, AnimationState, Animator, AnimatorConfiguration, createAnimator } from "./animation"
 import { spring } from "./spring"
-import useLazyValue from "./useLazyValue"
-import useRerender from "./useRerender"
+import { useLazyValue } from "@fete/hooks"
+import { useRerender } from "@fete/hooks"
 
 
 interface SpringAnimatorConfiguration extends AnimatorConfiguration {

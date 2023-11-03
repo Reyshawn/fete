@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from "react"
+import React, { useEffect, useRef, useCallback } from "react"
 import Queue from "./collections/queue"
 import useRerender from "./useRerender"
 
@@ -43,7 +43,7 @@ const defaultConfig: () => DraggableConfiguraiton = () => ({
   shouldRerenderOnDragging: true
 })
 
-export const useDraggable = (ref: React.RefObject<HTMLDivElement>, opts?: DraggableConfiguraiton) => {
+export default (ref: React.RefObject<HTMLDivElement>, opts?: DraggableConfiguraiton) => {
   const options = Object.assign(defaultConfig(), opts)
   const setRendering = options.shouldRerenderOnDragging ? useRerender() : () => {}
   

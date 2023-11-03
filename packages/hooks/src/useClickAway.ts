@@ -12,7 +12,7 @@ interface UseClickAwayProps {
   events?: (keyof DocumentEventMap)[]
 }
 
-const useClickAway = <E extends Event = Event>(props: UseClickAwayProps) => {
+const useClickAway = (props: UseClickAwayProps) => {
   const {
     enabled = true,
     ref,
