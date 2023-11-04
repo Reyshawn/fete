@@ -62,7 +62,7 @@ export interface Animator<T extends AnimatorConfiguration> {
 }
 
 
-export interface InteractiveAnimator<T> extends Animator<T> {
+export interface InteractiveAnimator<T extends AnimatorConfiguration> extends Animator<T> {
   set: (progress: number) => void
 }
 
@@ -133,7 +133,7 @@ export function createAnimator<T extends AnimatorConfiguration>(
 }
 
 
-export function convertAnimator<T>(animator: Animator<T>, set: (progress: number) => void): InteractiveAnimator<T> {
+export function convertAnimator<T extends AnimatorConfiguration>(animator: Animator<T>, set: (progress: number) => void): InteractiveAnimator<T> {
   const ia = animator as InteractiveAnimator<T>
   ia.set = set
 
