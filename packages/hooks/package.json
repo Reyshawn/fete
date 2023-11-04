@@ -1,8 +1,8 @@
 {
   "name": "@fete/hooks",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Some useful react hooks.",
-  "main": "dist/index.js",
+  "main": "dist/index.mjs",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
   "files": [
@@ -11,10 +11,8 @@
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/index.mjs",
-      "require": "./dist/index.js"
-    },
-    "./package.json": "./package.json"
+      "import": "./dist/index.mjs"
+    }
   },
   "scripts": {
     "build": "tsup src --dts"
@@ -28,12 +26,7 @@
   "peerDependencies": {
     "react": "^18.2.0"
   },
-  "tsup": {
-    "clean": true,
-    "target": "es2019",
-    "format": [
-      "cjs",
-      "esm"
-    ]
+  "engines": { 
+    "node" : ">=16.0.0"
   }
 }
