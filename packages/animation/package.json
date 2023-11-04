@@ -1,7 +1,7 @@
 {
-  "name": "@fete/hooks",
-  "version": "0.0.6",
-  "description": "Some useful react hooks.",
+  "name": "@fete/animation",
+  "version": "0.0.1",
+  "description": "Some animation related hooks and functions.",
   "main": "src/index.ts",
   "scripts": {
     "build": "tsup src --dts",
@@ -10,14 +10,20 @@
   },
   "keywords": [
     "react",
-    "hooks"
+    "hooks",
+    "animation",
+    "spring",
+    "inertia"
   ],
   "author": "",
   "license": "ISC",
+  "dependencies": {
+    "@fete/utils": "workspace:^"
+  },
   "peerDependencies": {
     "react": "^18.2.0"
   },
-  "engines": { 
+  "engines": {
     "node": ">=16.0.0"
   }
 }

@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@fete/animation": "workspace:^",
     "@fete/hooks": "workspace:*",
     "@fete/utils": "workspace:*",
     "@floating-ui/react-dom": "^2.0.2",

@@ -2,7 +2,7 @@ import React, { useMemo, useRef, useState, useCallback, useEffect } from "react"
 import style from "./style.module.css"
 
 import { useDraggable } from "@fete/hooks"
-import { useInertiaAnimator } from "@/utils/useInertiaAnimator"
+import { useInertiaAnimator } from "@fete/animation"
 
 interface ScrollPickerProps {
   options: string[]

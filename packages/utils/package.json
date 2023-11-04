@@ -5,7 +5,7 @@
   "main": "src/index.ts",
   "scripts": {
     "build": "tsup src --dts",
-    "prepack": "ts-node ../../scripts/parse-package.json.ts",
+    "prepack": "npm run build && ts-node ../../scripts/parse-package.json.ts",
     "postpack": "ts-node ../../scripts/parse-package.json.ts restore"
   },
   "keywords": [
@@ -14,6 +14,6 @@
   "author": "",
   "license": "ISC",
   "engines": { 
-    "node" : ">=16.0.0"
+    "node": ">=16.0.0"
   }
 }
