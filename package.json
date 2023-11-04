@@ -1,5 +1,5 @@
 {
-  "name": "demoo",
+  "name": "fete",
   "version": "1.1.0",
   "description": "Some demos.",
   "scripts": {
@@ -9,7 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@demoo/utils": "workspace:*",
+    "@fete/utils": "workspace:*",
     "@fete/hooks": "workspace:*",
     "@floating-ui/react-dom": "^2.0.2",
     "@reduxjs/toolkit": "^1.9.7",

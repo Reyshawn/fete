@@ -8,12 +8,12 @@ importers:
 
   .:
     dependencies:
-      '@demoo/utils':
-        specifier: workspace:*
-        version: link:packages/utils
       '@fete/hooks':
         specifier: workspace:*
         version: link:packages/hooks
+      '@fete/utils':
+        specifier: workspace:*
+        version: link:packages/utils
       '@floating-ui/react-dom':
         specifier: ^2.0.2
         version: 2.0.2(react-dom@18.2.0)(react@18.2.0)
