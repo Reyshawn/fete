@@ -2,6 +2,11 @@
   "name": "@fete/utils",
   "version": "0.0.1",
   "description": "Some utility functions.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Reyshawn/fete.git",
+    "directory": "packages/hooks"
+  },
   "main": "src/index.ts",
   "scripts": {
     "build": "tsup src --dts",
@@ -11,7 +16,7 @@
   "keywords": [
     "utils"
   ],
-  "author": "",
+  "author": "Reyshawn <reshawnchang@gmail.com>",
   "license": "ISC",
   "engines": { 
     "node": ">=16.0.0"

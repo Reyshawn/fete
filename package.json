@@ -2,11 +2,15 @@
   "name": "fete",
   "version": "1.1.0",
   "description": "Some demos.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Reyshawn/fete.git"
+  },
   "scripts": {
     "dev": "webpack serve --config config/webpack.dev.js --mode=development",
     "build": "webpack --config config/webpack.prod.js --mode=production"
   },
-  "author": "",
+  "author": "Reyshawn <reshawnchang@gmail.com>",
   "license": "ISC",
   "dependencies": {
     "@fete/animation": "workspace:^",

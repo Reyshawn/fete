@@ -2,6 +2,11 @@
   "name": "@fete/hooks",
   "version": "0.0.6",
   "description": "Some useful react hooks.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Reyshawn/fete.git",
+    "directory": "packages/animation"
+  },
   "main": "src/index.ts",
   "scripts": {
     "build": "tsup src --dts",
@@ -12,7 +17,7 @@
     "react",
     "hooks"
   ],
-  "author": "",
+  "author": "Reyshawn <reshawnchang@gmail.com>",
   "license": "ISC",
   "peerDependencies": {
     "react": "^18.2.0"
