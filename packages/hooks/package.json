@@ -2,16 +2,16 @@
   "name": "@fete/hooks",
   "version": "0.0.4",
   "description": "Some useful react hooks.",
-  "main": "dist/index.mjs",
-  "module": "dist/index.mjs",
-  "types": "dist/index.d.ts",
+  "main": "lib/index.mjs",
+  "module": "lib/index.mjs",
+  "types": "lib/index.d.ts",
   "files": [
-    "dist"
+    "lib"
   ],
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.mjs"
+      "types": "./lib/index.d.ts",
+      "import": "./lib/index.mjs"
     }
   },
   "scripts": {
