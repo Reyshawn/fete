@@ -157,7 +157,11 @@ importers:
         specifier: ^18.2.0
         version: 18.2.0
 
-  packages/components: {}
+  packages/components:
+    dependencies:
+      react:
+        specifier: ^18.2.0
+        version: 18.2.0
 
   packages/hooks:
     dependencies:

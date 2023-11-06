@@ -1,10 +1,28 @@
 import { readFile, writeFile, copyFile, rm } from 'fs/promises';
 import * as path from 'path';
 
+type Command = "restore" | "styles"
+
 const cwd = process.cwd()
 const sourcePath = path.join(cwd, "package.json")
 const restorePath = path.join(cwd, "package.json.backup")
-const command = process.argv[2]
+const command = process.argv[2] as Command | undefined
+
+const exportsMap = command === "styles"
+  ? {
+    ".": {
+      types: "./lib/index.d.ts",
+      import: "./lib/index.mjs"
+    },
+    "./styles.css": "./lib/index.css",
+    "./styles/**/*.css": "./lib/**/*.css"
+  } : {
+    ".": {
+      types: "./lib/index.d.ts",
+      import: "./lib/index.mjs"
+    }
+  }
+
 
 async function restore() {
   await copyFile(restorePath, sourcePath)
@@ -29,12 +47,7 @@ async function prepare() {
       copy["module"] = "lib/index.mjs"
       copy["types"] = "lib/index.d.ts"
       copy["files"] = ["lib"]
-      copy["exports"] = {
-        ".": {
-          types: "./lib/index.d.ts",
-          import: "./lib/index.mjs"
-        }
-      }
+      copy["exports"] = exportsMap
     } else {
       copy[key] = pkgObj[key]
     }
