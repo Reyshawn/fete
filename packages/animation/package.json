@@ -10,8 +10,8 @@
   "main": "src/index.ts",
   "scripts": {
     "build": "tsup src --dts",
-    "prepack": "npm run build && ts-node ../../scripts/parse-package.json.ts",
-    "postpack": "ts-node ../../scripts/parse-package.json.ts restore"
+    "prepack": "npm run build && tsx ../../scripts/parse-package.json.ts",
+    "postpack": "tsx ../../scripts/parse-package.json.ts restore"
   },
   "keywords": [
     "react",
