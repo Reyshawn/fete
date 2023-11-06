@@ -21,7 +21,7 @@
   "peerDependencies": {
     "react": "^18.2.0"
   },
-  "engines": { 
+  "engines": {
     "node": ">=16.0.0"
   }
 }

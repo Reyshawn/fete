@@ -7,5 +7,8 @@ export default defineConfig({
   clean: true,
   format: [
     "esm"
-  ]
+  ],
+  loader: {
+    '.css': 'local-css',
+  }
 })
