@@ -2,6 +2,10 @@
 .btn-status {
   display: inline-block;
 
+  .switch-input {
+    display: none;
+  }
+
   .switch-input:checked {
     & ~ .btn-change::before {
       transition: 0.3s;

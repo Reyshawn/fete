@@ -17,7 +17,7 @@ export default function Switch(props: SwitchProp) {
         name="checkbox"
         checked={value}
         onChange={() => onChange(!value)}
-        className={[style["switch-input"], "hidden"].join(" ")} />
+        className={style["switch-input"]} />
       <label htmlFor="checkbox" className={style["btn-change"]}></label>
     </div>
   )

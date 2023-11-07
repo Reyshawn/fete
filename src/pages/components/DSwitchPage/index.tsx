@@ -1,5 +1,5 @@
 import { useState } from "react"
-import Switch from "@/components/Switch"
+import { Switch } from "@fete/components"
 import styles from "@/styles/sectionPage.module.css"
 
 export default function DSwitchPage(props: any) {

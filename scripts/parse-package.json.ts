@@ -15,7 +15,7 @@ const exportsMap = command === "styles"
       import: "./lib/index.mjs"
     },
     "./styles.css": "./lib/index.css",
-    "./styles/**/*.css": "./lib/**/*.css"
+    "./*.css": "./lib/*.css"
   } : {
     ".": {
       types: "./lib/index.d.ts",

@@ -11,6 +11,9 @@ importers:
       '@fete/animation':
         specifier: workspace:^
         version: link:packages/animation
+      '@fete/components':
+        specifier: workspace:^
+        version: link:packages/components
       '@fete/hooks':
         specifier: workspace:*
         version: link:packages/hooks
