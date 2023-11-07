@@ -9,7 +9,7 @@
   },
   "main": "src/index.ts",
   "scripts": {
-    "build": "tsup src --dts",
+    "build": "tsx ../../scripts/build.ts",
     "prepack": "npm run build && tsx ../../scripts/parse-package.json.ts styles",
     "postpack": "tsx ../../scripts/parse-package.json.ts restore"
   },
@@ -23,5 +23,8 @@
   },
   "engines": {
     "node": ">=16.0.0"
+  },
+  "devDependencies": {
+    "rollup": "^4.3.0"
   }
 }
