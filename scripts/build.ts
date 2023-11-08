@@ -16,9 +16,7 @@ const outputDir = path.join(cwd, "lib")
 const mainOptions: RollupOptions = {
   input: 'src/index.ts',
   plugins: [
-    typescript({
-      jsx: "react-jsx",
-    }),
+    typescript(),
     minify({
       sourceMap: true
     }),
@@ -31,7 +29,7 @@ const mainOptions: RollupOptions = {
     }) as InputPluginOption,
   ],
   external: ['react', 'react-dom', 'react/jsx-runtime']
-};
+}
 
 
 const dtsOptions: RollupOptions = {
@@ -40,15 +38,21 @@ const dtsOptions: RollupOptions = {
     dts()
   ],
   external: ['react', 'react-dom', 'react/jsx-runtime']
-};
+}
 
-
-const outputOptionsList: OutputOptions[] = [{
+const mainOutputList: OutputOptions[] = [{
   dir: "lib",
   format: "esm",
   preserveModules: true,
   entryFileNames: "[name].mjs"
-}];
+}]
+
+const dtsOutputList: OutputOptions[] = [{
+  dir: "lib",
+  format: "esm",
+  preserveModules: true,
+  entryFileNames: "[name].d.ts"
+}] 
 
 
 async function build(input: RollupOptions, output: OutputOptions[]) {
@@ -110,12 +114,11 @@ function buildCSS() {
 
 
 async function main() {
-
   if (existsSync(outputDir)) {
     await rm(outputDir, { recursive: true })
   }
-  build(mainOptions, outputOptionsList)
-  build(dtsOptions, outputOptionsList)
+  build(mainOptions, mainOutputList)
+  build(dtsOptions, dtsOutputList)
   buildCSS()
 }
 
