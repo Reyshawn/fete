@@ -28,7 +28,7 @@ const mainOptions: RollupOptions = {
       }
     }) as InputPluginOption,
   ],
-  external: ['react', 'react-dom', 'react/jsx-runtime']
+  external: ['react', 'react-dom', 'react/jsx-runtime'] // TODO: find externals from the peerDependencies
 }
 
 
