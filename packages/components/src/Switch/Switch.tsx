@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction } from "react"
-import style from "./Switch.module.css"
+import style from "./style.module.css"
 
 
 interface SwitchProp {

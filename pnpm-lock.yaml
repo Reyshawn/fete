@@ -180,6 +180,12 @@ importers:
 
   packages/components:
     dependencies:
+      '@fete/animation':
+        specifier: workspace:^
+        version: link:../animation
+      '@fete/hooks':
+        specifier: workspace:^
+        version: link:../hooks
       react:
         specifier: ^18.2.0
         version: 18.2.0

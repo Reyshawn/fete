@@ -6,7 +6,7 @@ import {
 } from '@floating-ui/react-dom'
 
 import { useState } from "react"
-import ScrollPicker from "../ScrollPicker"
+import { ScrollPicker } from "@fete/components"
 import Popper from "@/components/Popper"
 import usePopper from "@/utils/usePopper"
 

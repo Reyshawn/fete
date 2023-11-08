@@ -1,5 +1,5 @@
 import styles from "@/styles/sectionPage.module.css"
-import ScrollPicker from "@/components/ScrollPicker"
+import { ScrollPicker } from "@fete/components"
 import TimePicker from "@/components/TimePicker"
 
 import { useState } from "react"

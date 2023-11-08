@@ -18,13 +18,17 @@
   ],
   "author": "Reyshawn <reshawnchang@gmail.com>",
   "license": "ISC",
+  "dependencies": {
+    "@fete/animation": "workspace:^",
+    "@fete/hooks": "workspace:^"
+  },
+  "devDependencies": {
+    "rollup": "^4.3.0"
+  },
   "peerDependencies": {
     "react": "^18.2.0"
   },
   "engines": {
     "node": ">=16.0.0"
-  },
-  "devDependencies": {
-    "rollup": "^4.3.0"
   }
 }

@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useState, useCallback, useEffect } from "react"
+import React, { useMemo, useRef, useCallback, useEffect } from "react"
 import style from "./style.module.css"
 
 import { useDraggable } from "@fete/hooks"
