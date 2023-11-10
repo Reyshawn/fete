@@ -1,6 +1,6 @@
 {
   "name": "@fete/components",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Some components.",
   "repository": {
     "type": "git",
@@ -14,7 +14,7 @@
     "postpack": "tsx ../../scripts/parse-package.json.ts restore"
   },
   "keywords": [
-    "utils"
+    "components"
   ],
   "author": "Reyshawn <reshawnchang@gmail.com>",
   "license": "ISC",

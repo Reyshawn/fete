@@ -1,13 +1,13 @@
 import { rollup, RollupOptions, OutputOptions, InputPluginOption, RollupBuild } from 'rollup';
-import typescript from '@rollup/plugin-typescript';
 import postcss from 'rollup-plugin-postcss'
-import { minify } from 'rollup-plugin-esbuild'
+import esbuild from 'rollup-plugin-esbuild'
 import path from 'path';
 import { dts } from "rollup-plugin-dts";
 
 import { rm } from 'fs/promises';
-import { existsSync } from 'fs';
+import { existsSync } from 'fs'
 import { glob } from "glob"
+import { extractExternal } from './read-package'
 
 const cwd = process.cwd()
 const outputDir = path.join(cwd, "lib")
@@ -16,9 +16,10 @@ const outputDir = path.join(cwd, "lib")
 const mainOptions: RollupOptions = {
   input: 'src/index.ts',
   plugins: [
-    typescript(),
-    minify({
-      sourceMap: true
+    esbuild({
+      sourceMap: true,
+      minify: true,
+      target: "esnext"
     }),
     postcss({
       extract: true,
@@ -28,7 +29,7 @@ const mainOptions: RollupOptions = {
       }
     }) as InputPluginOption,
   ],
-  external: ['react', 'react-dom', 'react/jsx-runtime'] // TODO: find externals from the peerDependencies
+  external: [] // dynamic inject
 }
 
 
@@ -37,14 +38,15 @@ const dtsOptions: RollupOptions = {
   plugins: [
     dts()
   ],
-  external: ['react', 'react-dom', 'react/jsx-runtime']
+  external: [] // dynamic inject
 }
 
 const mainOutputList: OutputOptions[] = [{
   dir: "lib",
   format: "esm",
   preserveModules: true,
-  entryFileNames: "[name].mjs"
+  entryFileNames: "[name].mjs",
+  sourcemap: true
 }]
 
 const dtsOutputList: OutputOptions[] = [{
@@ -117,6 +119,12 @@ async function main() {
   if (existsSync(outputDir)) {
     await rm(outputDir, { recursive: true })
   }
+
+  const external = await extractExternal()
+
+  mainOptions.external = external
+  dtsOptions.external=  external 
+
   build(mainOptions, mainOutputList)
   build(dtsOptions, dtsOutputList)
   buildCSS()
