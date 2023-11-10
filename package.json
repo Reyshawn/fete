@@ -2,6 +2,7 @@
   "name": "fete",
   "version": "1.1.0",
   "description": "Some demos.",
+  "private": true,
   "repository": {
     "type": "git",
     "url": "https://github.com/Reyshawn/fete.git"
