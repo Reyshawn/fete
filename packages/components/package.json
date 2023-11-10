@@ -10,8 +10,8 @@
   "main": "src/index.ts",
   "scripts": {
     "build": "tsx ../../scripts/build.ts",
-    "prepack": "npm run build && tsx ../../scripts/parse-package.json.ts styles",
-    "postpack": "tsx ../../scripts/parse-package.json.ts restore"
+    "prepack": "npm run build && tsx ../../scripts/parse-package.ts styles",
+    "postpack": "tsx ../../scripts/parse-package.ts restore"
   },
   "keywords": [
     "components"
